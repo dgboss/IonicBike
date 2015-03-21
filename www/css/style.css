@@ -1,1 +1,130 @@
-#map { height: 600px; }
+#map { height: 500px; }
+
+.navbar-default-app {
+    background-color: #2c3e50;
+    width: 100%;
+}
+
+.navbar-default-app .nav-app-title {
+    color: #FFF;
+    font-family: faktos;
+    src: url('static/fonts/faktos.regular.ttf');
+    font-size: 21px;
+}
+
+/* Leaflet legend on map */
+.legend-subtext {
+    margin-left: 18px;
+}
+.marker-group>i{
+    height: 20px;
+    width: 20px;
+    padding-top: 4px;
+    border-radius: 10px;
+}
+.marker-group>i.fa-bicycle{
+    padding-left: 2.5px;
+}
+.marker-group>i.fa-warning{
+    padding-left: 4px;
+}
+.marker-group>i.fa-certificate, .marker-group>i.fa-user, .marker-group>i.fa-filter{
+    padding-left: 5px;
+}
+.marker-group span.fa-stack{
+    margin-top: -2px;
+    margin-left: -2px;
+}
+
+/* Legend gradients*/
+.strava-gradient{
+    background: rgba(255,102,17,0);
+    background: -moz-linear-gradient(left, rgba(255,102,17,0) 0%, rgba(255,102,17,1) 100%);
+    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(255,102,17,0)), color-stop(100%, rgba(255,102,17,1)));
+    background: -webkit-linear-gradient(left, rgba(255,102,17,0) 0%, rgba(255,102,17,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,102,17,0) 0%, rgba(255,102,17,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,102,17,0) 0%, rgba(255,102,17,1) 100%);
+    background: linear-gradient(to right, rgba(255,102,17,0) 0%, rgba(255,102,17,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff6611', endColorstr='#ff6611', GradientType=1 );
+}
+
+.rainbow-gradient{
+    background: red; /* not working, let's see some red */
+    background: -moz-linear-gradient( left ,
+    blue 0%,
+    cyan 25%,
+    lime 50%,
+    yellow 55%,
+    red 100%);
+    background: -webkit-gradient(linear,  left bottom,  right bottom,
+    color-stop(0%, blue),
+    color-stop(25%, cyan),
+    color-stop(50%, lime),
+    color-stop(55%, yellow),
+    color-stop(100%, red));
+}
+
+.gradient-bar {
+    height: 5px;
+    width: 150px;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+.alert-area-box{
+    background: rgba(59, 153, 114, 0.1);
+    border: 2px solid rgba(59, 153, 114, 0.6);
+    height: 20px;
+    width: 32.36px; /*THE GOLDEN RATIO*/
+    margin-top: 5px;
+    display: inline-block;
+}
+
+.bikerack{
+    display:inline-block;
+    background: #666666;
+    width: 5px;
+    height: 5px;
+    border-radius: 5px;
+    border: 1px solid black;
+    opacity: 0.5;
+    /*margin-top: -15px;*/
+    margin-left: 10px;
+    margin-right: 20px;
+}
+
+.bikelane{
+    display:inline-block;
+    background: #666666;
+    width: 30px;
+    margin-right: 5px;
+}
+.solidlane{
+    height:2px;
+    background: #ff0080;
+}
+.thicklane{
+    height: 3.5px;
+
+}
+.dotlane{
+    height: 3px;
+    border: 1px solid #ff0080;
+    background: #ff0080; /* not working, let's see some red */
+    background: repeating-linear-gradient(
+            to right,
+            #ff0080,
+            #ff0080 3px,
+            #ffffff 3px,
+            #ffffff 6px
+    );
+}
+
+.modal-dialog{
+    z-index: 4000;
+}
+
+.popup-details{
+    margin-left: 5px;
+    text-indent: -5px;
+}
