@@ -1,3 +1,10 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 #map { height: 500px; }
 
 .navbar-default-app {
@@ -128,3 +135,32 @@
     margin-left: 5px;
     text-indent: -5px;
 }
+
+/* Geocoder */
+.leaflet-control-geocoder-icon {
+    background-size: 83%;
+}
+
+/*Common background colors*/
+.collision{
+    background: #d63e2a;
+    color: black;
+}
+.nearmiss{
+    background: #f3952f;
+    color: black;
+}
+.hazard{
+    background: #72b026;
+    color: black;
+}
+.theft{
+    background: #a3a3a3;
+    color: black;
+}
+.official{
+    background: #436978;
+    color: orange;
+}
+
+

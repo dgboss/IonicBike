@@ -2,8 +2,8 @@
  * Created by Boss on 3/13/2015.
  */
 
-bikeMapApp.controller('mapController', ['$scope', '$log', '$timeout', 'Incident_Service', 'Theft_Service', 'Hazard_Service', 'Icon',
-    function($scope, $log, $timeout, Incident_Service, Theft_Service, Hazard_Service, Icon) {
+bikeMapApp.controller('mapController', ['$scope', '$log', '$timeout', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'Icon', 'Popup_Service',
+    function($scope, $log, $timeout, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, Icon, Popup_Service) {
 
     // Scope variables
     $scope.map = new L.Map('map');
@@ -44,81 +44,169 @@ bikeMapApp.controller('mapController', ['$scope', '$log', '$timeout', 'Incident_
     $scope.legendControl.addOverlay(stravaHM, 'Strave Ridership Data');
     $scope.legendControl.addOverlay(infrastructure, 'Infrastructure');
 
+    var incidentData = new L.MarkerClusterGroup({
+        maxClusterRadius: 70,
+        polygonOptions: {
+            color: '#2c3e50',
+            weight: 3
+        }
+       /* iconCreateFunction: function (cluster) {
+            var data = serializeClusterData(cluster);
+            return pieChart(data);
+        }*/
+    });
+    $scope.map.addLayer(incidentData);
+
+    // Handle a click on a single marker
+    incidentData.on('click', function(e){
+        var layer = e.layer;
+        var popupContent = Popup_Service(e.layer);
+        layer.bindPopup(popupContent, {closeOnClick: true}).openPopup();
+    });
+
+    // Purpose: Initializes the Pie chart cluster icons by getting the needed attributes from each cluster
+    // and passing them to the pieChart function
+    function serializeClusterData(cluster) {
+        var children = cluster.getAllChildMarkers(),
+            n = 0,
+            colorRef = {};
+
+        for (var icon in icons) {
+            // Add a counting field to the icons objects
+            icons[icon]["count"] = 0;
+            // construct colorRef object for efficiency of bin sort
+            colorRef[icons[icon].options.color] = icon;
+        };
+
+        //Count the number of markers in each cluster
+        children.forEach(function(child) {
+            // Match childColor to icon in icons
+            var icon = colorRef[child.options.icon.options.color];
+            icons[icon].count++;
+            n++;
+        });
+
+        // Make array of icons data
+        var data = $.map(icons, function(v) {
+            return v;
+        });
+        // Push total points in cluster
+        data.push(n);
+
+        return data;
+    };
+
+
 
     extendedBounds = getExtendedBounds($scope.map.getBounds());
     getIncidents(extendedBounds);
 
+
+
+    // Add geocoder to map
+    var geocoder = L.Control.geocoder({
+        position: "topleft"
+    }).addTo($scope.map);
+
     // Geolocation
+    var userMarker;
     $scope.geolocate = function () {
-        var yourLocation;
-        var locationCircle;
-        $scope.map.locate({setView: true, watch: true, maxZoom: 15})
-            .on('locationfound', function (e) {
+        $scope.map.locate({setView: true, watch: false, maxZoom: 16, enableHighAccuracy: true})
+            .on('locationfound', function (location) {
 
-                if(yourLocation) {
-                    $scope.map.removeLayer(yourLocation);
-                    $scope.map.removeLayer(locationCircle);
+                if (!userMarker) {
+                    userMarker = L.userMarker(location.latlng, {
+                        smallIcon: true,
+                        circleOpts: {weight: 1, opacity: 0.3, fillOpacity: 0.05}
+                    }).addTo($scope.map);
                 }
-
-                glIcon = L.icon({
-                    iconUrl: 'img/bluedot.png',
-                    iconSize: [17, 17],
-                    iconAnchor: [9, 9]
-                });
-
-                yourLocation = L.marker([e.latitude, e.longitude], {icon: glIcon}).bindPopup('Your are here.');
-                locationCircle = L.circle([e.latitude, e.longitude], e.accuracy / 2, {
-                    weight: 1,
-                    color: 'blue',
-                    fillColor: '#cacaca',
-                    fillOpacity: 0.2
-                });
-                $scope.map.addLayer(yourLocation);
-                $scope.map.addLayer(locationCircle);
-                $scope.map.stopLocate();
-            })
+                userMarker.setLatLng(location.latlng);
+                userMarker.setAccuracy(location.accuracy);
+        })
             .on('locationerror', function (e) {
                 console.log(e);
-                if(yourLocation) {
-                    $scope.map.removeLayer(yourLocation);
-                    $scope.map.removeLayer(locationCircle);
-                }
-                $scope.map.stopLocation();
+                if(userMarker) {
+                    $scope.map.removeLayer(userMarker);
+               }
                 alert("Location access denied");
             });
     };
 
-    $scope.glControl = L.easyButton('fa fa-bicycle',$scope.geolocate,'', $scope.map);
+    var glControl = L.easyButton('fa fa-bicycle',$scope.geolocate,'', $scope.map);
 
 
 
+    // Get icons/markers for the map
+    var collisionIcon = Icon.marker('collision');
+    var nearmissIcon = Icon.marker('nearmiss');
+    var hazardIcon = Icon.marker('hazard');
+    var theftIcon = Icon.marker('theft');
+    var officialIcon = Icon.marker('official');
 
-    //var currentMapBoundsStr;
-    $scope.map.on('moveend', updateIncidents);
-    $scope.incidents;
-    $scope.hazards;
-    //$scope.theft_layer = L.geoJson({atyle: Icon.marker('theft') }).addTo($scope.map);
-    $scope.incident_layer;
-   //$scope.theft_layer.marker.setIcon(icon.marker('theft'));
-    $scope.hazard_layer;
+    var collisionLayer, nearmissLayer, hazardLayer, theftLayer, officialLayer;
 
 
-   $scope.theftIcon = Icon.marker('theft');
-
-    var theft_layer;
-
-    // Get incidents within the specified bounds and add them to the map
+    // Get data from the Bike Maps api and add to Marker Cluster Layer
     function getIncidents(bnds){
+
+        // Clear existing data from map
+        incidentData.clearLayers();
+
+        // Get collision data from BikeMaps api and add to map
+        var collisions = Collision_Service.get({bbox: bnds.toBBoxString()});
+        collisions.$promise.then(function () {
+            collisionLayer = L.geoJson(collisions.features, {
+                pointToLayer: function (feature, latlng) {
+                    return L.marker(latlng, {icon: collisionIcon,
+                                            ftype: 'collision',
+                                            objType: feature.properties.model})
+                }
+            });
+            incidentData.addLayer(collisionLayer);
+            $scope.legendControl.addOverlay(collisionLayer, '<span><i class="marker-group theft fa fa-bicycle icon-black"></i><small>Bike Thefts</small></span>');// {'<i class="theft fa fa-bicycle icon-black"></i><small> Bike Theft</small>'});
+        });
+
+        // Get nearmiss data from BikeMaps api and add to map
+        var nearmiss = Nearmiss_Service.get({bbox: bnds.toBBoxString()});
+        nearmiss.$promise.then(function () {
+            nearmissLayer = L.geoJson(nearmiss.features, {
+                pointToLayer: function (feature, latlng) {
+                    return L.marker(latlng, {icon: nearmissIcon,
+                                            ftype: 'nearmiss',
+                                            objType: feature.properties.model
+                    })
+                }
+            });
+            incidentData.addLayer(nearmissLayer);
+            // $scope.legendControl.addOverlay(theft_layer, {'<i class="theft fa fa-bicycle icon-black"></i><small> Bike Theft</small>': theft_layer});
+        });
+
+        // Get hazard data from BikeMaps api and add to map
+        var hazards = Hazard_Service.get({bbox: bnds.toBBoxString()});
+        hazards.$promise.then(function () {
+            hazardLayer = L.geoJson(hazards.features, {
+                pointToLayer: function (feature, latlng) {
+                    return L.marker(latlng, {icon: hazardIcon,
+                                            ftype: 'hazard',
+                                            objType: feature.properties.model})
+                }
+            });
+            incidentData.addLayer(hazardLayer);
+            // $scope.legendControl.addOverlay(theft_layer, {'<i class="theft fa fa-bicycle icon-black"></i><small> Bike Theft</small>': theft_layer});
+        });
+
+        // Get theft data from BikeMaps api and add to map
         var thefts = Theft_Service.get({bbox: bnds.toBBoxString()});
         thefts.$promise.then(function () {
-            //console.log('Thefts: ' + thefts.features);
-            theft_layer = L.geoJson(thefts.features, {
+            theftLayer = L.geoJson(thefts.features, {
                 pointToLayer: function (feature, latlng) {
-                    return L.marker(latlng, {icon: $scope.theftIcon})
+                    return L.marker(latlng, {icon: theftIcon,
+                                            ftype: 'theft',
+                                            objType: feature.properties.model})
                 }
-            }).addTo($scope.map);
-            $scope.legendControl.addOverlay(theft_layer, {'<i class="theft fa fa-bicycle icon-black"></i><small> Bike Theft</small>': theft_layer});
-
+            });
+            incidentData.addLayer(theftLayer);
+           // $scope.legendControl.addOverlay(theft_layer, {'<i class="theft fa fa-bicycle icon-black"></i><small> Bike Theft</small>': theft_layer});
         });
     }
 
@@ -131,33 +219,8 @@ bikeMapApp.controller('mapController', ['$scope', '$log', '$timeout', 'Incident_
             return;
         }
         else {
-            //$scope.legendControl.removeLayer(theft_layers);
             extendedBounds = getExtendedBounds(newMapBounds);
-
             getIncidents(extendedBounds);
-            //console.log($scope.currentMapBoundsStr);
-            // Get incident data
-            //$scope.incidents = Incident_Service.get({bbox: $scope.currentMapBoundsStr});
-            //$scope.incidents.$promise.then(function(){
-            //    console.log('Incidents: ' + $scope.incidents.features[0]);
-            //    $scope.incident_layer = L.geoJson($scope.incidents.features[0]).addTo($scope.map);
-            //});
-
-            // Get theft data
-            // if(theft_layer) {
-
-            //}
-            /*var thefts = Theft_Service.get({bbox: newMapBoundsStr});
-            thefts.$promise.then(function () {
-                //console.log('Thefts: ' + $scope.thefts.features);
-                theft_layer = L.geoJson(thefts.features, {
-                    pointToLayer: function (feature, latlng) {
-                        return L.marker(latlng, {icon: $scope.theftIcon})
-                    }
-                }).addTo($scope.map);
-                $scope.legendControl.addOverlay(theft_layer, 'Thefts');
-
-            });*/
         }
     };
 
@@ -193,25 +256,6 @@ bikeMapApp.controller('mapController', ['$scope', '$log', '$timeout', 'Incident_
     };
 
 
-    // Add a circle
-    $scope.circle = L.circle([51.508, -0.11], 500, {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5
-    }).addTo($scope.map);
-
-    // Add a polygon
-    $scope.polygon = L.polygon([
-        [51.509, -0.08],
-        [51.503, -0.06],
-        [51.51, -0.047]
-    ]).addTo($scope.map);
-
-    // Bind popups to marker, circle and polygon
-  //  $scope.marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
-    $scope.circle.bindPopup("I am a circle.");
-    $scope.polygon.bindPopup("I am a polygon.");
-
     // Show a popup when you click the map
     $scope.popup = L.popup();
     $scope.onMapClick = function onMapClick(e) {
@@ -223,34 +267,6 @@ bikeMapApp.controller('mapController', ['$scope', '$log', '$timeout', 'Incident_
 
     $scope.map.on('contextmenu', $scope.onMapClick);
 
-    // Show a GeoJSON feature with marker options
-    $scope.geojsonFeature = {
-        "type": "Feature",
-        "properties": {
-            "name": "Coors Field",
-            "amenity": "Baseball Stadium",
-            "popupContent": "This is where the Rockies play!"
-        },
-        "geometry": {
-            "type": "Point",
-            "coordinates": [-104.99404, 39.75621]
-        }
-    };
-
-    $scope.geojsonMarkerOptions = {
-        radius: 8,
-        fillColor: "#ff7800",
-        color: "#000",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
-    };
-
-    $scope.myLayer2 = L.geoJson($scope.geojsonFeature, {
-        pointToLayer: function (feature, latlng) {
-            return L.circleMarker(latlng, $scope.geojsonMarkerOptions);
-        }
-    }).addTo($scope.map);
 
 
 
