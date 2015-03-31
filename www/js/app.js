@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ngResource', 'bikeMapApp.services', 'bikeMapApp.icons'])
+var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 'ngResource', 'bikeMapApp.services', 'bikeMapApp.icons'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -24,7 +24,7 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ngResource', 'bikeMapAp
             .state('app', {
                 url: "/app",
                 templateUrl: "templates/main.html",
-                controller: 'mapController'
+                controller: 'MapCtrl'
             })
 
         $urlRouterProvider.otherwise('/app');

@@ -2,7 +2,7 @@
  * Created by Boss on 3/13/2015.
  */
 
-bikeMapApp.controller('mapController', ['$scope', '$log', '$timeout', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'Icon', 'Popup_Service',
+bikeMapApp.controller('MapCtrl', ['$scope', '$log', '$timeout', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'Icon', 'Popup_Service',
     function($scope, $log, $timeout, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, Icon, Popup_Service) {
 
     // Scope variables
@@ -211,18 +211,23 @@ bikeMapApp.controller('mapController', ['$scope', '$log', '$timeout', 'Collision
     }
 
 
+
     // Update incidents data on map and legend control
-    function updateIncidents(e) {
+    var updateIncidents = function updateIncidents(e) {
         newMapBounds = $scope.map.getBounds();
 
         if(newBoundsWithinExtended(newMapBounds, extendedBounds)){
+           // console.log("New within old");
             return;
         }
         else {
+           // console.log('New boundaries');
             extendedBounds = getExtendedBounds(newMapBounds);
             getIncidents(extendedBounds);
         }
     };
+
+    $scope.map.on('moveend', updateIncidents);
 
     // Arbitrarily increase size of bounding box
     function getExtendedBounds(bnds){
@@ -244,14 +249,22 @@ bikeMapApp.controller('mapController', ['$scope', '$log', '$timeout', 'Collision
     // Determine if the new bounding box is with in the old bounding box
     // Return true if new BBox is contained within the old BBox
     function newBoundsWithinExtended(newMapBnds, extendedBnds) {
-        if(newMapBnds._southWest.lat > extendedBnds._southWest.lat ||
-            newMapBnds._southWest.lng > extendedBnds._southWest.lng ||
-            newMapBnds._northEast.lat < extendedBnds._northEast.lat ||
-            newMapBnds._northEast.lng < extendedBnds._northEast.lng) {
-            return true;
+        //console.log(newMapBnds._southWest.lat + ', ' + newMapBnds._southWest.lng + ', ' + newMapBnds._northEast.lat + ', ' + newMapBnds._northEast.lng );
+        //console.log(extendedBnds._southWest.lat + ', ' + extendedBnds._southWest.lng + ', ' + extendedBnds._northEast.lat + ', ' + extendedBnds._northEast.lng );
+        //console.log(newMapBnds._southWest.lat < extendedBnds._southWest.lat);
+        //console.log(newMapBnds._southWest.lng < extendedBnds._southWest.lng );
+        //console.log(newMapBnds._northEast.lat > extendedBnds._northEast.lat );
+        //console.log(newMapBnds._northEast.lng > extendedBnds._northEast.lng);
+        if(newMapBnds._southWest.lat < extendedBnds._southWest.lat ||
+            newMapBnds._southWest.lng < extendedBnds._southWest.lng ||
+            newMapBnds._northEast.lat > extendedBnds._northEast.lat ||
+            newMapBnds._northEast.lng > extendedBnds._northEast.lng) {
+            console.log('newboundswithinecternded returning false');
+            return false;
         }
         else {
-            return false;
+            console.log('returning true in newBoundsWIthinExtended');
+            return true;
         }
     };
 
