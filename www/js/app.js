@@ -3,9 +3,9 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 'ngResource', 'bikeMapApp.services', 'bikeMapApp.icons'])
+var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 'ngResource', 'ngCookies', 'bikeMapApp.services', 'bikeMapApp.icons'])
 
-.run(function($ionicPlatform) {
+.run(['$ionicPlatform', '$cookies', 'djangoAuth', function($ionicPlatform, $cookies, djangoAuth) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -15,18 +15,36 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+
+  djangoAuth.authenticated = $cookies.authenticated;
+  djangoAuth.user = $cookies.user;
   });
-})
+
+
+
+
+}])
 
 .config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
 
             .state('app', {
-                url: "/app",
+                url: "/",
                 templateUrl: "templates/main.html",
                 controller: 'MapCtrl'
             })
 
-        $urlRouterProvider.otherwise('/app');
+            .state('login', {
+                url: "/login",
+                templateUrl: "templates/login.html",
+                controller: 'LoginCtrl'
+            })
+
+            .state('logout', {
+                url: "/logout",
+                controller: 'LogoutCtrl'
+            })
+
+        $urlRouterProvider.otherwise('/');
 })
 

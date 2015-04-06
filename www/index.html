@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="lib/leaflet-0.7.3/plugins/leaflet-markercluster/MarkerCluster.css" />
     <link rel="stylesheet" href="lib/leaflet-0.7.3/plugins/leaflet-control-geocoder/Control.Geocoder.css" />
     <link rel="stylesheet" href="lib/ionic/ionic-ion-drawer/ionic.contrib.drawer.css" />
+    <link rel="stylesheet" href="static/bootstrap/css/bootstrap-theme.css" />
 
 
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
@@ -25,6 +26,7 @@
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="lib/leaflet-0.7.3/leaflet-src.js"></script>
     <script src="lib/ionic/js/angular/angular-resource.js"></script>
+    <script src="lib/ionic/js/angular/angular-cookies.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
@@ -41,23 +43,26 @@
     <script src="js/app.js"></script>
     <script src="js/controllers/MapController.js"></script>
     <script src="js/controllers/AppController.js"></script>
-    <script src="js/services.js">  </script>
-
-
-
-
+    <script src="js/controllers/LoginController.js"></script>
+    <script src="js/controllers/LogoutController.js"></script>
+    <script src="js/services.js"></script>
+    <script src="js/services/djangoAuth.js"></script>
+    <script src="js/services/validate.js"></script>
+    <script src="static/bootstrap/js/bootstrap.min.js"></script>
 
 
   </head>
+
   <body ng-app="bikeMapApp" ng-controller="AppCtrl" >
       <ion-nav-bar class="bar-bikemaps nav-title-slide-ios7" align-title="center" no-tap-scroll="true">
-          <ion-nav-back-button class="button-clear">
+          <ion-nav-back-button class="button-clear button-bikemaps">
               <i class="ion-arrow-left-c"></i> Back
           </ion-nav-back-button>
           <ion-nav-buttons side="right">
-          <button class="button button-bikemaps button-icon ion-more" ng-click="popover.show($event)">
-          </button>
-      </ion-nav-buttons>
+              <button class="button button-bikemaps button-icon" ng-click="popover.show($event)">
+                  {{authInfo.user}}
+              </button>
+          </ion-nav-buttons>
       </ion-nav-bar>
 
     <ion-nav-view></ion-nav-view>

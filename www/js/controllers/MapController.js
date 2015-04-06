@@ -2,18 +2,16 @@
  * Created by Boss on 3/13/2015.
  */
 
-bikeMapApp.controller('MapCtrl', ['$scope', '$log', '$timeout', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'Icon', 'Popup_Service',
-    function($scope, $log, $timeout, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, Icon, Popup_Service) {
+bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$cookies', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'AlertArea_Service', 'Icon', 'Popup_Service', 'djangoAuth',
+    function($rootScope, $scope, $log, $timeout, $cookies, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, AlertArea_Service, Icon, Popup_Service, djangoAuth) {
 
     // Scope variables
     $scope.map = new L.Map('map');
+    $scope.authInfo = djangoAuth;
 
     //Controller variables
     var extendedBounds;
     var newMapBounds;
-
-
-
 
     // Add OSM Base Layer
    var osmBase = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
@@ -37,11 +35,13 @@ bikeMapApp.controller('MapCtrl', ['$scope', '$log', '$timeout', 'Collision_Servi
         version: '1.3.0'
     }).addTo($scope.map);
 
+
+
     $scope.map.setView(new L.LatLng(49.6289109, -125.0276107), 15);
 
     $scope.legendControl = L.control.layers({},{}).addTo($scope.map);
     $scope.legendControl.addOverlay(osmBase, 'OSM');
-    $scope.legendControl.addOverlay(stravaHM, 'Strave Ridership Data');
+    $scope.legendControl.addOverlay(stravaHM, 'Strava Ridership Data');
     $scope.legendControl.addOverlay(infrastructure, 'Infrastructure');
 
     var incidentData = new L.MarkerClusterGroup({
@@ -100,7 +100,7 @@ bikeMapApp.controller('MapCtrl', ['$scope', '$log', '$timeout', 'Collision_Servi
 
     extendedBounds = getExtendedBounds($scope.map.getBounds());
     getIncidents(extendedBounds);
-
+    getAlertAreas();
 
 
     // Add geocoder to map
@@ -143,11 +143,17 @@ bikeMapApp.controller('MapCtrl', ['$scope', '$log', '$timeout', 'Collision_Servi
     var theftIcon = Icon.marker('theft');
     var officialIcon = Icon.marker('official');
 
-    var collisionLayer, nearmissLayer, hazardLayer, theftLayer, officialLayer;
+    var collisionLayer, nearmissLayer, hazardLayer, theftLayer, officialLayer, alertareaLayer;
 
 
     // Get data from the Bike Maps api and add to Marker Cluster Layer
     function getIncidents(bnds){
+
+
+            console.log($cookies.user);
+            console.log($cookies.authenticated);
+
+
 
         // Clear existing data from map
         incidentData.clearLayers();
@@ -210,11 +216,10 @@ bikeMapApp.controller('MapCtrl', ['$scope', '$log', '$timeout', 'Collision_Servi
         });
     }
 
-
-
     // Update incidents data on map and legend control
     var updateIncidents = function updateIncidents(e) {
         newMapBounds = $scope.map.getBounds();
+        console.log($cookies.token);
 
         if(newBoundsWithinExtended(newMapBounds, extendedBounds)){
            // console.log("New within old");
@@ -227,7 +232,44 @@ bikeMapApp.controller('MapCtrl', ['$scope', '$log', '$timeout', 'Collision_Servi
         }
     };
 
+
+   function getAlertAreas(){
+       if($cookies.authenticated && $cookies.token) {
+           console.log("Going to get alert areas");
+           var alertareas = AlertArea_Service.get();
+           alertareas.$promise.then(function() {
+               alertareaLayer = L.geoJson(alertareas, {
+                   style: function(feature) {
+                       return {
+                           color: '#3b9972',
+                           weight: 2,
+                           opacity: 0.6,
+                           fillOpacity: 0.1,
+                           pk: feature.id,
+                           /*Mark the polygon with it's database id*/
+                           objType: 'polygon'
+                       }}
+                   }).addTo($scope.map);
+           })
+   }}
+
+   function removeAlertAreas(){
+       if(alertareaLayer) {
+           $scope.map.removeLayer(alertareaLayer);
+           alertareaLayer = null;
+       }
+   }
+
+
     $scope.map.on('moveend', updateIncidents);
+
+    $rootScope.$on("djangoAuth.logged_in", function() {
+        getAlertAreas();
+    });
+
+    $rootScope.$on('djangoAuth.logged_out', function() {
+        removeAlertAreas();
+    });
 
     // Arbitrarily increase size of bounding box
     function getExtendedBounds(bnds){
@@ -259,11 +301,9 @@ bikeMapApp.controller('MapCtrl', ['$scope', '$log', '$timeout', 'Collision_Servi
             newMapBnds._southWest.lng < extendedBnds._southWest.lng ||
             newMapBnds._northEast.lat > extendedBnds._northEast.lat ||
             newMapBnds._northEast.lng > extendedBnds._northEast.lng) {
-            console.log('newboundswithinecternded returning false');
             return false;
         }
         else {
-            console.log('returning true in newBoundsWIthinExtended');
             return true;
         }
     };

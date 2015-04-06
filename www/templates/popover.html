@@ -1,9 +1,16 @@
 <ion-popover-view>
     <ion-content>
-        <div class="list">
-            <a class="item" href="http://learn.ionicframework.com/" target="_blank">
-                Learn Ionic
-            </a>
+        <div class="list" ng-click="popover.hide()">
+            <div ng-show="authInfo.user === 'Guest'">
+                <a class="item" href="#/login" >
+                    <span>Login</span>
+                </a>
+            </div>
+            <div ng-hide="authInfo.user === 'Guest'">
+                <a class="item" href="#/logout">
+                    <span>Logout</span>
+                </a>
+            </div>
             <a class="item" href="http://ionicframework.com/docs/" target="_blank">
                 Documentation
             </a>

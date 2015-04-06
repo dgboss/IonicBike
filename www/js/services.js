@@ -54,6 +54,17 @@ angular.module('bikeMapApp.services', ['ngResource'])
             {get: {method: 'GET'}});
     })
 
+    .factory('AlertArea_Service', function($resource, $cookies) {
+        console.log("Inside alert area service");
+        return $resource(
+            "http://127.0.0.1:8000/alertareas/\\.json",
+            {},{
+            get: {
+                method: 'GET',
+                headers: {'Authorization': 'Token ' + $cookies.token}
+            }});
+    })
+
     .factory('Popup_Service', function() {
         return function getPopup(layer) {
             var feature = layer.feature,

@@ -1,0 +1,29 @@
+<ion-view>
+    <ion-nav-title>
+        <img src="img/BikeMapsORG_Logo_notxt_sm.png" style="height: 37px; vertical-align: middle">
+        <span>Login</span>
+    </ion-nav-title>
+    <ion-content id="login" ng-controller="LoginCtrl">
+        <form role="form" ng-submit="login(loginForm)" name="loginForm" novalidate>
+            <div class="list">
+                <label class="item item-input">
+                    <input name="username" id="id_username" type="text" ng-model="model.username" placeholder="Username" class="form-control" required />
+                </label>
+                <div class="alert alert-danger" ng-repeat="error in errors.username">
+                    <span>{{error}}</span>
+                </div>
+                <label class="item item-input">
+                    <input name="password" id="id_password" type="password" ng-model="model.password" placeholder="Password" class="form-control" required />
+                </label>
+                <div class="alert alert-danger" ng-repeat="error in errors.password">{{error}}</div>
+                <div class="alert alert-danger" ng-repeat="error in errors.non_field_errors">{{error}}</div>
+                <div class="alert alert-danger" ng-if="error">{{error}}</div>
+            </div>
+            <div class="padding">
+                <button type="submit" class="button button-bikemaps button-block">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </ion-content>
+</ion-view>
