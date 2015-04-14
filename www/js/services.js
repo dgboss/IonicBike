@@ -1,69 +1,91 @@
 /**
- * Created by angeboss on 3/18/2015.
+ * Created by boss on 3/18/2015.
  */
 
 angular.module('bikeMapApp.services', ['ngResource'])
 
     .factory('Point_Service',  function($resource){
         return $resource(
-            "http://127.0.0.1:8000/points/\\.json",
+            "http://192.168.1.125:8000/points/\\.json",
             {},
             {get: {method: 'GET'}});
     })
 
     .factory('Incident_Service',  function($resource){
         return $resource(
-            "http://127.0.0.1:8000/incidents/\\.json",
+            "http://192.168.1.125:8000/incidents/\\.json",
             {},
             {get: {method: 'GET'}});
     })
 
     .factory('Collision_Service',  function($resource){
         return $resource(
-            "http://127.0.0.1:8000/collisions/\\.json/",
+            "http://192.168.1.125:8000/collisions/\\.json/",
             {},
             {get: {method: 'GET'}});
     })
 
     .factory('Nearmiss_Service',  function($resource){
         return $resource(
-            "http://127.0.0.1:8000/nearmiss/\\.json",
+            "http://192.168.1.125:8000/nearmiss/\\.json",
             {},
             {get: {method: 'GET'}});
     })
 
     .factory('Hazard_Service',  function($resource){
         return $resource(
-            "http://127.0.0.1:8000/hazards/\\.json",
+            "http://192.168.1.125:8000/hazards/\\.json",
             {},
             {get: {method: 'GET'}});
     })
 
     .factory('Theft_Service',  function($resource){
         return $resource(
-            //"http://127.0.0.1:8000/thefts_api.json/",
-            "http://127.0.0.1:8000/thefts/\\.json",
+            "http://192.168.1.125:8000/thefts/\\.json",
             {},
             {get: {method: 'GET'}});
     })
 
     .factory('Official_Service',  function($resource){
         return $resource(
-            "http://127.0.0.1:8000/official/\\.json",
+            "http://192.168.1.125:8000/official/\\.json",
             {},
             {get: {method: 'GET'}});
     })
 
-    .factory('AlertArea_Service', function($resource, $cookies) {
-        console.log("Inside alert area service");
+
+
+   /* .factory('AlertArea_Service', function($resource, $window) {
+
         return $resource(
-            "http://127.0.0.1:8000/alertareas/\\.json",
+            "http://192.168.1.125:8000/alertareas/\\.json",
             {},{
             get: {
                 method: 'GET',
-                headers: {'Authorization': 'Token ' + $cookies.token}
+                headers: {'Authorization': 'Token ' + $window.localStorage["token"]}
             }});
-    })
+    })*/
+
+    .factory('AlertArea_Service', function($resource) {
+        var service = {};
+        var _token;
+
+        service.setToken = function(tkn){
+            _token = tkn;
+        }
+
+        service.getAlertAreas = function(){
+                return $resource(
+                    "http://192.168.1.125:8000/alertareas/\\.json",
+                    {}, {
+                        get: {
+                            method: 'GET',
+                            headers: {'Authorization': 'Token ' + _token}
+                        }
+                    })
+                };
+        return service;
+        })
 
     .factory('Popup_Service', function() {
         return function getPopup(layer) {
@@ -112,4 +134,77 @@ angular.module('bikeMapApp.services', ['ngResource'])
         };
     })
 
+
+    .factory('NotificationPopup_Service', function() {
+        return function getNotificationPopup(data) {
+            var type = data.type;
+            var i_type = data.i_type;
+            var date = data.date;
+            var details = data.details;
+            var incident_with = data.incident_with;
+            var popup;
+
+            if (type === "collision" || type === "nearmiss") {
+                popup = '<strong>Type:</strong> ' + i_type + '<br><strong>';
+                if (i_type != "Fall") popup += 'Incident with';
+                else popup += 'Due to';
+                popup += ':</strong> ' + incident_with + '<br><strong>Date:</strong> ' + moment(date).format("MMM. D, YYYY, h:mma");
+
+                if(details){
+                    popup += '<br><div class="popup-details"><strong>Details:</strong> ' + details + '</div>';
+                }
+
+            } else if (type === "hazard") {
+                popup = '<strong>Hazard type:</strong> ' + i_type + '<br><strong>Date:</strong> ' + moment(date).format("MMM. D, YYYY, h:mma");
+                if(details){
+                    popup += '<br><div class="popup-details"><strong>Details:</strong> ' + details + '</div>';
+                }
+
+            } else if (type === "theft") {
+                popup = '<strong>Theft type:</strong> ' + i_type + '<br><strong>Date:</strong> ' + moment(date).format("MMM. D, YYYY, h:mma");
+                if(details){
+                    popup += '<br><div class="popup-details"><strong>Details:</strong> ' + details + '</div>';
+                }
+
+            } else return "error";
+
+            return popup;
+        };
+    })
+
+
+/*    .factory('NotificationPopup_Service', function() {
+        return function getPopup(data) {
+            var type = data.type;
+            var i_type = data.i_type;
+            var date = data.date;
+            var details = data.details;
+            var incident_with = data.incident_with;
+            var popup;
+
+            if (type === "hazard") {
+                popup = '<strong>Hazard type:</strong> ' + i_type + '<br><strong>Date:</strong> ' + date; //moment(feature.properties.date).format("MMM. D, YYYY, h:mma");
+                if (details) {
+                    popup += '<br><div class="popup-details"><strong>Details:</strong> ' + details + '</div>';
+                }
+            } else if (type === "theft") {
+                popup = '<strong>Theft type:</strong> ' + i_type + '<br><strong>Date:</strong> ' + date; //moment(feature.properties.date).format("MMM. D, YYYY, h:mma");
+                if (feature.properties.details) {
+                    popup += '<br><div class="popup-details"><strong>Details:</strong> ' + details + '</div>';
+                }
+            } else {
+                popup = '<strong>Type:</strong> ' + type + '<br><strong>';
+                if (type != "Fall") popup += 'Incident with';
+                else popup += 'Due to';
+                popup += ':</strong> ' + incident_with + '<br><strong>Date:</strong> ' + date; //moment(feature.properties.date).format("MMM. D, YYYY, h:mma");
+
+                if(details){
+                    popup += '<br><div class="popup-details"><strong>Details:</strong> ' + details + '</div>';
+                }
+
+            }
+
+            return popup;
+        };
+    })*/
 

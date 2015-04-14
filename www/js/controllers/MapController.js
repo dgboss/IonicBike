@@ -2,8 +2,8 @@
  * Created by Boss on 3/13/2015.
  */
 
-bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$cookies', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'AlertArea_Service', 'Icon', 'Popup_Service', 'djangoAuth',
-    function($rootScope, $scope, $log, $timeout, $cookies, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, AlertArea_Service, Icon, Popup_Service, djangoAuth) {
+bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$cookies', '$window', '$stateParams', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'AlertArea_Service', 'Icon', 'Popup_Service', 'NotificationPopup_Service', 'djangoAuth',
+    function($rootScope, $scope, $log, $timeout, $cookies, $window, $stateParams, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, AlertArea_Service, Icon, Popup_Service, NotificationPopup_Service, djangoAuth) {
 
     // Scope variables
     $scope.map = new L.Map('map');
@@ -36,8 +36,8 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
     }).addTo($scope.map);
 
 
-
     $scope.map.setView(new L.LatLng(49.6289109, -125.0276107), 15);
+
 
     $scope.legendControl = L.control.layers({},{}).addTo($scope.map);
     $scope.legendControl.addOverlay(osmBase, 'OSM');
@@ -150,8 +150,9 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
     function getIncidents(bnds){
 
 
-            console.log($cookies.user);
-            console.log($cookies.authenticated);
+            console.log("User: " + $window.localStorage["user"]);
+            console.log("Authenticated: " + $window.localStorage["authenticated"]);
+            console.log("Token: " + $window.localStorage["token"]);
 
 
 
@@ -217,26 +218,37 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
     }
 
     // Update incidents data on map and legend control
-    var updateIncidents = function updateIncidents(e) {
+    function updateIncidents(force) {
         newMapBounds = $scope.map.getBounds();
-        console.log($cookies.token);
 
-        if(newBoundsWithinExtended(newMapBounds, extendedBounds)){
-           // console.log("New within old");
-            return;
-        }
-        else {
-           // console.log('New boundaries');
+        if(force){
             extendedBounds = getExtendedBounds(newMapBounds);
             getIncidents(extendedBounds);
         }
-    };
+        else {
+            if(newBoundsWithinExtended(newMapBounds, extendedBounds)){
+               console.log("New within old");
+
+            }
+            else {
+               // console.log('New boundaries');
+                extendedBounds = getExtendedBounds(newMapBounds);
+                getIncidents(extendedBounds);
+            }
+    }}
 
 
    function getAlertAreas(){
-       if($cookies.authenticated && $cookies.token) {
+       var ath = $window.localStorage["authenticated"];
+       var tok = $window.localStorage["token"];
+
+       console.log(ath);
+       console.log(tok);
+
+       if($window.localStorage["authenticated"] !== "null" && $window.localStorage["authenticated"] && $window.localStorage["token"] !== "null" && $window.localStorage["token"]) {
            console.log("Going to get alert areas");
-           var alertareas = AlertArea_Service.get();
+           AlertArea_Service.setToken($window.localStorage["token"]);
+           var alertareas = AlertArea_Service.getAlertAreas().get();
            alertareas.$promise.then(function() {
                alertareaLayer = L.geoJson(alertareas, {
                    style: function(feature) {
@@ -261,7 +273,9 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
    }
 
 
-    $scope.map.on('moveend', updateIncidents);
+    $scope.map.on('moveend', function(){
+        updateIncidents(false);
+    });
 
     $rootScope.$on("djangoAuth.logged_in", function() {
         getAlertAreas();
@@ -270,6 +284,19 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
     $rootScope.$on('djangoAuth.logged_out', function() {
         removeAlertAreas();
     });
+
+    $rootScope.$on('PushNotificationService.panToPoint', function(e, notification) {
+        if(notification && notification.data && notification.data.payload && notification.data.payload.lat && notification.data.payload.lng){
+            $scope.map.setView(new L.LatLng(notification.data.payload.lat, notification.data.payload.lng), 18);
+            updateIncidents(true);
+            var popup = L.popup({offset: L.point(0,-26)})
+                .setLatLng(new L.LatLng(notification.data.payload.lat, notification.data.payload.lng))
+                .setContent(NotificationPopup_Service(notification.data.payload))
+                .openOn($scope.map);
+            }
+        });
+
+        
 
     // Arbitrarily increase size of bounding box
     function getExtendedBounds(bnds){

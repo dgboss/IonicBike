@@ -1,11 +1,7 @@
-// Ionic Starter App
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 'ngResource', 'ngCookies', 'bikeMapApp.services', 'bikeMapApp.icons'])
+var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 'ngResource', 'ngCookies', 'bikeMapApp.services', 'bikeMapApp.icons', 'ngCordova'])
 
-.run(['$ionicPlatform', '$cookies', 'djangoAuth', function($ionicPlatform, $cookies, djangoAuth) {
+.run(['$ionicPlatform', '$cookies', '$window', 'djangoAuth', function($ionicPlatform, $cookies, $window, djangoAuth) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -16,14 +12,22 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
       StatusBar.styleDefault();
     }
 
-  djangoAuth.authenticated = $cookies.authenticated;
-  djangoAuth.user = $cookies.user;
+    if($window.localStorage["authenticated"]){
+        djangoAuth.authenticated = $window.localStorage["authenticated"];
+    }
+
+    if($window.localStorage["user"]) {
+        djangoAuth.user = $window.localStorage["user"];
+    }
   });
 
 
 
 
+
+
 }])
+
 
 .config(function($stateProvider, $urlRouterProvider) {
         $stateProvider

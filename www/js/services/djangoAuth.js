@@ -1,13 +1,13 @@
 'use strict';
 
 
-  bikeMapApp.service('djangoAuth', function djangoAuth($q, $http, $cookies, $rootScope) {
+  bikeMapApp.service('djangoAuth', function djangoAuth($q, $http, $cookies, $rootScope, $window) {
     // AngularJS will instantiate a singleton by calling "new" on this function
     var service = {
         /* START CUSTOMIZATION HERE */
         // Change this to point to your Django REST Auth API
         // e.g. /api/rest-auth  (DO NOT INCLUDE ENDING SLASH)
-        'API_URL': 'http://127.0.0.1:8000/rest-auth',
+        'API_URL': 'http://192.168.1.125:8000/rest-auth',
         // Set use_session to true to use Django sessions to store security token.
         // Set use_session to false to store the security token locally and transmit it as a custom header.
         'use_session': false,
@@ -16,9 +16,9 @@
         'authPromise': null,
         'user': 'Guest',
         'request': function(args) {
-            // Let's retrieve the token from the cookie, if available
-            if($cookies.token){
-                $http.defaults.headers.common.Authorization = 'Token ' + $cookies.token;
+            // Let's retrieve the token from localStorage, if available
+            if($window.localStorage["token"]){
+                $http.defaults.headers.common.Authorization = 'Token ' + $window.localStorage["token"];
             }
             // Continue
             params = args.params || {}
@@ -80,6 +80,8 @@
             });
         },
         'login': function(username,password){
+            console.log(username);
+            console.log(password);
             var djangoAuth = this;
             return this.request({
                 'method': "POST",
@@ -91,12 +93,12 @@
             }).then(function(data){
                 if(!djangoAuth.use_session){
                     $http.defaults.headers.common.Authorization = 'Token ' + data.key;
-                    $cookies.token = data.key;
+                    $window.localStorage["token"] = data.key;
                 }
                 djangoAuth.authenticated = true;
-                $cookies.authenticated = true;
+                $window.localStorage["authenticated"] = true;
                 djangoAuth.user = username;
-                $cookies.user = username;
+                $window.localStorage["user"] = username;
                 $rootScope.$broadcast("djangoAuth.logged_in", data);
             });
         },
@@ -107,11 +109,11 @@
                 'url': "/logout/"
             }).then(function(data){
                 delete $http.defaults.headers.common.Authorization;
-                delete $cookies.token;
-                djangoAuth.authenticated = false;
-                $cookies.authenticated = null;
+                $window.localStorage["token"] = null;
+                djangoAuth.authenticated = null;
+                $window.localStorage["authenticated"] = null;
                 djangoAuth.user = 'Guest';
-                $cookies.user = 'Guest';
+                $window.localStorage["user"] = 'Guest';
                 $rootScope.$broadcast("djangoAuth.logged_out");
             });
         },
