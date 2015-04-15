@@ -1,7 +1,7 @@
 
 var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 'ngResource', 'ngCookies', 'bikeMapApp.services', 'bikeMapApp.icons', 'ngCordova'])
 
-.run(['$ionicPlatform', '$cookies', '$window', 'djangoAuth', function($ionicPlatform, $cookies, $window, djangoAuth) {
+.run(['$ionicPlatform', '$cookies', '$window', 'djangoAuth', 'PushNotificationService', function($ionicPlatform, $cookies, $window, djangoAuth, PushNotificationService) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -18,7 +18,11 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
 
     if($window.localStorage["user"]) {
         djangoAuth.user = $window.localStorage["user"];
+        PushNotificationService.register();
     }
+
+
+
   });
 
 
@@ -47,6 +51,11 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
             .state('logout', {
                 url: "/logout",
                 controller: 'LogoutCtrl'
+            })
+
+            .state('share', {
+                url: "/share",
+                templateUrl: "templates/share.html"
             })
 
         $urlRouterProvider.otherwise('/');

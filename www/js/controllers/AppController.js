@@ -1,5 +1,5 @@
 
-bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $ionicPopover, $window, $cordovaPush, $cordovaToast, djangoAuth, PushNotificationService) {
+bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $location, $ionicPopup, $ionicPopover, $window, $cordovaPush, $cordovaToast, $cordovaMedia, $cordovaDialogs, $http, djangoAuth, PushNotificationService) {
 
     $scope.authInfo = djangoAuth;
     $scope.notifications = [];
@@ -30,17 +30,19 @@ bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $ionicPopover, $wi
 
 
     $rootScope.$on("djangoAuth.logged_in", function() {
-        if($window.localStorage["regid"] !== "true"){
             PushNotificationService.register();
-        }
     });
 
 
     $rootScope.$on('djangoAuth.logged_out', function() {
         console.log("From AppController: Logging out");
+        if($window.localStorage["regid"]){
+            PushNotificationService.unregister();
+        }
     });
 
-    // Notification Received
+
+    // Push Notification Received
     $rootScope.$on('$cordovaPush:notificationReceived', function (event, notification) {
         $cordovaToast.showShortCenter(notification);
         //console.log("Notification: " + JSON.stringify([notification]));
@@ -58,6 +60,5 @@ bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $ionicPopover, $wi
     $scope.clearLocalStorage = function(){
         $window.localStorage.clear();
     };
-
 });
 

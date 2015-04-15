@@ -208,3 +208,5 @@ angular.module('bikeMapApp.services', ['ngResource'])
         };
     })*/
 
+    .factory('Unregister')
+

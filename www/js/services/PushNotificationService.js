@@ -2,14 +2,11 @@
  * Created by boss on 4/10/2015.
  */
 
-bikeMapApp.service('PushNotificationService', function PushNotificationService($rootScope, $location, $cordovaPush, $cordovaDialogs, $cordovaMedia, $cordovaToast, $http, $window, $ionicPopup){
+bikeMapApp.service('PushNotificationService', function PushNotificationService($rootScope, $location, $cordovaPush, $cordovaDialogs, $cordovaMedia, $cordovaToast, $http, $resource, $window, $ionicPopup){
 
 
     var service = {
-        'somethingForShow': 'Something for show',
-
         'register': function(){
-            console.log(this.somethingForShow);
             var config = null;
 
             if (ionic.Platform.isAndroid()) {
@@ -31,11 +28,19 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
                 $cordovaToast.showShortCenter('Registered for push notifications');
                 // ** NOTE: Android regid result comes back in the pushNotificationReceived, only iOS returned here
                 if (ionic.Platform.isIOS()) {
-                    storeDeviceToken("ios");
+                    this.storeDeviceToken("ios");
                 }
             }, function (err) {
                 console.log("Register error " + err)
             });
+        },
+
+        'unregister': function(){
+            console.log("In unregister of PushNotificationService");
+            if($window.localStorage["regid"]){
+                this.removeDeviceToken();
+                $window.localStorage.removeItem("regid");
+            }
         },
 
         'handleAndroid': function(notification){
@@ -64,7 +69,6 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
                     )}
 
                 }
-
             else if (notification.event == "error")
                 $cordovaDialogs.alert(notification.msg, "Push notification error event");
             else $cordovaDialogs.alert(notification.event, "Push notification handler - Unprocessed Event");
@@ -95,6 +99,22 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
                 .error(function (data, status) {
                     console.log("Error storing device token." + data + " " + status)
                 });
+        },
+
+        'removeDeviceToken': function(){
+            console.log("About to unregister a device");
+            if($window.localStorage["regid"]){
+                $http({
+                    method: 'DELETE',
+                    url: 'http://192.168.1.125:8000/gcmdevices/' + $window.localStorage["regid"] + '/'
+                })
+                    .success(function (data, status) {
+                        console.log("Regid successfully delete");
+                    })
+                    .error(function(data, status) {
+                        console.log("Regid could not be deleted");
+                    })
+            }
         }}
 
     return service;
