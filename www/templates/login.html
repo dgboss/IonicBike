@@ -3,6 +3,10 @@
         <img src="img/BikeMapsORG_Logo_notxt_sm.png" style="height: 37px; vertical-align: middle">
         <span>Login</span>
     </ion-nav-title>
+    <!--Hide the menu button-->
+    <ion-nav-buttons side="right" >
+    </ion-nav-buttons>
+
     <ion-content id="login" ng-controller="LoginCtrl">
         <form role="form" ng-submit="login(loginForm)" name="loginForm" novalidate>
             <div class="list">

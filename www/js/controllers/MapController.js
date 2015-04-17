@@ -15,9 +15,9 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
 
     // Add OSM Base Layer
    var osmBase = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
-        attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        subdomains: '1234'
-    }).addTo($scope.map);
+            attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            subdomains: '1234'
+        }).addTo($scope.map);
 
     // Add Strava data
     var stravaHM = L.tileLayer('https://d2z9m7k9h4f0yp.cloudfront.net/tiles/cycling/color5/{z}/{x}/{y}.png', {
@@ -63,6 +63,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         var popupContent = Popup_Service(e.layer);
         layer.bindPopup(popupContent, {closeOnClick: true}).openPopup();
     });
+
 
     // Purpose: Initializes the Pie chart cluster icons by getting the needed attributes from each cluster
     // and passing them to the pieChart function
@@ -273,6 +274,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
    }
 
 
+
     $scope.map.on('moveend', function(){
         updateIncidents(false);
     });
@@ -333,22 +335,58 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         else {
             return true;
         }
-    };
+    }
 
 
     // Show a popup when you click the map
     $scope.popup = L.popup();
     $scope.onMapClick = function onMapClick(e) {
-        $scope.popup
+        console.log(e);
+       $scope.popup
             .setLatLng(e.latlng)
             .setContent("You clicked the map at " + e.latlng.toString())
             .openOn($scope.map);
-    }
+    };
 
     $scope.map.on('contextmenu', $scope.onMapClick);
 
 
+// Leaflet Draw
+    $scope.editableLayers = new L.FeatureGroup();
+    $scope.map.addLayer($scope.editableLayers);
+
+    var leafletDrawOptions = {
+        draw: {
+            polyline: false,
+            polygon: {
+                allowIntersection: false, // Restricts shapes to simple polygons
+                drawError: {
+                    color: '#e1e100', // Color the shape will turn when intersects
+                    message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                }
+            },
+            circle: false, // Turns off this drawing tool
+            rectangle: false
+        },
+        edit: {
+            featureGroup: $scope.editableLayers, //REQUIRED!!
+            remove: true
+        }
+    };
+
+        var drawControl = new L.Control.Draw(leafletDrawOptions);
+        $scope.map.addControl(drawControl);
+
+        $scope.map.on('draw:created', function (e) {
+            var type = e.layerType;
+            var layer = e.layer;
+
+            if (type === 'marker') {
+                layer.bindPopup('A popup!');
+            }
+
+            $scope.editableLayers.addLayer(layer);
+        });
 
 
-
-}])
+}]);

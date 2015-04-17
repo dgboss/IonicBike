@@ -24,12 +24,6 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
 
 
   });
-
-
-
-
-
-
 }])
 
 
@@ -38,7 +32,7 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
 
             .state('app', {
                 url: "/",
-                templateUrl: "templates/main.html",
+                templateUrl: "templates/map.html",
                 controller: 'MapCtrl'
             })
 
