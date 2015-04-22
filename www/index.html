@@ -16,7 +16,10 @@
     <link rel="stylesheet" href="lib/leaflet/plugins/leaflet-control-geocoder/Control.Geocoder.css" />
     <link rel="stylesheet" href="lib/leaflet/plugins/leaflet-draw/leaflet.draw.css" />
     <link rel="stylesheet" href="lib/ionic/ionic-ion-drawer/ionic.contrib.drawer.css" />
+    <link rel="stylesheet" href="static/bootstrap/css/bootstrap.css" />
     <link rel="stylesheet" href="static/bootstrap/css/bootstrap-theme.css" />
+
+
 
 
 
@@ -48,12 +51,15 @@
     <script src="js/controllers/AppController.js"></script>
     <script src="js/controllers/LoginController.js"></script>
     <script src="js/controllers/LogoutController.js"></script>
+    <script src="js/controllers/FormControllers.js"></script>
     <script src="js/services.js"></script>
     <script src="js/services/djangoAuth.js"></script>
     <script src="js/services/validate.js"></script>
     <script src="js/services/PushNotificationService.js"></script>
-    <script src="static/bootstrap/js/bootstrap.min.js"></script>
-
+    <script src="js/services/FormServices.js"></script>
+    <!--<script src="lib/angular-strap/angular-strap.js"></script>
+    <script src="lib/angular-strap/angular-strap.tpl.js"></script>-->
+    <script src="lib/ui-bootstrap/ui-bootstrap-tpls-0.12.1.js"></script>
 
   </head>
 
@@ -69,7 +75,7 @@
           </ion-nav-buttons>
       </ion-nav-bar>
 
-    <ion-nav-view></ion-nav-view>
+    <ion-nav-view data-tap-disabled="true"></ion-nav-view>
 
   </body>
 </html>

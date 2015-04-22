@@ -5943,7 +5943,7 @@ button.close {
   border-width: 0 5px 5px;
   border-bottom-color: #000;
 }
-.popover {
+/*.popover {
   position: absolute;
   top: 0;
   left: 0;
@@ -6064,7 +6064,7 @@ button.close {
   content: " ";
   border-right-width: 0;
   border-left-color: #fff;
-}
+}*/
 .carousel {
   position: relative;
 }

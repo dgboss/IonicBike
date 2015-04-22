@@ -1,0 +1,69 @@
+<ion-view>
+    <ion-nav-title>
+        <img src="img/BikeMapsORG_Logo_notxt_sm.png" style="height: 37px; vertical-align: middle">
+        <span>Hazard Report</span>
+    </ion-nav-title>
+    <!--Hide the menu button-->
+    <ion-nav-buttons side="right" >
+    </ion-nav-buttons>
+
+    <ion-content id="hazard" ng-controller="HazardCtrl">
+
+        <form role="form" ng-submit="submitHazard(hazardForm)" name="hazardForm" id="hazardForm" novalidate>
+
+            <div class="list">
+                <div class="item item-divider">
+                    Hazard Details - {{model.dt}}
+                </div>
+                <!--<div class="form-group" ng-class="{'has-error': datepickerForm.date.$invalid}">
+                    <label class="control-label requiredfield">When was the incident?*</label>
+                    <input type="text" class="form-control" ng-model="selectedDate" name="hazard-date" bs-datepicker>
+                </div>-->
+
+                <div class="form-group">
+                    <label class="control-label requiredfield"> When was the incident?*</label>
+
+                    <div type="text" class="form-control" ng-click="open($event)" datepicker-popup="dd-MMMM-yyyy" ng-model="model.dt" max-date="model.maxDate" is-open="opened"  datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" show-button-bar="false" starting-day="3" show-weeks="false">
+                        {{model.dt}}
+                    </div>
+                    <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                </div>
+
+
+                <!--<div class="form-group">
+                    <label class="control-label requiredfield">What type of hazard was it?*</label>
+                    <input type="text" class="form-control" bs-dropdown="hazardType" name="hazard-type">
+                </div>-->
+                <div class="form-group">
+                    <label class="control-label requiredfield">What type of hazard was it?*</label>
+                    <select id="hazard-type" name="i_type" ng-model="selectedHazardType">
+                        <option selected="selected" value="">
+                            ----------
+                        </option>
+                        <optgroup label="Infrastructure">
+                            <option value="Curb">
+                                Curb
+                            </option>
+                            <option value="Island">
+                                Island
+                            </option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option value="Poor visibility">
+                                Poor visibility
+                            </option>
+                            <option value="Parked car">
+                                Parked car
+                            </option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+            <div class="padding">
+                <button type="submit" class="button button-bikemaps button-block">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </ion-content>
+</ion-view>

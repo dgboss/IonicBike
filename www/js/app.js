@@ -1,5 +1,5 @@
 
-var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 'ngResource', 'ngCookies', 'bikeMapApp.services', 'bikeMapApp.icons', 'ngCordova'])
+var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 'ngResource', 'ngCookies', 'bikeMapApp.services', 'bikeMapApp.icons', 'bikeMapApp.FormServices', 'ngCordova', 'ui.bootstrap'])
 
 .run(['$ionicPlatform', '$cookies', '$window', 'djangoAuth', 'PushNotificationService', function($ionicPlatform, $cookies, $window, djangoAuth, PushNotificationService) {
   $ionicPlatform.ready(function() {
@@ -50,6 +50,12 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
             .state('share', {
                 url: "/share",
                 templateUrl: "templates/share.html"
+            })
+
+            .state('hazard', {
+                url: "/hazard",
+                templateUrl: "templates/hazard.html",
+                controller: 'HazardCtrl'
             })
 
         $urlRouterProvider.otherwise('/');
