@@ -1,0 +1,55 @@
+<ion-modal-view>
+    <ion-header-bar class="bar bar-bikemaps">
+        <button class="button button-clear button-bikemaps" ng-click="closeModal()">
+            <i class="ion-arrow-left-c"></i> Back
+        </button>
+        <h1 class="title">Select a year</h1>
+    </ion-header-bar>
+    <ion-content>
+        <div class="list">
+            <div class="item" ng-repeat="year in years" ng-model="selectedHazardBirthYear" ng-click="selectYear(year)">
+                {{year}}
+            </div>
+        </div>
+    </ion-content>
+</ion-modal-view>
+
+
+
+<div class="card" ng-click="openModal()">
+    <div class="item item-divider">
+        Hello - {{model.selectedHazardBirthYear}}
+    </div>
+    <div class="item item-text-wrap">
+        World
+    </div>
+</div>
+
+<!--Modal controller code-->
+
+<!--$ionicModal.fromTemplateUrl('templates/basic_modal.html', function(modal) {
+$scope.modal = modal;
+}, {
+scope: $scope,
+animation: 'slide-in-up'
+});
+
+$scope.openModal = function() {
+$scope.modal.show();
+};
+$scope.closeModal = function() {
+$scope.modal.hide();
+};
+//Cleanup the modal when we're done with it!
+$scope.$on('$destroy', function() {
+$scope.modal.remove();
+});
+// Execute action on hide modal
+$scope.$on('modal.hidden', function() {
+// Execute action
+});
+// Execute action on remove modal
+$scope.$on('modal.removed', function() {
+// Execute action
+});-->
+

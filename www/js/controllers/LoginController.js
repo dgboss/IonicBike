@@ -1,7 +1,7 @@
 'use strict';
 
 
-bikeMapApp.controller('LoginCtrl', function ($scope, $location, djangoAuth, Validate) {
+bikeMapApp.controller('LoginCtrl', function ($scope, $state, djangoAuth, Validate) {
     $scope.model = {'username':'','password':''};
   	$scope.complete = false;
     $scope.login = function(formData){
@@ -11,7 +11,7 @@ bikeMapApp.controller('LoginCtrl', function ($scope, $location, djangoAuth, Vali
         djangoAuth.login($scope.model.username, $scope.model.password)
         .then(function(data){
         	// success case
-        	$location.path("/");
+        	$state.go("app");
         },function(data){
         	// error case
         	$scope.errors = data;

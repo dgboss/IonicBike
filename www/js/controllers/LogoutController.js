@@ -1,7 +1,7 @@
 'use strict';
 
 
-  bikeMapApp.controller('LogoutCtrl', function ($scope, $location, djangoAuth) {
+  bikeMapApp.controller('LogoutCtrl', function ($scope, $state, djangoAuth) {
     djangoAuth.logout();
-    $location.path("/");
+    $state.go("app");
   });

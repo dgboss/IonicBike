@@ -2,16 +2,16 @@
     <ion-content>
         <div class="list" ng-click="popover.hide()">
             <div ng-show="authInfo.user === 'Guest'">
-                <a class="item" href="#/login" >
+                <a class="item" ui-sref="login" >
                     <span>Login</span>
                 </a>
             </div>
             <div ng-hide="authInfo.user === 'Guest'">
-                <a class="item" href="#/logout">
+                <a class="item" ui-sref="logout" >
                     <span>Logout</span>
                 </a>
             </div>
-            <a class="item" href="#/share">
+            <a class="item" ui-sref="share" >
                 <span>Share</span>
             </a>
             <a class="item" href="#/hazard">

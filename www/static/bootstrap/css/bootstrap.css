@@ -5716,7 +5716,7 @@ button.close {
   background: transparent;
   border: 0;
 }
-.modal-open {
+/*.modal-open {
   overflow: hidden;
 }
 .modal {
@@ -5839,7 +5839,7 @@ button.close {
   .modal-lg {
     width: 900px;
   }
-}
+}*/
 .tooltip {
   position: absolute;
   z-index: 1070;

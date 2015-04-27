@@ -7,36 +7,173 @@
     <ion-nav-buttons side="right" >
     </ion-nav-buttons>
 
-    <ion-content id="hazard" ng-controller="HazardCtrl">
-
+    <ion-content id="hazard">
         <form role="form" ng-submit="submitHazard(hazardForm)" name="hazardForm" id="hazardForm" novalidate>
+            <div class="padding">
+                <accordion close-others="oneAtATime">
+                    <accordion-group heading="Hazard Details" is-open="isFirstOpen">
+                        <div id="div_id_date" data-tap-disabled="true" class="form-group">
+                            <label class="incident-label requiredfield" for="div_id_date">
+                                When was the incident?*
+                            </label>
+                            <input type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date" readonly dgb-datepicker="{autoclose: true, showMeridian: true, endDate: hazardDetails.maxDate, maxView: 2}" ng-model="hazardDetails.dateTime">
+                            </input>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                What type of hazard was it?*
+                            </label>
+                            <group-select
+                                    header-text="Select a hazard type"
+                                    display-text="hazardDetails.selectedHazardType"
+                                    groups="hazardDetails.hazardGroupChoices"
+                                    >
+                            </group-select>
+                        </div>
+                    </accordion-group>
+                    <accordion-group heading="Description">
+                        <div class="form-group">
+                            <label class="incident-label">
+                                Please give a brief description of the incident.
+                            </label>
+                            <textarea class="item incident-textarea" placeholder="optional" ng-model="description.details"></textarea>
+                        </div>
+                    </accordion-group>
+                    <accordion-group heading="Personal Details">
+                        <div class="form-group">
+                            <label class="incident-label">
+                                What is your birth year?
+                            </label>
+                            <basic-select
+                                    header-text="Select a year"
+                                    display-text="personalDetails.selectedHazardBirthYear"
+                                    items="personalDetails.birthYearChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                What is your birth month?
+                            </label>
+                            <basic-select
+                                    header-text="Select a month"
+                                    display-text="personalDetails.selectedHazardBirthMonth"
+                                    items="personalDetails.birthMonthChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                Please select your gender?
+                            </label>
+                            <basic-select
+                                    header-text="Select a gender"
+                                    display-text="personalDetails.selectedHazardGender"
+                                    items="personalDetails.genderChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                Do you bike at least once a week?
+                            </label>
+                            <basic-select
+                                    header-text="Select an option"
+                                    display-text="personalDetails.selectedHazardCyclingFrequency"
+                                    items="personalDetails.cyclingFrequencyChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                    </accordion-group>
+                </accordion>
+            </div>
+
+            <div class="padding" ng-controller='TermsAndConditionsCtrl'>
+                <input type="checkbox" ng-model="model.hazardChecked" ng-change="rememberCheck()"/>
+                <span>I have read and understand the
+                    <a ng-click="openModal()">
+                        terms and conditions.
+                    </a>
+                </span>
+            </div>
+            <div class="padding text-right">
+                <button type="reset" class="button button-bikemaps-inverse" ng-click="cancelHazard()">
+                    Cancel
+                </button>
+                <button type="submit" class="button button-bikemaps" ng-disabled="!model.hazardChecked">
+                    Submit
+                </button>
+            </div>
+        </form>
+
+
+
+<!--
+      <form role="form" ng-submit="submitHazard(hazardForm)" name="hazardForm" id="hazardForm" novalidate>
 
             <div class="list">
                 <div class="item item-divider">
-                    Hazard Details - {{model.dt}}
+                    Hazard Details
                 </div>
-                <!--<div class="form-group" ng-class="{'has-error': datepickerForm.date.$invalid}">
+                &lt;!&ndash;<div class="form-group" ng-class="{'has-error': datepickerForm.date.$invalid}">
                     <label class="control-label requiredfield">When was the incident?*</label>
                     <input type="text" class="form-control" ng-model="selectedDate" name="hazard-date" bs-datepicker>
-                </div>-->
+                </div>&ndash;&gt;
 
-                <div class="form-group">
-                    <label class="control-label requiredfield"> When was the incident?*</label>
+                <div id="div_id_date1" class="form-group" data-tap-disabled="true">
+                    <label class="control-label requiredfield" for="div_id_date1">
+                        When was the incident?*
+                    </label>
 
-                    <div type="text" class="form-control" ng-click="open($event)" datepicker-popup="dd-MMMM-yyyy" ng-model="model.dt" max-date="model.maxDate" is-open="opened"  datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" show-button-bar="false" starting-day="3" show-weeks="false">
-                        {{model.dt}}
-                    </div>
-                    <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        <div id="hazard_date1" class="controls">
+                            <input type="text" class="form-control" readonly dgb-datepicker="{autoclose: true, showMeridian: true, endDate: model.maxDate, maxView: 2}" ng-model="model.dt"/>
+                        </div>
+
                 </div>
 
+                <div id="div_id_hazardType" class="form-group">
+                    <label class="control-label" requiredfield for="div_id_hazardType">
+                        What type of hazard was it?*
+                    </label>
+                    <ui-select ng-model="model.selectedHazardType" theme="bootstrap">
+                        <ui-select-match placeholder="------------">{{model.selectedHazardType.type}}</ui-select-match>
+                        <ui-select-choices group-by="'category'" repeat="sample in sampleData">
+                            <div ng-bind-html="sample.type"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
 
-                <!--<div class="form-group">
+                <div class="item item-divider">
+                    Description
+                </div>
+
+                <div id="div_id_hazardDescription" class="form-group">
+                    <label class="control-label" for="div_id_hazardDescription">
+                        Please give a brief description of the incident.
+                    </label>
+                    <textarea class="form-control" ng-model="model.hazardDescription" placeholder="optional"></textarea>
+                </div>
+
+                <div class="item item-divider">
+                    Personal Details
+                </div>
+
+                <div id="div_id_hazardBirthYear" class="form-group">
+                    <label class="control-label" for="div_id_hazardBirthYear">
+                        What is your birth year?
+                    </label>
+                    <ui-select ng-model="model.selectedHazardBirthYear" theme="bootstrap">
+                        <ui-select-match placeholder="------------">{{model.selectedHazardBirthYear}}</ui-select-match>
+                        <ui-select-choices  repeat="year in years">
+                            <div ng-bind-html="year"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+
+                &lt;!&ndash;<div class="form-group">
                     <label class="control-label requiredfield">What type of hazard was it?*</label>
-                    <input type="text" class="form-control" bs-dropdown="hazardType" name="hazard-type">
-                </div>-->
-                <div class="form-group">
-                    <label class="control-label requiredfield">What type of hazard was it?*</label>
-                    <select id="hazard-type" name="i_type" ng-model="selectedHazardType">
+                    <br><div>
+                    <select class="form-control" id="hazard-type" name="i_type" ng-model="selectedHazardType">
                         <option selected="selected" value="">
                             ----------
                         </option>
@@ -58,12 +195,13 @@
                         </optgroup>
                     </select>
                 </div>
+                </div>&ndash;&gt;
             </div>
             <div class="padding">
                 <button type="submit" class="button button-bikemaps button-block">
                     Submit
                 </button>
             </div>
-        </form>
+        </form>-->
     </ion-content>
 </ion-view>

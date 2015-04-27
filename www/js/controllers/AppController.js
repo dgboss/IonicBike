@@ -4,24 +4,21 @@ bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $location, $ionicP
     $scope.authInfo = djangoAuth;
     $scope.notifications = [];
 
-
+    /* Popover/main menu */
     $ionicPopover.fromTemplateUrl('templates/popover.html', {
         scope: $scope
     }).then(function(popover) {
         $scope.popover = popover;
     });
 
-
     $scope.openPopover = function ($event) {
         $scope.popover.show($event);
 
     };
 
-
     $scope.closePopover = function () {
         $scope.popover.hide();
     };
-
 
     //Cleanup the popover when we're done with it!
     $scope.$on('$destroy', function () {
@@ -29,20 +26,21 @@ bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $location, $ionicP
     });
 
 
+    /* Event listeners */
+    /* When a user logs in successfully, register device for push notifications */
     $rootScope.$on("djangoAuth.logged_in", function() {
             PushNotificationService.register();
     });
 
-
+    /* When a user logs out, the device should no longer receive push notifications */
     $rootScope.$on('djangoAuth.logged_out', function() {
-        console.log("From AppController: Logging out");
         if($window.localStorage["regid"]){
             PushNotificationService.unregister();
         }
     });
 
 
-    // Push Notification Received
+    /* Push Notification received */
     $rootScope.$on('$cordovaPush:notificationReceived', function (event, notification) {
         $cordovaToast.showShortCenter(notification);
         //console.log("Notification: " + JSON.stringify([notification]));
@@ -57,6 +55,7 @@ bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $location, $ionicP
         }
     });
 
+    /* TEMP: To be removed. For testing purposes */
     $scope.clearLocalStorage = function(){
         $window.localStorage.clear();
     };
