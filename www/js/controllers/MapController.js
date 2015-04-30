@@ -2,8 +2,26 @@
  * Created by Boss on 3/13/2015.
  */
 
-bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$cookies', '$window', '$stateParams', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'AlertArea_Service', 'Icon', 'Popup_Service', 'NotificationPopup_Service', 'djangoAuth',
-    function($rootScope, $scope, $log, $timeout, $cookies, $window, $stateParams, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, AlertArea_Service, Icon, Popup_Service, NotificationPopup_Service, djangoAuth) {
+bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$window', '$state', '$stateParams', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'AlertArea_Service', 'Coord_Service', 'Icon', 'Popup_Service', 'NotificationPopup_Service', 'djangoAuth',
+    function($rootScope, $scope, $log, $timeout, $window, $state, $stateParams, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, AlertArea_Service, Coord_Service, Icon, Popup_Service, NotificationPopup_Service, djangoAuth) {
+
+        $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+            console.log("In MapCtrl state change start");
+            if(toState.name === 'app') {
+
+
+                console.log('From: ' + fromState);
+                console.log('To: ' + toState);
+
+
+                console.log(toParams  );
+
+                console.log(fromParams);
+
+                console.log(Coord_Service.flag);
+                Coord_Service.flag = "clean";
+            }
+        });
 
     // Scope variables
     $scope.map = new L.Map('map');
@@ -377,15 +395,22 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         var drawControl = new L.Control.Draw(leafletDrawOptions);
         $scope.map.addControl(drawControl);
 
+        /* Define actions triggered by new drawings */
         $scope.map.on('draw:created', function (e) {
             var type = e.layerType;
-            var layer = e.layer;
+           // var layer = e.layer;
 
             if (type === 'marker') {
-                layer.bindPopup('A popup!');
+                Coord_Service.coordinates[0] = e.layer.getLatLng().lng;
+                Coord_Service.coordinates[1] = e.layer.getLatLng().lat;
+                Coord_Service.flag = 'Dirty'
+                //console.log(e.layer.getLatLng());
+                $state.go('incidentform');
+                //layer.bindPopup('A popup!');
+                console.log("Going to form state")
             }
 
-            $scope.editableLayers.addLayer(layer);
+            //$scope.editableLayers.addLayer(layer);
         });
 
 

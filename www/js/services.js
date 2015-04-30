@@ -4,46 +4,36 @@
 
 angular.module('bikeMapApp.services', ['ngResource'])
 
-    .factory('Point_Service',  function($resource){
-        return $resource(
-            "http://192.168.1.125:8000/points/\\.json",
-            {},
-            {get: {method: 'GET'}});
-    })
-
-    .factory('Incident_Service',  function($resource){
-        return $resource(
-            "http://192.168.1.125:8000/incidents/\\.json",
-            {},
-            {get: {method: 'GET'}});
-    })
-
     .factory('Collision_Service',  function($resource){
         return $resource(
             "http://192.168.1.125:8000/collisions/\\.json/",
             {},
-            {get: {method: 'GET'}});
+            {get: {method: 'GET'},
+             save: {method:'POST'}});
     })
 
     .factory('Nearmiss_Service',  function($resource){
         return $resource(
             "http://192.168.1.125:8000/nearmiss/\\.json",
             {},
-            {get: {method: 'GET'}});
+            {get: {method: 'GET'},
+             save: {method:'POST'}});
     })
 
     .factory('Hazard_Service',  function($resource){
         return $resource(
             "http://192.168.1.125:8000/hazards/\\.json",
             {},
-            {get: {method: 'GET'}});
+            {get: {method: 'GET'},
+             save: {method:'POST'}});
     })
 
     .factory('Theft_Service',  function($resource){
         return $resource(
             "http://192.168.1.125:8000/thefts/\\.json",
             {},
-            {get: {method: 'GET'}});
+            {get: {method: 'GET'},
+             save: {method:'POST'}});
     })
 
     .factory('Official_Service',  function($resource){
@@ -170,6 +160,14 @@ angular.module('bikeMapApp.services', ['ngResource'])
 
             return popup;
         };
+    })
+
+    /* Service to share point where pins are dropped */
+    .service('Coord_Service', function () {
+        return {
+            "flag": 'clean',
+            "coordinates": [0,0]
+        }
     })
 
 

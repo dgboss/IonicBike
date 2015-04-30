@@ -29,6 +29,7 @@ bikeMapApp.directive('basicSelect',
             scope: {
                 'items'        : '=', /* Items list is mandatory */
                 'displayText'  : '=', /* Displayed text is mandatory */
+                'selectedItem' : '=',
                 'callback'     : '&'
             },
 
@@ -92,7 +93,8 @@ bikeMapApp.directive('basicSelect',
                 scope.select = function (item) {
 
                     // Set selected text
-                    scope.displayText = item.text;
+                    //scope.displayText = item.text;
+                    scope.selectedItem = item;
 
                     // Hide items
                     scope.hideItems();
@@ -122,7 +124,8 @@ bikeMapApp.directive('groupSelect',
             /* Attributes to set */
             scope: {
                 'groups'       : '=',
-                'displayText'  : '=', /* Displayed text is mandatory */
+                'displayText'  : '=',
+                'selectedItem' : '= ',
                 'callback'     : '&'
             },
 
@@ -186,7 +189,8 @@ bikeMapApp.directive('groupSelect',
                 scope.select = function (item) {
 
                     // Set selected text
-                    scope.displayText = item.text;
+                    // scope.displayText = item.text;
+                    scope.selectedItem = item
 
                     // Hide items
                     scope.hideItems();

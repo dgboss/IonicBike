@@ -234,6 +234,19 @@ ion-nav-view>ion-view>ion-pane>ion-content>div {
     font-weight: bold;
 }
 
+/*Incident for tabs*/
+.bma-tabs >.nav-tabs > li > a,
+.bma-tabs >.nav-tabs > li.active > a,
+.bma-tabs >.nav-tabs > li.active > a:focus {
+    color: #2c3e50;
+    font-size: 15px;
+}
+.incident-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
 .incident-date {
     min-height: 56px;
     background-color: #fff; !important
@@ -284,6 +297,15 @@ textarea {
 .bma-item {
     padding-left: 20px;
 }
+
+.form-invalid {
+    border-color:#FF0000;
+    color: #FF0000;
+}
+
+.form-valid {
+}
+
 
 
 

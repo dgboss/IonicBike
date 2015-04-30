@@ -1,5 +1,5 @@
 
-var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 'ngResource', 'ngCookies', 'bikeMapApp.services', 'bikeMapApp.icons', 'bikeMapApp.FormServices', 'ngCordova', 'ui.bootstrap', 'ui.select'])
+var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 'ngResource', 'ngCookies', 'bikeMapApp.services', 'bikeMapApp.icons', 'bikeMapApp.FormServices', 'bikeMapApp.constants', 'ngCordova', 'ui.bootstrap', 'ui.select'])
 
 .run(['$ionicPlatform', '$cookies', '$window', 'djangoAuth', 'PushNotificationService', function($ionicPlatform, $cookies, $window, djangoAuth, PushNotificationService) {
   $ionicPlatform.ready(function() {
@@ -29,8 +29,7 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
 
             .state('app', {
                 url: "/",
-                templateUrl: "templates/map.html",
-                controller: 'MapCtrl'
+                templateUrl: "templates/map.html"
             })
 
             .state('login', {
@@ -53,6 +52,11 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
                 url: "/hazard",
                 templateUrl: "templates/hazard.html",
                 controller: 'HazardCtrl'
+            })
+
+            .state('incidentform', {
+                url: "/incidentform",
+                templateUrl: "templates/incident-form.html"
             })
 
         $urlRouterProvider.otherwise('/');
