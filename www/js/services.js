@@ -165,7 +165,7 @@ angular.module('bikeMapApp.services', ['ngResource'])
     /* Service to share point where pins are dropped */
     .service('Coord_Service', function () {
         return {
-            "flag": 'clean',
+            "dirty": false,
             "coordinates": [0,0]
         }
     })

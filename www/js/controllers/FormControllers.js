@@ -147,8 +147,9 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
             }
 
             post.$promise.then(
-
-                console.log("POST succeeded"));
+                Coord_Service.dirty = true,
+                $state.go('app')
+                );
 
         }
         else {
@@ -270,9 +271,8 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
 
             var post = Hazard_Service.save(hazardForm);
             post.$promise.then(
-                console.log("POST succeeded"),
+                Coord_Service.dirty = true,
                 $state.go('app')
-
             );
 
 
@@ -420,9 +420,10 @@ bikeMapApp.controller('TheftCtrl', function($scope, $state, $window, $ionicModal
             };
 
             var post = Theft_Service.save(theftForm);
-            post.$promise.then(console.log("POST succeeded"));
-
-
+            post.$promise.then(
+                Coord_Service.dirty = true,
+                $state.go('app')
+            );
         }
         else {
             console.log("Form is invalid");

@@ -5,21 +5,14 @@
 bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$window', '$state', '$stateParams', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'AlertArea_Service', 'Coord_Service', 'Icon', 'Popup_Service', 'NotificationPopup_Service', 'djangoAuth',
     function($rootScope, $scope, $log, $timeout, $window, $state, $stateParams, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, AlertArea_Service, Coord_Service, Icon, Popup_Service, NotificationPopup_Service, djangoAuth) {
 
-        $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-            console.log("In MapCtrl state change start");
+        $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
             if(toState.name === 'app') {
-
-
-                console.log('From: ' + fromState);
-                console.log('To: ' + toState);
-
-
-                console.log(toParams  );
-
-                console.log(fromParams);
-
-                console.log(Coord_Service.flag);
-                Coord_Service.flag = "clean";
+                if(Coord_Service.dirty) {
+                    $scope.map.setView(new L.LatLng(Coord_Service.coordinates[1], Coord_Service.coordinates[0]), 15);
+                    updateIncidents(true);
+                }
+                Coord_Service.dirty = false;
+                $window.dispatchEvent(new Event('resize'));
             }
         });
 
@@ -37,24 +30,127 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
             subdomains: '1234'
         }).addTo($scope.map);
 
-    // Add Strava data
-    var stravaHM = L.tileLayer('https://d2z9m7k9h4f0yp.cloudfront.net/tiles/cycling/color5/{z}/{x}/{y}.png', {
+   // Add Strava data
+   var stravaHM = L.tileLayer('https://d2z9m7k9h4f0yp.cloudfront.net/tiles/cycling/color5/{z}/{x}/{y}.png', {
         minZoom: 3,
         maxZoom: 17,
         opacity: 0.8,
         attribution: '<a href=http://labs.strava.com/heatmap/>http://labs.strava.com/heatmap/</a>'
-    }).addTo($scope.map);
+   }).addTo($scope.map);
 
-    // Add OSM bike infrastructure hosted at BikeMaps.org
-    var infrastructure = new L.tileLayer.wms("https://bikemaps.org/WMS", {
+   // Add OSM bike infrastructure hosted at BikeMaps.org
+   var infrastructure = new L.tileLayer.wms("https://bikemaps.org/WMS", {
         layers: 'bikemaps_infrastructure',
         format: 'image/png',
         transparent: true,
         version: '1.3.0'
-    }).addTo($scope.map);
+   }).addTo($scope.map);
+
+   // Add geocoder to map
+   var geocoder = L.Control.geocoder({
+        position: "topleft"
+   }).addTo($scope.map);
+
+    // Handle geocode searches
+    var geocodeMarker;
+    geocoder.markGeocode = function(result) {
+        $scope.map.fitBounds(result.bbox);
+        geocodeMarker && $scope.map.removeLayer(geocodeMarker); //remove old marker if it exists
+
+        geocodeMarker = new L.Marker(result.center, {
+            icon: icons["geocodeIcon"]
+        })
+            .bindPopup(result.name)
+            .addTo($scope.map)
+            .openPopup();
+    };
+
+   // Geolocation
+    var userMarker;
+    $scope.geolocate = function () {
+    $scope.map.locate({setView: true, watch: false, maxZoom: 16, enableHighAccuracy: true})
+        .on('locationfound', function (location) {
+
+            if (!userMarker) {
+                userMarker = L.userMarker(location.latlng, {
+                    smallIcon: true,
+                    circleOpts: {weight: 1, opacity: 0.3, fillOpacity: 0.05}
+                }).addTo($scope.map);
+            }
+            userMarker.setLatLng(location.latlng);
+            userMarker.setAccuracy(location.accuracy);
+        })
+        .on('locationerror', function (e) {
+            console.log(e);
+            if(userMarker) {
+                $scope.map.removeLayer(userMarker);
+            }
+            alert("Location access was denied. Please enable location services.");
+        });
+    };
+
+    // Add geolocation button to the map
+    var glControl = L.easyButton('fa fa-bicycle',$scope.geolocate,'', $scope.map);
+
+   // Leaflet Draw Controls for guest and logged in user
+   $scope.editableLayers = new L.FeatureGroup();
+   $scope.map.addLayer($scope.editableLayers);
+
+   // Logged in users can add/remove alert areas
+   var leafletDrawOptionsUser = {
+        draw: {
+            polyline: false,
+            polygon: {
+                allowIntersection: false, // Restricts shapes to simple polygons
+                drawError: {
+                    color: '#e1e100', // Color the shape will turn when intersects
+                    message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                }
+            },
+            circle: false, // Turns off this drawing tool
+            rectangle: false
+        },
+        edit: {
+            featureGroup: $scope.editableLayers, //REQUIRED!!
+            remove: true
+        }
+   };
+
+    // Guests can only report incidents
+    var leafletDrawOptionsGuest = {
+        draw: {
+            polyline: false,
+            polygon: false,
+            circle: false,
+            rectangle: false
+        },
+        edit: false
+    };
+
+    var drawControlUser = new L.Control.Draw(leafletDrawOptionsUser);
+    var drawControlGuest = new L.Control.Draw(leafletDrawOptionsGuest);
+
+   /* Provide an initial location to open the map to the CRD. Opening to the extent
+      of the world downloads too much incident data
+    */
+   $scope.map.setView(new L.LatLng(48.5275192374508, -123.40599060058592), 11);
+
+   /* If location services are enabled, center map on users current location
+      Consider storing last viewed map center and open map there
+   */
+   $scope.geolocate();
+
+    /* Add appropriate drawing controls to the map for guest/user */
+    if(!$window.localStorage['user'] || $window.localStorage['user'] === 'Guest'  ) {
+        $scope.map.addControl(drawControlGuest);
+    } else if($window.localStorage['token']) {
+        $scope.map.addControl(drawControlUser);
+    }
+    else {
+        $scope.map.addControl(drawControlGuest);
+    }
 
 
-    $scope.map.setView(new L.LatLng(49.6289109, -125.0276107), 15);
 
 
     $scope.legendControl = L.control.layers({},{}).addTo($scope.map);
@@ -67,11 +163,11 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         polygonOptions: {
             color: '#2c3e50',
             weight: 3
-        }
-       /* iconCreateFunction: function (cluster) {
+        },
+       iconCreateFunction: function (cluster) {
             var data = serializeClusterData(cluster);
             return pieChart(data);
-        }*/
+        }
     });
     $scope.map.addLayer(incidentData);
 
@@ -115,6 +211,84 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         return data;
     };
 
+        // pieChart
+// 	Purpose: Builds the svg DivIcons
+// 	inputs: data as list of objects containing "type", "count", "color", outer chart radius, inner chart radius, and total points for cluster
+// 	output: L.DivIcon donut chart where each "type" is mapped to the corresponding "color" with a proportional section corresponding to "count"
+        function pieChart(data) {
+            // Pop total points in cluster
+            var total = data.pop();
+
+            outerR = (total >= 10 ? (total < 50 ? 20 : 25) : 15),
+                innerR = (total >= 10 ? (total < 50 ? 10 : 13) : 7);
+
+            var arc = d3.svg.arc()
+                .outerRadius(outerR)
+                .innerRadius(innerR);
+
+            var pie = d3.layout.pie()
+                .sort(null)
+                .value(function(d) {
+                    return d.count;
+                });
+
+            // Define the svg layer
+            var width = 50,
+                height = 50;
+            var svg = document.createElementNS(d3.ns.prefix.svg, 'svg');
+            var vis = d3.select(svg)
+                .data(data)
+                .attr('class', 'marker-cluster-pie')
+                .attr('width', width)
+                .attr('height', height)
+                .append("g")
+                .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+
+            var g = vis.selectAll(".arc")
+                .data(pie(data))
+                .enter().append("g")
+                .attr('class', 'arc');
+
+            g.append('path')
+                .attr("d", arc)
+                .style("fill", function(d) {
+                    return d.data.options.color;
+                });
+
+            // Add center fill
+            vis.append("circle")
+                .attr("cx", 0)
+                .attr("cy", 0)
+                .attr("r", innerR)
+                .attr('class', 'center')
+                .attr("fill", "#f1f1f1");
+
+            // Add count text
+            vis.append('text')
+                .attr('class', 'pieLabel')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '.3em')
+                .text(total)
+
+            var html = serializeXmlNode(svg);
+
+            return new L.DivIcon({
+                html: html,
+                className: 'marker-cluster',
+                iconSize: new L.Point(40, 40)
+            });
+
+            // Purpose: Helper function to convert xmlNode to a string
+            function serializeXmlNode(xmlNode) {
+                if (typeof window.XMLSerializer != "undefined") {
+                    return (new window.XMLSerializer()).serializeToString(xmlNode);
+                } else if (typeof xmlNode.xml != "undefined") {
+                    return xmlNode.xml;
+                }
+                return "";
+            };
+        };
+
 
 
     extendedBounds = getExtendedBounds($scope.map.getBounds());
@@ -122,36 +296,9 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
     getAlertAreas();
 
 
-    // Add geocoder to map
-    var geocoder = L.Control.geocoder({
-        position: "topleft"
-    }).addTo($scope.map);
 
-    // Geolocation
-    var userMarker;
-    $scope.geolocate = function () {
-        $scope.map.locate({setView: true, watch: false, maxZoom: 16, enableHighAccuracy: true})
-            .on('locationfound', function (location) {
 
-                if (!userMarker) {
-                    userMarker = L.userMarker(location.latlng, {
-                        smallIcon: true,
-                        circleOpts: {weight: 1, opacity: 0.3, fillOpacity: 0.05}
-                    }).addTo($scope.map);
-                }
-                userMarker.setLatLng(location.latlng);
-                userMarker.setAccuracy(location.accuracy);
-        })
-            .on('locationerror', function (e) {
-                console.log(e);
-                if(userMarker) {
-                    $scope.map.removeLayer(userMarker);
-               }
-                alert("Location access denied");
-            });
-    };
 
-    var glControl = L.easyButton('fa fa-bicycle',$scope.geolocate,'', $scope.map);
 
 
 
@@ -168,13 +315,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
     // Get data from the Bike Maps api and add to Marker Cluster Layer
     function getIncidents(bnds){
 
-
-            console.log("User: " + $window.localStorage["user"]);
-            console.log("Authenticated: " + $window.localStorage["authenticated"]);
-            console.log("Token: " + $window.localStorage["token"]);
-
-
-
         // Clear existing data from map
         incidentData.clearLayers();
 
@@ -189,7 +329,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 }
             });
             incidentData.addLayer(collisionLayer);
-            $scope.legendControl.addOverlay(collisionLayer, '<span><i class="marker-group theft fa fa-bicycle icon-black"></i><small>Bike Thefts</small></span>');// {'<i class="theft fa fa-bicycle icon-black"></i><small> Bike Theft</small>'});
+            $scope.legendControl.addOverlay(collisionLayer, '<span><i class="marker-group collision fa fa-bicycle icon-black"></i><small>Collisions</small></span>');
         });
 
         // Get nearmiss data from BikeMaps api and add to map
@@ -218,7 +358,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 }
             });
             incidentData.addLayer(hazardLayer);
-            // $scope.legendControl.addOverlay(theft_layer, {'<i class="theft fa fa-bicycle icon-black"></i><small> Bike Theft</small>': theft_layer});
+            $scope.legendControl.addOverlay(hazardLayer, {'<i class="hazard fa fa-bicycle icon-black"></i><small>Hazard</small>': hazardLayer});
         });
 
         // Get theft data from BikeMaps api and add to map
@@ -299,10 +439,14 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
 
     $rootScope.$on("djangoAuth.logged_in", function() {
         getAlertAreas();
+        $scope.map.removeControl(drawControlGuest);
+        $scope.map.addControl(drawControlUser);
     });
 
     $rootScope.$on('djangoAuth.logged_out', function() {
         removeAlertAreas();
+        $scope.map.removeControl(drawControlUser);
+        $scope.map.addControl(drawControlGuest);
     });
 
     $rootScope.$on('PushNotificationService.panToPoint', function(e, notification) {
@@ -369,49 +513,25 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
     $scope.map.on('contextmenu', $scope.onMapClick);
 
 
-// Leaflet Draw
-    $scope.editableLayers = new L.FeatureGroup();
-    $scope.map.addLayer($scope.editableLayers);
 
-    var leafletDrawOptions = {
-        draw: {
-            polyline: false,
-            polygon: {
-                allowIntersection: false, // Restricts shapes to simple polygons
-                drawError: {
-                    color: '#e1e100', // Color the shape will turn when intersects
-                    message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
-                }
-            },
-            circle: false, // Turns off this drawing tool
-            rectangle: false
-        },
-        edit: {
-            featureGroup: $scope.editableLayers, //REQUIRED!!
-            remove: true
+
+    /* Define actions triggered by new drawings */
+    $scope.map.on('draw:created', function (e) {
+        var type = e.layerType;
+       // var layer = e.layer;
+
+        if (type === 'marker') {
+            Coord_Service.coordinates[0] = e.layer.getLatLng().lng;
+            Coord_Service.coordinates[1] = e.layer.getLatLng().lat;
+            Coord_Service.flag = 'Dirty'
+            //console.log(e.layer.getLatLng());
+            $state.go('incidentform');
+            //layer.bindPopup('A popup!');
+            console.log("Going to form state")
         }
-    };
 
-        var drawControl = new L.Control.Draw(leafletDrawOptions);
-        $scope.map.addControl(drawControl);
-
-        /* Define actions triggered by new drawings */
-        $scope.map.on('draw:created', function (e) {
-            var type = e.layerType;
-           // var layer = e.layer;
-
-            if (type === 'marker') {
-                Coord_Service.coordinates[0] = e.layer.getLatLng().lng;
-                Coord_Service.coordinates[1] = e.layer.getLatLng().lat;
-                Coord_Service.flag = 'Dirty'
-                //console.log(e.layer.getLatLng());
-                $state.go('incidentform');
-                //layer.bindPopup('A popup!');
-                console.log("Going to form state")
-            }
-
-            //$scope.editableLayers.addLayer(layer);
-        });
+        //$scope.editableLayers.addLayer(layer);
+    });
 
 
 }]);
