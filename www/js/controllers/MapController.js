@@ -153,10 +153,10 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
 
 
 
-    $scope.legendControl = L.control.layers({},{}).addTo($scope.map);
+   /* $scope.legendControl = L.control.layers({},{}).addTo($scope.map);
     $scope.legendControl.addOverlay(osmBase, 'OSM');
     $scope.legendControl.addOverlay(stravaHM, 'Strava Ridership Data');
-    $scope.legendControl.addOverlay(infrastructure, 'Infrastructure');
+    $scope.legendControl.addOverlay(infrastructure, 'Infrastructure');*/
 
     var incidentData = new L.MarkerClusterGroup({
         maxClusterRadius: 70,
@@ -191,7 +191,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
             icons[icon]["count"] = 0;
             // construct colorRef object for efficiency of bin sort
             colorRef[icons[icon].options.color] = icon;
-        };
+        }
 
         //Count the number of markers in each cluster
         children.forEach(function(child) {
@@ -209,7 +209,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         data.push(n);
 
         return data;
-    };
+    }
 
         // pieChart
 // 	Purpose: Builds the svg DivIcons
@@ -286,8 +286,8 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                     return xmlNode.xml;
                 }
                 return "";
-            };
-        };
+            }
+        }
 
 
 
@@ -317,6 +317,12 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
 
         // Clear existing data from map
         incidentData.clearLayers();
+       /* try {
+            $scope.legendControl.removeLayer(hazardLayer);
+        }
+        catch(err) {
+            console.log(err);
+        }*/
 
         // Get collision data from BikeMaps api and add to map
         var collisions = Collision_Service.get({bbox: bnds.toBBoxString()});
@@ -329,7 +335,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 }
             });
             incidentData.addLayer(collisionLayer);
-            $scope.legendControl.addOverlay(collisionLayer, '<span><i class="marker-group collision fa fa-bicycle icon-black"></i><small>Collisions</small></span>');
+            //$scope.legendControl.addOverlay(collisionLayer, '<span><i class="marker-group collision fa fa-bicycle icon-black"></i><small>Collisions</small></span>');
         });
 
         // Get nearmiss data from BikeMaps api and add to map
@@ -358,7 +364,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 }
             });
             incidentData.addLayer(hazardLayer);
-            $scope.legendControl.addOverlay(hazardLayer, {'<i class="hazard fa fa-bicycle icon-black"></i><small>Hazard</small>': hazardLayer});
+            //$scope.legendControl.addOverlay(hazardLayer, '<i class="hazard fa fa-bicycle icon-black"></i><small>Hazard</small>');
         });
 
         // Get theft data from BikeMaps api and add to map
@@ -374,9 +380,10 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
             incidentData.addLayer(theftLayer);
            // $scope.legendControl.addOverlay(theft_layer, {'<i class="theft fa fa-bicycle icon-black"></i><small> Bike Theft</small>': theft_layer});
         });
+
     }
 
-    // Update incidents data on map and legend control
+    // Update incidents data on map
     function updateIncidents(force) {
         newMapBounds = $scope.map.getBounds();
 
@@ -437,16 +444,22 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         updateIncidents(false);
     });
 
+    $scope.map.on('overlayremove', function(e) {
+        console.log(e);
+    })
+
     $rootScope.$on("djangoAuth.logged_in", function() {
         getAlertAreas();
         $scope.map.removeControl(drawControlGuest);
         $scope.map.addControl(drawControlUser);
+        $scope.legend.alertAreas = true;
     });
 
     $rootScope.$on('djangoAuth.logged_out', function() {
         removeAlertAreas();
         $scope.map.removeControl(drawControlUser);
         $scope.map.addControl(drawControlGuest);
+        $scope.legend.alertAreas = false;
     });
 
     $rootScope.$on('PushNotificationService.panToPoint', function(e, notification) {
@@ -533,5 +546,239 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         //$scope.editableLayers.addLayer(layer);
     });
 
+    $scope.legend = {
+        incidentData: true,
+        collision: true,
+        nearmiss: true,
+        hazard: true,
+        theft: true,
+        official: true,
+        filter: false,
+        stravaHM: true,
+        alertAreas: false,
+        infrastructure: false
+    };
+
+
+    $scope.$watch('legend.incidentData', function() {
+        try {
+            if (incidentData && $scope.legend.incidentData) {
+                if (collisionLayer && $scope.legend.collision) {
+                    incidentData.addLayer(collisionLayer);
+                }
+                if (nearmissLayer && $scope.legend.nearmiss) {
+                    incidentData.addLayer(nearmissLayer);
+                }
+                if (hazardLayer && $scope.legend.hazard) {
+                    incidentData.addLayer(hazardLayer);
+                }
+                if (theftLayer && $scope.legend.theft) {
+                    incidentData.addLayer(theftLayer);
+                }
+                if (officialLayer && $scope.legend.official) {
+                    incidentData.addLayer(officialLayer);
+                }
+            } else {
+                incidentData.clearLayers();
+            }
+        } catch (err) {
+            console.log("One or more layers could not be added to the map")
+        }
+    });
+
+    $scope.$watch('legend.collision', function() {
+        if(collisionLayer) {
+            $scope.legend.collision ? incidentData.addLayer(collisionLayer) : incidentData.removeLayer(collisionLayer);
+        }
+    });
+    $scope.$watch('legend.nearmiss', function() {
+        if(nearmissLayer) {
+            $scope.legend.nearmiss ? incidentData.addLayer(nearmissLayer) : incidentData.removeLayer(nearmissLayer);
+        }
+    });
+    $scope.$watch('legend.hazard', function() {
+        if(hazardLayer) {
+            $scope.legend.hazard ? incidentData.addLayer(hazardLayer) : incidentData.removeLayer(hazardLayer);
+        }
+    });
+    $scope.$watch('legend.theft', function() {
+        if(theftLayer) {
+            $scope.legend.theft ? incidentData.addLayer(theftLayer) : incidentData.removeLayer(theftLayer);
+        }
+    });
+    $scope.$watch('legend.official', function() {
+        if(officialLayer) {
+            $scope.legend.official ? incidentData.addLayer(officialLayer) : incidentData.removeLayer(officialLayer);
+        }
+    });
+    $scope.$watch('legend.stravaHM', function() {
+        if(stravaHM) {
+            $scope.legend.stravaHM ? $scope.map.addLayer(stravaHM) : $scope.map.removeLayer(stravaHM);
+        }
+    });
+    $scope.$watch('legend.alertAreas', function() {
+       if(alertareaLayer) {
+           $scope.legend.alertAreas ? $scope.map.addLayer(alertareaLayer) : $scope.map.removeLayer(alertareaLayer);
+       }
+    });
+    $scope.$watch('legend.infrastructure', function() {
+        if(infrastructure) {
+            $scope.legend.infrastructure ? $scope.map.addLayer(infrastructure) : $scope.map.removeLayer(infrastructure);
+        }
+    });
+
+    $scope.$watch('legend.filter', function() {
+       console.log("Filter changed: " + $scope.legend.filter);
+    });
+
+
+    // Control legend collapsing (modified code from leaflet/src/L.control.layers)
+    var container = $('#legend .leaflet-control-layers');
+
+    $scope.legendControl = function() {
+        $(window).resize(function (e) {
+            if ($(window).width() < 700) {
+                var link = $('#legend .leaflet-control-layers-toggle'),
+                    mapContainer = $('#map');
+
+                if (!L.Browser.android) {
+                    container.mouseenter(expand);
+                    container.mouseleave(collapse);
+                }
+
+                if (L.Browser.touch) {
+                    link.click(function (e) {
+                        e.stopPropagation();
+                        expand();
+                    });
+                } else {
+                    link.focus(expand);
+                }
+
+                mapContainer.click(collapse);
+            }
+
+            else {
+                expand();
+            }
+        });
+        $(window).trigger('resize'); //Call event handler on load
+
+        function expand() {
+            container.addClass('leaflet-control-layers-expanded');
+        };
+
+        function collapse() {
+            container.removeClass('leaflet-control-layers-expanded');
+        };
+    };
+
+    $scope.legendControl();
+
+
+
+    /*$scope.legendControl = function() {
+        *//**//**//**//* Legend control *//**//**//**//*
+        $(document).ready(function () {
+            // Control sublegend collapsing
+            $("input.layer-toggle").click(function (e) {
+                layerClicked = window[e.target.value];
+                checked = e.target.checked;
+                subLegend = $(e.target).siblings(".legend-subtext");
+                if (checked) {
+                    map.addLayer(layerClicked);
+                    subLegend.collapse("show");
+                }
+                else if (map.hasLayer(layerClicked) && !checked) {
+                    map.removeLayer(layerClicked);
+                    subLegend.collapse("hide");
+                }
+            });
+
+
+            // Control legend collapsing (modified code from leaflet/src/L.control.layers)
+            var container = $('#legend .leaflet-control-layers');
+
+            $(window).resize(function (e) {
+                if ($(window).width() < 700) {
+                    var link = $('#legend .leaflet-control-layers-toggle'),
+                        map = $('#map');
+
+                    if (!L.Browser.android) {
+                        container.mouseenter(expand);
+                        container.mouseleave(collapse);
+                    }
+
+                    if (L.Browser.touch) {
+                        link.click(function (e) {
+                            e.stopPropagation();
+                            expand();
+                        });
+                    } else {
+                        link.focus(expand);
+                    }
+
+                    map.click(collapse);
+                }
+
+                else {
+                    expand();
+                }
+            });
+            $(window).trigger('resize'); //Call event handler on load
+
+            function expand() {
+                container.addClass('leaflet-control-layers-expanded');
+            };
+
+            function collapse() {
+                container.removeClass('leaflet-control-layers-expanded');
+            };
+        });
+    }*/
+
+        // Initialize the slider
+        $("input.slider").ready(function(){
+            var mySlider = $("input.slider").slider({
+                step: 1,
+                max: (moment().weekYear() - 1970) * 12 + moment().month(), //months since epoch
+                min: (moment().weekYear() - 1980) * 12  + moment().month(), //months since epoch minus 10 years
+
+                range: true,
+                tooltip: 'hide',
+                enabled: false,
+                handle: 'custom',
+
+                formatter: function(val){
+                    return sliderDate(val[0]).format("MMM-YYYY") + " : " + sliderDate(val[1]).format("MMM-YYYY");
+                }
+            });
+        });
+
+// Convert months since epoch into a moment.js date object
+        function sliderDate(m){
+            return moment({
+                year: 1970 + m/12,
+                month: m%12
+            });
+        };
+
+        $("#filterCheckbox").click(function() {
+            if(this.checked) {
+                var sliderVal = $('input.slider').slider('getValue')
+                $("input.slider").slider("enable");
+                $("div.filter .start-date").text(sliderDate(sliderVal[0]).format("MMM-YYYY"));
+                $("div.filter .end-date").text(sliderDate(sliderVal[1]).format("MMM-YYYY"));
+                // Add filtered points to map
+                filterPoints(sliderVal[0], sliderVal[1])
+            }
+            else {
+                $("input.slider").slider("disable");
+                $("div.filter .start-date").text("");
+                $("div.filter .end-date").text("");
+                // Add all points back to map
+                resetPoints();
+            }
+        });
 
 }]);

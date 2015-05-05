@@ -10,7 +10,16 @@ bikeMapApp.directive('dgbDatepicker', function() {
             $(element).datetimepicker(scope.$eval(attrs.dgbDatepicker));
         }
     }
-})
+});
+
+bikeMapApp.directive('bmaSlider', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs, controller) {
+            $(element).slider(scope.$eval(attrs.bmaslider));
+        }
+    }
+});
 
 
 /* Directive to display a basic form input field as a modal on click */

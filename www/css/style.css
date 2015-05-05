@@ -11,6 +11,11 @@ ion-nav-view>ion-view>ion-pane>ion-content>div {
     height: 100%;
 }
 
+@font-face {
+    font-family: faktos;
+    src: url('../static/fonts/faktos.regular.ttf');
+}
+
 .bar.bar-bikemaps{
     border-color: #2c3e50;
     background-color: #2c3e50;
@@ -304,6 +309,47 @@ textarea {
 }
 
 .form-valid {
+}
+
+.filter{
+    padding: 0 10px;
+}
+.date-container{
+    padding: 0 10px;
+}
+/* Bootstrap-slider customization */
+.bma-slider .slider{
+    margin: 0px 10px;
+}
+.bma-slider .slider.slider-horizontal{
+    width: 130px;
+}
+.slider-handle.custom::before {
+    line-height: 18px;
+    font-size: 22px;
+    color: #1a242f;
+    font-family: FontAwesome;
+    position:relative;
+    top: 1px;
+}
+.min-slider-handle.custom::before {
+    content: '\f10c';
+    right: 6px;
+}
+.max-slider-handle.custom::before {
+    content: '\f111';
+    left: 7px;
+}
+
+.slider-selection {
+    background: #18bc9c;
+}
+.slider-disabled .slider-selection{
+    opacity: 0.3;
+}
+.slider-disabled .slider-handle{
+    background-image: none !important;
+    opacity: 0.3;
 }
 
 

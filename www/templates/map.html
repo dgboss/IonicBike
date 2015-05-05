@@ -10,6 +10,75 @@
             </ion-header-bar>
             <ion-content>
                 <div ng-controller="MapCtrl" id="map">
+                    <div id="legend" class="leaflet-container leaflet-control-container">
+                        <div class="leaflet-top leaflet-right">
+                            <div class="leaflet-control-layers leaflet-control" aria-haspopup="true" >
+                                <a class="leaflet-control-layers-toggle" href="#" title="Layers"></a>
+                                <form class="leaflet-control-layers-list">
+                                    <div class="leaflet-control-layers-overlays">
+
+                                        <div class="legend-group">
+                                            <input class="layer-toggle" type="checkbox" value="incidentData" checked="legend.incidentData" ng-model="legend.incidentData">
+                                            Incidents
+                                            <div class="marker-group legend-subtext collapse in">
+                                                <input type="checkbox" id="collisionCheckbox" checked="legend.collision" ng-model="legend.collision"> <i class="collision fa fa-bicycle icon-black"></i><small> Citizen collision report</small><br>
+                                                <input type="checkbox" id="nearmissCheckbox" checked="legend.nearmiss" ng-model="legend.nearmiss"> <i class="nearmiss fa fa-bicycle icon-black"></i><small> Citizen near miss report</small><br>
+                                                <input type="checkbox" id="hazardCheckbox" checked="legend.hazard" ng-model="legend.hazard"> <i class="hazard fa fa-warning icon-black"></i><small> Cyclist hazard</small><br>
+                                                <input type="checkbox" id="theftCheckbox" checked="legend.theft" ng-model="legend.theft"> <i class="theft fa fa-bicycle icon-black"></i><small> Bike Theft</small><br>
+                                                <input type="checkbox" id="officialCheckbox" checked="legend.official" ng-model="legend.official"> <i class="official fa fa-certificate"></i><small> Official collision report</small><br>
+
+                                                <input id="filterCheckbox" type="checkbox" checked = "legend.filter" ng-model="legend.filter">
+                                                    <span class="fa-stack">
+                                                      <i class="fa fa-filter fa-stack-1x"></i>
+                                                      <i class="fa fa-circle-thin fa-stack-2x"></i>
+                                                    </span></i>
+                                                    <small> Filter</small>
+                                                <div class="filter">
+                                                    <div class="date-container">
+                                                        <small><span class="start-date"></span></small>
+                                                        <small><span class="end-date pull-right"></span></small>
+                                                    </div>
+
+                                                    <input class="bma-slider slider"></input>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="legend-group">
+                                            <input class="layer-toggle" type="checkbox" value="stravaHM" checked="legend.stravaHM" ng-model="legend.stravaHM">
+                                            Strava ridership data
+                                            <a data-target="#about-strava" data-toggle="modal" href="#"><i class="fa fa-question-circle fa-1x"></i></a><br>
+                                            <div class="legend-subtext collapse in" ng-show="legend.stravaHM">
+                                                <small class="strava-gradient gradient-bar">less <div class="pull-right">more</div></small>
+                                            </div>
+                                        </div>
+
+                                        <div class="legend-group">
+                                            <input class="layer-toggle" type="checkbox" value="alertAreas" checked="legend.alertAreas" ng-model="legend.alertAreas">
+                                            Alert Areas
+                                            <a data-target="#about-alert-areas" data-toggle="modal" href="#"><i class="fa fa-question-circle fa-1x"></i></a><br>
+                                            <div class="legend-subtext collapse in" ng-show="legend.alertAreas">
+                                                <small class="alert-area-box"></small>
+                                            </div>
+                                        </div>
+
+                                        <div class="legend-group">
+                                            <input class="layer-toggle" type="checkbox" value="infrastructure" checked="legend.infrastructure" ng-model="legend.infrastructure">
+                                            Infrastructure
+                                            <div class="legend-subtext" ng-show="legend.infrastructure">
+                                                <div class="bikerack"></div><small> Bike rack</small><br>
+                                                <div class="bikelane solidlane thicklane"></div><small> Protected Bike Lane</small><br>
+                                                <div class="bikelane solidlane"></div><small> Bike Lane</small><br>
+                                                <div class="bikelane dotlane"></div><small> Other Cycling Route</small>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </ion-content>
         </ion-pane>
