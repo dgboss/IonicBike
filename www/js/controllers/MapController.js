@@ -6,14 +6,15 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
     function($rootScope, $scope, $log, $timeout, $window, $state, $stateParams, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, AlertArea_Service, Coord_Service, Icon, Popup_Service, NotificationPopup_Service, djangoAuth) {
 
         $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
-            if(toState.name === 'app') {
+            /*if(toState.name === 'app') {
                 if(Coord_Service.dirty) {
                     $scope.map.setView(new L.LatLng(Coord_Service.coordinates[1], Coord_Service.coordinates[0]), 15);
                     updateIncidents(true);
                 }
                 Coord_Service.dirty = false;
                 $window.dispatchEvent(new Event('resize'));
-            }
+            }*/
+            $window.dispatchEvent(new Event('resize'));
         });
 
     // Scope variables
@@ -151,12 +152,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
     }
 
 
-
-
-   /* $scope.legendControl = L.control.layers({},{}).addTo($scope.map);
-    $scope.legendControl.addOverlay(osmBase, 'OSM');
-    $scope.legendControl.addOverlay(stravaHM, 'Strava Ridership Data');
-    $scope.legendControl.addOverlay(infrastructure, 'Infrastructure');*/
 
     var incidentData = new L.MarkerClusterGroup({
         maxClusterRadius: 70,
@@ -335,7 +330,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 }
             });
             incidentData.addLayer(collisionLayer);
-            //$scope.legendControl.addOverlay(collisionLayer, '<span><i class="marker-group collision fa fa-bicycle icon-black"></i><small>Collisions</small></span>');
         });
 
         // Get nearmiss data from BikeMaps api and add to map
@@ -350,7 +344,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 }
             });
             incidentData.addLayer(nearmissLayer);
-            // $scope.legendControl.addOverlay(theft_layer, {'<i class="theft fa fa-bicycle icon-black"></i><small> Bike Theft</small>': theft_layer});
         });
 
         // Get hazard data from BikeMaps api and add to map
@@ -364,7 +357,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 }
             });
             incidentData.addLayer(hazardLayer);
-            //$scope.legendControl.addOverlay(hazardLayer, '<i class="hazard fa fa-bicycle icon-black"></i><small>Hazard</small>');
         });
 
         // Get theft data from BikeMaps api and add to map
@@ -378,26 +370,22 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 }
             });
             incidentData.addLayer(theftLayer);
-           // $scope.legendControl.addOverlay(theft_layer, {'<i class="theft fa fa-bicycle icon-black"></i><small> Bike Theft</small>': theft_layer});
         });
 
     }
 
     // Update incidents data on map
     function updateIncidents(force) {
+        console.log("In updateIncidents method");
         newMapBounds = $scope.map.getBounds();
 
         if(force){
             extendedBounds = getExtendedBounds(newMapBounds);
             getIncidents(extendedBounds);
-        }
-        else {
+        } else {
             if(newBoundsWithinExtended(newMapBounds, extendedBounds)){
-               console.log("New within old");
 
-            }
-            else {
-               // console.log('New boundaries');
+            } else {
                 extendedBounds = getExtendedBounds(newMapBounds);
                 getIncidents(extendedBounds);
             }
@@ -407,9 +395,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
    function getAlertAreas(){
        var ath = $window.localStorage["authenticated"];
        var tok = $window.localStorage["token"];
-
-       console.log(ath);
-       console.log(tok);
 
        if($window.localStorage["authenticated"] !== "null" && $window.localStorage["authenticated"] && $window.localStorage["token"] !== "null" && $window.localStorage["token"]) {
            console.log("Going to get alert areas");
@@ -438,8 +423,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
        }
    }
 
-
-
     $scope.map.on('moveend', function(){
         updateIncidents(false);
     });
@@ -462,16 +445,18 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         $scope.legend.alertAreas = false;
     });
 
-    $rootScope.$on('PushNotificationService.panToPoint', function(e, notification) {
-        if(notification && notification.data && notification.data.payload && notification.data.payload.lat && notification.data.payload.lng){
-            $scope.map.setView(new L.LatLng(notification.data.payload.lat, notification.data.payload.lng), 18);
+    $rootScope.$on('BMA.panToPoint', function(e, notification) {
+        if(notification && notification.data && notification.data.payload && notification.data.payload.lat && notification.data.payload.lng) {
+            $scope.map.setView(new L.LatLng(notification.data.payload.lat, notification.data.payload.lng), 17);
             updateIncidents(true);
-            var popup = L.popup({offset: L.point(0,-26)})
-                .setLatLng(new L.LatLng(notification.data.payload.lat, notification.data.payload.lng))
-                .setContent(NotificationPopup_Service(notification.data.payload))
-                .openOn($scope.map);
-            }
-        });
+            /*var popup = L.popup({offset: L.point(0,-26)})
+             .setLatLng(new L.LatLng(notification.data.payload.lat, notification.data.payload.lng))
+             .setContent(NotificationPopup_Service(notification.data.payload));
+
+             }
+             popup.openOn($scope.map);*/
+            $scope.map.openPopup(NotificationPopup_Service(notification.data.payload), new L.LatLng(notification.data.payload.lat, notification.data.payload.lng) , {offset: L.point(0, -26), minWidth:150});
+        }});
 
         
 
@@ -512,22 +497,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         }
     }
 
-
-    // Show a popup when you click the map
-    $scope.popup = L.popup();
-    $scope.onMapClick = function onMapClick(e) {
-        console.log(e);
-       $scope.popup
-            .setLatLng(e.latlng)
-            .setContent("You clicked the map at " + e.latlng.toString())
-            .openOn($scope.map);
-    };
-
-    $scope.map.on('contextmenu', $scope.onMapClick);
-
-
-
-
     /* Define actions triggered by new drawings */
     $scope.map.on('draw:created', function (e) {
         var type = e.layerType;
@@ -536,11 +505,13 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         if (type === 'marker') {
             Coord_Service.coordinates[0] = e.layer.getLatLng().lng;
             Coord_Service.coordinates[1] = e.layer.getLatLng().lat;
-            Coord_Service.flag = 'Dirty'
+            Coord_Service.dirty = true;
             //console.log(e.layer.getLatLng());
             $state.go('incidentform');
             //layer.bindPopup('A popup!');
             console.log("Going to form state")
+        } else if(type == 'polygon') {
+            console.log("Something happened with a polygon");
         }
 
         //$scope.editableLayers.addLayer(layer);
@@ -675,67 +646,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
 
     $scope.legendControl();
 
-
-
-    /*$scope.legendControl = function() {
-        *//**//**//**//* Legend control *//**//**//**//*
-        $(document).ready(function () {
-            // Control sublegend collapsing
-            $("input.layer-toggle").click(function (e) {
-                layerClicked = window[e.target.value];
-                checked = e.target.checked;
-                subLegend = $(e.target).siblings(".legend-subtext");
-                if (checked) {
-                    map.addLayer(layerClicked);
-                    subLegend.collapse("show");
-                }
-                else if (map.hasLayer(layerClicked) && !checked) {
-                    map.removeLayer(layerClicked);
-                    subLegend.collapse("hide");
-                }
-            });
-
-
-            // Control legend collapsing (modified code from leaflet/src/L.control.layers)
-            var container = $('#legend .leaflet-control-layers');
-
-            $(window).resize(function (e) {
-                if ($(window).width() < 700) {
-                    var link = $('#legend .leaflet-control-layers-toggle'),
-                        map = $('#map');
-
-                    if (!L.Browser.android) {
-                        container.mouseenter(expand);
-                        container.mouseleave(collapse);
-                    }
-
-                    if (L.Browser.touch) {
-                        link.click(function (e) {
-                            e.stopPropagation();
-                            expand();
-                        });
-                    } else {
-                        link.focus(expand);
-                    }
-
-                    map.click(collapse);
-                }
-
-                else {
-                    expand();
-                }
-            });
-            $(window).trigger('resize'); //Call event handler on load
-
-            function expand() {
-                container.addClass('leaflet-control-layers-expanded');
-            };
-
-            function collapse() {
-                container.removeClass('leaflet-control-layers-expanded');
-            };
-        });
-    }*/
 
         // Initialize the slider
         $("input.slider").ready(function(){

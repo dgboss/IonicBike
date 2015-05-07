@@ -2,10 +2,55 @@
  * Created by boss on 4/10/2015.
  */
 
-bikeMapApp.service('PushNotificationService', function PushNotificationService($rootScope, $location, $cordovaPush, $cordovaDialogs, $cordovaMedia, $cordovaToast, $http, $resource, $window, $ionicPopup){
+bikeMapApp.service('PushNotificationService', function PushNotificationService($rootScope, $state, $location, $window, $cordovaPush, $cordovaDialogs, $cordovaMedia, $http, $resource, $ionicPopup){
 
 
     var service = {
+        'notifications': $window.localStorage["notifications"] ? JSON.parse($window.localStorage["notifications"]) : [],
+/*        'notifications': [{
+            payload: {
+                type: "hazard",
+                i_type: "Poor Signage",
+                pk: 1,
+                lat: 49,
+                lng: -121
+            }
+        },{
+            payload: {
+                type: "theft",
+                i_type: "Some type of theft",
+                pk: 17
+            }
+        },{
+            payload: {
+                type: "collision",
+                i_type: "Some type of collision",
+                pk: 3
+            }
+        }
+        ],*/
+
+        'saveNotification': function(notification) {
+            // allow max of 20 notifications on the device
+            if(this.notifications.length < 20) {
+                this.notifications.push(notification);
+            } else {
+                this.notifications.splice(19, 1);
+                this.notifications.push(notification);
+            }
+            $window.localStorage["notifications"] = JSON.stringify(this.notifications);
+        },
+
+        'deleteNotification': function(pk) {
+            for(var i in this.notifications) {
+                if(this.notifications[i].payload.pk === pk) {
+                    this.notifications.splice(i,1);
+                    break;
+                }
+            }
+            $window.localStorage["notifications"] = JSON.stringify(this.notifications);
+        },
+
         'register': function(){
             var config = null;
 
@@ -24,8 +69,6 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
 
             $cordovaPush.register(config).then(function (result) {
                 console.log("Register success " + result);
-                console.log(ionic.Platform);
-                $cordovaToast.showShortCenter('Registered for push notifications');
                 // ** NOTE: Android regid result comes back in the pushNotificationReceived, only iOS returned here
                 if (ionic.Platform.isIOS()) {
                     this.storeDeviceToken("ios");
@@ -36,7 +79,6 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
         },
 
         'unregister': function(){
-            console.log("In unregister of PushNotificationService");
             if($window.localStorage["regid"]){
                 this.removeDeviceToken();
                 $window.localStorage.removeItem("regid");
@@ -46,47 +88,36 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
         'handleAndroid': function(notification){
             // ** NOTE: ** You could add code for when app is in foreground or not, or coming from coldstart here too
             //             via the console fields as shown.
-            console.log("In foreground " + notification.foreground  + " Coldstart " + notification.coldstart);
             if (notification.event == "registered") {
                 $window.localStorage["regid"] = notification.regid;
                 this.storeDeviceToken("android");
             }
             else if (notification.event == "message") {
+                this.saveNotification(notification);
                 if(notification.foreground){
                     var confirmPopup = $ionicPopup.confirm({
-                        title: "Foreground",
-                        template: "Notification received while in the foreground"
+                        title: "New incident reported",
+                        template: "Would you like to view the incident on the map?"
                     });
                     confirmPopup.then(function(res){
                         if(res){
-                            console.log("You clicked YES!");
                             $location.path("/");
-                            $rootScope.$broadcast("PushNotificationService.panToPoint", {data: notification});
+                            $rootScope.$broadcast("BMA.panToPoint", {data: notification});
                         }
-                        else{
-                            console.log("You clicked NO!");
-                        }}
-                    )}
-
+                    })
                 }
-            else if (notification.event == "error")
-                $cordovaDialogs.alert(notification.msg, "Push notification error event");
-            else $cordovaDialogs.alert(notification.event, "Push notification handler - Unprocessed Event");
+            }
         },
 
         'storeDeviceToken': function(type){
 
-            console.log("Post token for registered device with data " + JSON.stringify(type));
-
             var name;
             if($window.localStorage["user"] && $window.localStorage["user"] !== 'Guest'){
                 name = $window.localStorage["user"];
-            }
-
-            else{
+            } else {
                 name = "anonymous";
             }
-
+            console.log($window.localStorage["token"]);
             $http.post('http://192.168.1.125:8000/gcmdevices/', JSON.stringify(
                 {
                     "name": name,
@@ -109,13 +140,13 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
                     url: 'http://192.168.1.125:8000/gcmdevices/' + $window.localStorage["regid"] + '/'
                 })
                     .success(function (data, status) {
-                        console.log("Regid successfully delete");
+                        console.log("Regid successfully deleted");
                     })
                     .error(function(data, status) {
                         console.log("Regid could not be deleted");
                     })
             }
-        }}
+        }};
 
     return service;
 });

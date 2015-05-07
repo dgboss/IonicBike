@@ -1,6 +1,6 @@
 <ion-popover-view>
     <ion-content>
-        <div class="list" ng-click="popover.hide()">
+        <div ng-click="popover.hide()">
             <div ng-show="authInfo.user === 'Guest'">
                 <a class="item" ui-sref="login" >
                     <span>Login</span>
@@ -14,11 +14,8 @@
             <a class="item" ui-sref="share" >
                 <span>Share</span>
             </a>
-            <a class="item" href="#/hazard">
-                <span>Hazard</span>
-            </a>
-            <a class="item" ui-sref="incidentform" >
-                <span>Incident Form</span>
+            <a class="item" ui-sref="notifications" >
+                <span>Notifications</span>
             </a>
             <div class="item" ng-click="clearLocalStorage()">
                 Clear local storage

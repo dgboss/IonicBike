@@ -1,5 +1,5 @@
 
-bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $location, $ionicPopup, $ionicPopover, $window, $cordovaPush, $cordovaToast, $cordovaMedia, $cordovaDialogs, $http, djangoAuth, PushNotificationService) {
+bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $location, $ionicPopup, $ionicPopover, $window, $cordovaPush, $cordovaMedia, $cordovaDialogs, $http, djangoAuth, PushNotificationService) {
 
     $scope.authInfo = djangoAuth;
     $scope.notifications = [];
@@ -42,8 +42,6 @@ bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $location, $ionicP
 
     /* Push Notification received */
     $rootScope.$on('$cordovaPush:notificationReceived', function (event, notification) {
-        $cordovaToast.showShortCenter(notification);
-        //console.log("Notification: " + JSON.stringify([notification]));
         if (ionic.Platform.isAndroid()) {
             PushNotificationService.handleAndroid(notification);
         }
