@@ -6,8 +6,9 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
 
 
     var service = {
-        'notifications': $window.localStorage["notifications"] ? JSON.parse($window.localStorage["notifications"]) : [],
-/*        'notifications': [{
+       /* 'notifications': $window.localStorage["notifications"] ? JSON.parse($window.localStorage["notifications"]) : [],
+       */ 'enabled': $window.localStorage["receiveAlerts"] ? JSON.parse($window.localStorage["receiveAlerts"]) : true,
+        'notifications': [{
             payload: {
                 type: "hazard",
                 i_type: "Poor Signage",
@@ -28,7 +29,7 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
                 pk: 3
             }
         }
-        ],*/
+        ],
 
         'saveNotification': function(notification) {
             // allow max of 20 notifications on the device

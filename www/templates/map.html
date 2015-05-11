@@ -7,12 +7,11 @@
         <ion-side-menu-content>
         <ion-pane>
            <ion-header-bar class="navbar-default-app">
-                    <button class="button button-icon button-clear icon ion-navicon" ></button>
-                    <button class="button" menu-toggle="left"></button>
+                    <button class="button button-icon button-clear icon ion-navicon" menu-toggle=""left></button>
                     <h1 class="nav-app-title title" >BikeMaps</h1>
             </ion-header-bar>
-            <ion-content>
-                <div ng-controller="MapCtrl" id="map">
+            <ion-content ng-controller="MapCtrl">
+                <div  id="map">
                     <div id="legend" class="leaflet-container leaflet-control-container">
                         <div class="leaflet-top leaflet-right">
                             <div class="leaflet-control-layers leaflet-control" aria-haspopup="true" >
@@ -83,8 +82,16 @@
                     </div>
 
                 </div>
+               <div ng-show="model.showTargetMarker">
+                    <div class="awesome-marker-icon-lightblue awesome-marker leaflet-zoom-animated bma-target-marker" tab-index="0" >
+                        <i class="fa fa-bicycle icon-black bma-target-bike"></i>
+                    </div>
+                   <img class="bma-target-cross" src="img/PinCross.png">
+               </div>
             </ion-content>
+
         </ion-pane>
+
         </ion-side-menu-content>
         <ion-side-menu side="left">
             <ion-list>

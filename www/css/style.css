@@ -385,10 +385,88 @@ textarea {
     color: #2c3e50;
 }
 
-.leaflet-popup-content {
-    width:auto !important;
+.bma-chevron {
+    margin-left: 10px;
 }
 
+.bma-checkbox {
+    height: 18px;
+    width: 18px;
+}
+
+.bma-leaflet-button.leaflet-bar a {
+    height: 35px;
+    width: 35px;
+    min-width: 35px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    color: #2c3e50;
+    font-weight: bold;
+    font-family: "Roboto";
+}
+.bma-leaflet-text-button.leaflet-bar a {
+    height: 35px;
+    width: 75px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    color: #2c3e50;
+    font-weight: bold;
+    font-family: "Roboto";
+
+}
+
+.bma-target-marker {
+    position: absolute;
+    top: 50% !important;
+    left: 50% !important;
+    margin-left: -18px;
+    margin-top: -47px;
+}
+
+.bma-target-cross {
+    height: 15px;
+    width: 32px;
+    position: absolute;
+    top: 50% !important;
+    left: 50% !important;
+    margin-left: -17px;
+    margin-top: -9px;
+}
+.bma-target-bike {
+    position: absolute;
+    margin-left: -9px;
+}
+
+.bma-button-group {
+    position:absolute;
+    left: 10px;
+    bottom: 60px;
+}
+.bma-button-collision.leaflet-bar a {
+    background-color: #d63e2a;
+    color: white;
+    opacity: 0.9;
+}
+.bma-button-nearmiss.leaflet-bar a {
+    background-color: #f3952f;
+    color: white;
+    opacity: 0.9;
+}
+.bma-button-hazard.leaflet-bar a {
+    background-color: #72b026;
+    color: white;
+    opacity: 0.9;
+}
+.bma-button-theft.leaflet-bar a {
+      background-color: #a3a3a3;
+      color: white;
+      opacity: 0.9;
+  }
+.leaflet-left.leaflet-bottom {
+    bottom: 32px;
+}
 
 
 

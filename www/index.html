@@ -39,6 +39,7 @@
 
     <!-- your app's js -->
     <script src="js/easy-button.js"></script>
+    <script src="js/easy-text-button.js"></script>
     <script src="static/d3.min.js"></script>
     <script src="lib/bootstrap-slider/bootstrap-slider.js"></script>
     <script src="lib/leaflet/plugins/leaflet-usermarker/leaflet.usermarker.js"></script>
@@ -57,6 +58,7 @@
     <script src="js/controllers/LogoutController.js"></script>
     <script src="js/controllers/FormControllers.js"></script>
     <script src="js/controllers/NotificationsController.js"></script>
+    <script src="js/controllers/SettingsController.js"></script>
     <script src="js/directives/directives.js"></script>
     <script src="js/services.js"></script>
     <script src="js/services/djangoAuth.js"></script>
@@ -71,11 +73,11 @@
   <body ng-app="bikeMapApp" ng-controller="AppCtrl" >
      <ion-nav-bar class="bar-bikemaps nav-title-slide-ios7" align-title="center" no-tap-scroll="true">
           <ion-nav-back-button class="button-clear button-bikemaps">
-              <i class="ion-arrow-left-c"></i> Back
+              <i class="ion-chevron-left bma-chevron"></i>
           </ion-nav-back-button>
           <ion-nav-buttons side="right">
               <button class="button button-bikemaps button-icon" ng-click="popover.show($event)">
-                  {{authInfo.user}}
+                  <i class="ion-android-more-vertical"></i>
               </button>
           </ion-nav-buttons>
       </ion-nav-bar>

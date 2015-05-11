@@ -5,7 +5,7 @@
 angular.module('bikeMapApp.constants',[])
     .factory('Constants',[function(){
         var _API = {
-            baseUrl: "http://192.168.1.125:8000/"
+            baseUrl: "http://206.87.170.92:8000/"
         };
 
         var _timeouts = {

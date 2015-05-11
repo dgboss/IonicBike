@@ -5,7 +5,14 @@
 /*
  Controller for incident portion of incident form
  */
-bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicModal, Constants, IncidentReportService, CyclingFrequencyService, BirthYearService, BirthMonthService, GenderService, YesNoService, Coord_Service, Collision_Service, Nearmiss_Service) {
+bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicModal, $location, $anchorScroll, Constants, IncidentReportService, CyclingFrequencyService, BirthYearService, BirthMonthService, GenderService, YesNoService, Coord_Service, Collision_Service, Nearmiss_Service) {
+
+    $scope.scrollOnClick = function() {
+        alert("You clicked on a heading");
+        $location.hash('formTop');
+        $anchorScroll();
+    };
+
     $scope.incidentDetails = {
         selectedDateTime: null,
         maxDate: new Date(),
@@ -73,6 +80,10 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
         incidentObjectAlert: false,
         incidentInjuryAlert: false,
         p_type: ""
+    };
+
+    $scope.markCheckbox = function() {
+        $scope.model.incidentChecked = !$scope.model.incidentChecked;
     };
 
     /* If user has previously checked the box, keep the box checked when opening
@@ -234,6 +245,10 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
         hazardTypeAlert: false
     };
 
+    $scope.markCheckbox = function() {
+        $scope.model.hazardChecked = !$scope.model.hazardChecked;
+    };
+
     /* If user has previously checked the box, keep the box checked when opening
         the form in the future.
     */
@@ -376,6 +391,10 @@ bikeMapApp.controller('TheftCtrl', function($scope, $state, $window, $ionicModal
         theftLocationAlert: false,
         theftLightingAlert: false,
         theftTrafficAlert: false
+    };
+
+    $scope.markCheckbox = function() {
+        $scope.model.theftChecked = !$scope.model.theftChecked;
     };
 
     /* If user has previously checked the box, keep the box checked when opening

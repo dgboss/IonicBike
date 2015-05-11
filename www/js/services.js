@@ -64,13 +64,21 @@ angular.module('bikeMapApp.services', ['ngResource'])
             _token = tkn;
         }
 
-        service.getAlertAreas = function(){
+        service.AlertAreas = function(){
                 return $resource(
-                    "http://192.168.1.125:8000/alertareas/\\.json",
+                    "http://192.168.1.125:8000/alertareas/:id/\\.json",
                     {}, {
                         get: {
                             method: 'GET',
                             headers: {'Authorization': 'Token ' + _token}
+                        },
+                        save: {
+                            method: 'POST',
+                            headers: {'Authorization': 'Token ' + _token}
+                        },
+                        delete: {
+                            method: 'DELETE',
+                            headers: {'Authorization': 'Token' + _token}
                         }
                     })
                 };
@@ -206,5 +214,4 @@ angular.module('bikeMapApp.services', ['ngResource'])
         };
     })*/
 
-    .factory('Unregister')
 

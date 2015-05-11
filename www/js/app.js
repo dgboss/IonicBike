@@ -12,8 +12,17 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
       StatusBar.styleDefault();
     }
 
-    if($window.localStorage["authenticated"] && $window.localStorage["user"] !== null && $window.localStorage["user"] !== 'Guest' ){
+/*
+      if($window.localStorage["notifications"]) {
+          PushNotificationService.notifications = $window.localStorage["notifcations"];
+      }
+*/
+
+    if($window.localStorage["authenticated"]){
         djangoAuth.authenticated = $window.localStorage["authenticated"];
+    }
+
+    if($window.localStorage["user"]) {
         djangoAuth.user = $window.localStorage["user"];
         PushNotificationService.register();
     }
@@ -60,6 +69,11 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
             .state('notifications', {
                 url: "/notifications",
                 templateUrl: "templates/notifications.html"
+            })
+
+            .state('settings', {
+                url: "/settings",
+                templateUrl: "templates/settings.html"
             });
 
         $urlRouterProvider.otherwise('/');
