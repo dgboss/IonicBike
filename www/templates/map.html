@@ -88,6 +88,18 @@
                     </div>
                    <img class="bma-target-cross" src="img/PinCross.png">
                </div>
+              <div class="bma-button-group" ng-show="model.showTargetMarker">
+                  <button class="btn btn-default bma-button bma-button-cancel" ng-click="cancelReporting()">
+                      <i class="ion-close-round"></i>
+                      <span class="bma-button-span">Cancel</span>
+                  </button>
+                  <button class="btn btn-default bma-button bma-button-continue" ng-click="showReportOptions()">
+                      <i class="ion-checkmark-round"></i>
+                     <span class="bma-button-span">Continue</span>
+                  </button>
+
+              </div>
+
             </ion-content>
 
         </ion-pane>

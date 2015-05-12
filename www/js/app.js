@@ -55,10 +55,22 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
                 templateUrl: "templates/share.html"
             })
 
+            .state('incident', {
+                url: "/incident",
+                templateUrl: "templates/incident.html",
+                controller: "IncidentCtrl"
+            })
+
             .state('hazard', {
                 url: "/hazard",
                 templateUrl: "templates/hazard.html",
-                controller: 'HazardCtrl'
+                controller: "HazardCtrl"
+            })
+
+            .state('theft', {
+                url: "/theft",
+                templateUrl: "templates/theft.html",
+                controller: "TheftCtrl"
             })
 
             .state('incidentform', {

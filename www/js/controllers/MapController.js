@@ -2,8 +2,8 @@
  * Created by Boss on 3/13/2015.
  */
 
-bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$window', '$state', '$stateParams', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'AlertArea_Service', 'Coord_Service', 'Icon', 'Popup_Service', 'NotificationPopup_Service', 'djangoAuth', '$cordovaToast', '$cordovaVibration',
-    function($rootScope, $scope, $log, $timeout, $window, $state, $stateParams, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, AlertArea_Service, Coord_Service, Icon, Popup_Service, NotificationPopup_Service, djangoAuth, $cordovaToast, $cordovaVibration) {
+bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$window', '$state', '$stateParams', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'AlertArea_Service', 'Coord_Service', 'Icon', 'Popup_Service', 'NotificationPopup_Service', 'djangoAuth', '$cordovaToast', '$cordovaVibration', '$ionicActionSheet',
+    function($rootScope, $scope, $log, $timeout, $window, $state, $stateParams, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, AlertArea_Service, Coord_Service, Icon, Popup_Service, NotificationPopup_Service, djangoAuth, $cordovaToast, $cordovaVibration, $ionicActionSheet) {
 
         $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
             if(toState.name === 'app') {
@@ -31,15 +31,13 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
 
         // Cancel reporting UI - remove target marker and buttons
         $scope.cancelReporting = function() {
-            $scope.$apply(function() {
                 $scope.model.showTargetMarker = false;
-                handlingContextMenu = false;
+               /* handlingContextMenu = false;
                 $scope.cancelReportButton.removeFrom($scope.map);
                 $scope.theftReportButton.removeFrom($scope.map);
                 $scope.hazardReportButton.removeFrom($scope.map);
                 $scope.nearmissReportButton.removeFrom($scope.map);
-                $scope.collisionReportButton.removeFrom($scope.map);
-            });
+                $scope.collisionReportButton.removeFrom($scope.map);*/
 
         };
 
@@ -112,11 +110,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
             alert("Location access was denied. Please enable location services.");
         });
     };
-
-    // Add geolocation button to the map
-    var glControl = L.easyButton('fa fa-crosshairs bma-leaflet-button',$scope.geolocate,'', $scope.map, '', 'bma-leaflet-button');
-
-
 
    /* Provide an initial location to open the map to the CRD. Opening to the extent
       of the world downloads too much incident data
@@ -511,38 +504,59 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
             //$scope.map.openPopup(NotificationPopup_Service(notification.data.payload), new L.LatLng(notification.data.payload.lat, notification.data.payload.lng) , {offset: L.point(0, -26), minWidth:150});
         });
 
-        var handlingContextMenu = false;
 
-        $scope.map.on('contextmenu', function(e) {
-
-            if(handlingContextMenu) {
-                return;
-            } else {
-                handlingContextMenu = true;
-            }
-
+        $scope.addReport = function() {
+            $scope.$apply(function() {
+                $scope.model.showTargetMarker = true;
+            });
+            // try to vibrate when user activates the control
             try {
                 $cordovaVibration.vibrate(100);
             } catch(err) {
                 console.log(err);
             }
+        };
 
-            console.log(e);
 
-            Coord_Service.coordinates[0] = e.latlng.lng;
-            Coord_Service.coordinates[1] = e.latlng.lat;
+
+        $scope.showReportOptions = function() {
+            $scope.model.showTargetMarker = false;
+            Coord_Service.coordinates[0] = $scope.map.getCenter().lng;
+            Coord_Service.coordinates[1] = $scope.map.getCenter().lat;
             Coord_Service.dirty = true;
 
-            $scope.map.setView([Coord_Service.coordinates[1],Coord_Service.coordinates[0]]);
-            $scope.model.showTargetMarker = true;
-            $scope.$apply();
+            $ionicActionSheet.show({
+                buttons: [
+                    { text: '<div class="awesome-marker-icon-red awesome-marker"><i class="fa fa-bicycle icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Collision</span>' },
+                    { text: '<div class="awesome-marker-icon-orange awesome-marker"><i class="fa fa-bicycle icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Near miss</span>' },
+                    { text: '<div class="awesome-marker-icon-green awesome-marker"><i class="fa fa-warning icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Hazard</span>' },
+                    { text: '<div class="awesome-marker-icon-lightgray awesome-marker"><i class="fa fa-bicycle icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Theft</span>' },
+                    { text: '<div class="bma-actionsheet-icon-close"><i class="fa fa-close"></i></div><span class="bma-actionsheet">Cancel</span>' }
+                ],
+                titleText: 'What type of incident are you reporting?',
+                buttonClicked: function(index) {
+                    console.log(index);
+                    switch (index) {
+                        case 0:
+                            $state.go('incident');
+                            return true;
+                        case 1:
+                            $state.go('incident');
+                            return true;
+                        case 2:
+                            $state.go('hazard');
+                            return true;
+                        case 3:
+                            $state.go('theft');
+                            return true;
+                        case 4:
+                            return true;
+                    }
+                    return true;
+                }
+            })
+        };
 
-            $scope.cancelReportButton = L.easyTextButton('fa fa-times',$scope.cancelReporting,'', $scope.map, 'bottomleft', 'Cancel', 'bma-leaflet-text-button');
-            $scope.theftReportButton = L.easyTextButton('fa fa-edit', $scope.continueReporting,'', $scope.map, 'bottomleft', 'Theft', 'bma-leaflet-text-button bma-button-theft');
-            $scope.hazardReportButton = L.easyTextButton('fa fa-edit', $scope.continueReporting,'', $scope.map, 'bottomleft', 'Hazard', 'bma-leaflet-text-button bma-button-hazard');
-            $scope.nearmissReportButton = L.easyTextButton('fa fa-edit', $scope.continueReporting,'', $scope.map, 'bottomleft', 'Nearmiss', 'bma-leaflet-text-button bma-button-nearmiss');
-            $scope.collisionReportButton = L.easyTextButton('fa fa-edit', $scope.continueReporting,'', $scope.map, 'bottomleft', 'Collision', 'bma-leaflet-text-button bma-button-collision');
-        });
 
 
     /* Define actions triggered by new drawings */
@@ -835,4 +849,11 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         $scope.incidentReport = function() {
             alert("Collision Button Clicked");
         };
+
+
+        // Add marker/pin control to map
+        var markerControl = L.easyButton('fa fa-map-marker bma-leaflet-button', $scope.addReport,'', $scope.map, 'topleft', 'bma-leaflet-button');
+
+        // Add geolocation button to the map
+        var glControl = L.easyButton('fa fa-crosshairs bma-leaflet-button',$scope.geolocate,'', $scope.map, 'topleft', 'bma-leaflet-button');
 }]);

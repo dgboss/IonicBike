@@ -440,9 +440,32 @@ textarea {
 }
 
 .bma-button-group {
+    width: 100%;
     position:absolute;
-    left: 10px;
-    bottom: 60px;
+    bottom: 42px;
+    text-align: center;
+}
+.bma-button.btn {
+    width: 48%;
+    font-weight: bold;
+    height: 46px;
+}
+
+.bma-button-span {
+    margin-left: 3px;
+}
+
+.bma-button-cancel.btn.btn-default {
+    background-color: #a3a3a3;
+    border-color: transparent;
+    color: #fff;
+    opacity: 0.8;
+}
+.bma-button-continue.btn.btn-default {
+    background-color: #00ADAB;
+    border-color: transparent;
+    color: #fff;
+    opacity: 0.8;
 }
 .bma-button-collision.leaflet-bar a {
     background-color: #d63e2a;
@@ -466,6 +489,19 @@ textarea {
   }
 .leaflet-left.leaflet-bottom {
     bottom: 32px;
+}
+.bma-actionsheet {
+    color: #2c3e50;
+}
+.bma-actionsheet-icon {
+    position: relative;
+    bottom: 3px;
+}
+.bma-actionsheet-icon-close {
+    position: absolute;
+    display: inline-block;
+    left:10px;
+    color: #2c3e50;
 }
 
 

@@ -7,12 +7,6 @@
  */
 bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicModal, $location, $anchorScroll, Constants, IncidentReportService, CyclingFrequencyService, BirthYearService, BirthMonthService, GenderService, YesNoService, Coord_Service, Collision_Service, Nearmiss_Service) {
 
-    $scope.scrollOnClick = function() {
-        alert("You clicked on a heading");
-        $location.hash('formTop');
-        $anchorScroll();
-    };
-
     $scope.incidentDetails = {
         selectedDateTime: null,
         maxDate: new Date(),
