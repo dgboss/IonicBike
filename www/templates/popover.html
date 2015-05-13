@@ -2,7 +2,7 @@
     <ion-content>
         <div ng-click="popover.hide()">
             <div ng-show="authInfo.user === 'Guest'">
-                <a class="item" ui-sref="login" >
+                <a class="item" ng-click="openModal()" >
                     <span>Login</span>
                 </a>
             </div>

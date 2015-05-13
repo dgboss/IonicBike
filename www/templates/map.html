@@ -1,116 +1,143 @@
     <ion-view data-tap-disabled="true">
-        <ion-nav-title>
+        <ion-nav-title class="bma-title">
             <img src="img/BikeMapsORG_Logo_notxt_sm.png" style="height: 37px; vertical-align: middle">
             <span>BikeMaps</span>
         </ion-nav-title>
-        <ion-side-menus>
-        <ion-side-menu-content>
-        <ion-pane>
-           <ion-header-bar class="navbar-default-app">
-                    <button class="button button-icon button-clear icon ion-navicon" menu-toggle=""left></button>
-                    <h1 class="nav-app-title title" >BikeMaps</h1>
-            </ion-header-bar>
-            <ion-content ng-controller="MapCtrl">
-                <div  id="map">
-                    <div id="legend" class="leaflet-container leaflet-control-container">
-                        <div class="leaflet-top leaflet-right">
-                            <div class="leaflet-control-layers leaflet-control" aria-haspopup="true" >
-                                <a class="leaflet-control-layers-toggle" href="#" title="Layers"></a>
-                                <form class="leaflet-control-layers-list">
-                                    <div class="leaflet-control-layers-overlays">
-
-                                        <div class="legend-group">
-                                            <input class="layer-toggle" type="checkbox" value="incidentData" checked="legend.incidentData" ng-model="legend.incidentData">
-                                            Incidents
-                                            <div class="marker-group legend-subtext collapse in">
-                                                <input type="checkbox" id="collisionCheckbox" checked="legend.collision" ng-model="legend.collision"> <i class="collision fa fa-bicycle icon-black"></i><small> Citizen collision report</small><br>
-                                                <input type="checkbox" id="nearmissCheckbox" checked="legend.nearmiss" ng-model="legend.nearmiss"> <i class="nearmiss fa fa-bicycle icon-black"></i><small> Citizen near miss report</small><br>
-                                                <input type="checkbox" id="hazardCheckbox" checked="legend.hazard" ng-model="legend.hazard"> <i class="hazard fa fa-warning icon-black"></i><small> Cyclist hazard</small><br>
-                                                <input type="checkbox" id="theftCheckbox" checked="legend.theft" ng-model="legend.theft"> <i class="theft fa fa-bicycle icon-black"></i><small> Bike Theft</small><br>
-                                                <input type="checkbox" id="officialCheckbox" checked="legend.official" ng-model="legend.official"> <i class="official fa fa-certificate"></i><small> Official collision report</small><br>
-
-                                                <input id="filterCheckbox" type="checkbox" checked = "legend.filter" ng-model="legend.filter">
-                                                    <span class="fa-stack">
-                                                      <i class="fa fa-filter fa-stack-1x"></i>
-                                                      <i class="fa fa-circle-thin fa-stack-2x"></i>
-                                                    </span></i>
-                                                    <small> Filter</small>
-                                                <div class="filter">
-                                                    <div class="date-container">
-                                                        <small><span class="start-date"></span></small>
-                                                        <small><span class="end-date pull-right"></span></small>
-                                                    </div>
-
-                                                    <input class="bma-slider slider"></input>
-                                                </div>
-                                            </div>
+        <ion-side-menus ng-controller="MapCtrl">
+            <ion-side-menu-content >
+            <ion-pane>
+               <ion-header-bar class="navbar-default-app">
+                        <button class="button button-icon button-clear icon ion-navicon" menu-toggle=""left></button>
+                        <h1 class="nav-app-title title" >BikeMaps</h1>
+                </ion-header-bar>
+                <ion-content >
+                    <div  id="map"></div>
+                   <div ng-show="model.showTargetMarker">
+                        <div class="awesome-marker-icon-lightblue awesome-marker leaflet-zoom-animated bma-target-marker" tab-index="0" >
+                            <i class="fa fa-bicycle icon-black bma-target-bike"></i>
+                        </div>
+                       <img class="bma-target-cross" src="img/PinCross.png">
+                   </div>
+                  <div class="bma-button-group" ng-show="model.showTargetMarker">
+                      <button class="btn btn-default bma-button bma-button-cancel" ng-click="cancelReporting()">
+                          <i class="ion-close-round"></i>
+                          <span class="bma-button-span">Cancel</span>
+                      </button>
+                      <button class="btn btn-default bma-button bma-button-continue" ng-click="showReportOptions()">
+                          <i class="ion-checkmark-round"></i>
+                         <span class="bma-button-span">Continue</span>
+                      </button>
+                  </div>
+                </ion-content>
+            </ion-pane>
+        </ion-side-menu-content>
+            <ion-side-menu side="left">
+                <ion-list>
+                    <ion-item>
+                        This is an item.
+                    </ion-item>
+                </ion-list>
+            </ion-side-menu>
+            <ion-side-menu class="bma-side-menu" side="right">
+                <ion-header-bar align-title="left" class="bar">
+                    <h2 class="title bma-side-menu-title">Layers</h2>
+                    <div class="buttons">
+                        <button class="button button-clear" ng-click="toggleLegend()">
+                            <i class="fa fa-close fa-lg">    </i>
+                        </button>
+                    </div>
+                </ion-header-bar>
+                <ion-content>
+                <ion-list>
+                    <div class="bma-legend-group">
+                        <div class="bma-legend-item" ng-click="toggleIncidentData()">
+                            <input class="bma-layer-toggle" type="checkbox" value="incidentData" checked=true ng-model="legend.incidentData" ng-click="toggleIncidentData()">
+                            <span class="bma-legend-label">Incidents</span>
+                        </div>
+                        <div ng-show="legend.incidentData">
+                            <div class="marker-group legend-subtext">
+                                <div class="bma-legend-item" ng-click="toggleCollisions()">
+                                    <input type="checkbox" class="bma-layer-toggle" id="collisionCheckbox" checked="legend.collision" ng-model="legend.collision" ng-click="toggleCollisions()">
+                                    <i class="collision fa fa-bicycle icon-black"></i>
+                                    <span class="bma-legend-label"> Citizen collision report</span>
+                                </div>
+                                <div class="bma-legend-item" ng-click="toggleNearmiss()">
+                                    <input type="checkbox" class="bma-layer-toggle" id="nearmissCheckbox" checked="legend.nearmiss" ng-model="legend.nearmiss" ng-click="toggleNearmiss()">
+                                        <i class="nearmiss fa fa-bicycle icon-black"></i>
+                                        <span class="bma-legend-label"> Citizen near miss report</span><br>
+                                </div>
+                                <div class="bma-legend-item" ng-click="toggleHazards()">
+                                    <input type="checkbox" class="bma-layer-toggle" id="hazardCheckbox" checked="legend.hazard" ng-model="legend.hazard" ng-click="toggleHazards()">
+                                        <i class="hazard fa fa-warning icon-black"></i>
+                                        <span class="bma-legend-label"> Cyclist hazard</span><br>
+                                </div>
+                                <div class="bma-legend-item" ng-click="toggleThefts()">
+                                    <input type="checkbox" class="bma-layer-toggle" id="theftCheckbox" checked="legend.theft" ng-model="legend.theft" ng-click="toggleThefts()">
+                                        <i class="theft fa fa-bicycle icon-black"></i>
+                                        <span class="bma-legend-label"> Bike Theft</span>
+                                </div>
+                                <div class="bma-legend-item" ng-click="toggleOfficial()" ng-show="officialLayer">
+                                    <input type="checkbox" class="bma-layer-toggle" id="officialCheckbox" checked="legend.official" ng-model="legend.official" ng-click="toggleOfficial()"> <1--hide layer from legend if data not available-->
+                                        <i class="official fa fa-certificate"></i>
+                                        <span class="bma-legend-label"> Official collision report</span>
+                                </div>
+                                <div class="bma-legend-item">
+                                    <input id="filterCheckbox" class="bma-layer-toggle" type="checkbox" checked = "legend.filter" ng-model="legend.filter">
+                                    <span class="fa-stack">
+                                      <i class="fa fa-filter fa-stack-1x"></i>
+                                      <i class="fa fa-circle-thin fa-stack-2x"></i>
+                                    </span></i>
+                                    <span class="bma-legend-label"> Filter</span>
+                                    <div class="filter">
+                                        <div class="date-container">
+                                            <span class="start-date"></span>
+                                            <span class="end-date pull-right"></span>
                                         </div>
 
-                                        <div class="legend-group">
-                                            <input class="layer-toggle" type="checkbox" value="stravaHM" checked="legend.stravaHM" ng-model="legend.stravaHM">
-                                            Strava ridership data
-                                            <a data-target="#about-strava" data-toggle="modal" href="#"><i class="fa fa-question-circle fa-1x"></i></a><br>
-                                            <div class="legend-subtext collapse in" ng-show="legend.stravaHM">
-                                                <small class="strava-gradient gradient-bar">less <div class="pull-right">more</div></small>
-                                            </div>
-                                        </div>
-
-                                        <div class="legend-group">
-                                            <input class="layer-toggle" type="checkbox" value="alertAreas" checked="legend.alertAreas" ng-model="legend.alertAreas">
-                                            Alert Areas
-                                            <a data-target="#about-alert-areas" data-toggle="modal" href="#"><i class="fa fa-question-circle fa-1x"></i></a><br>
-                                            <div class="legend-subtext collapse in" ng-show="legend.alertAreas">
-                                                <small class="alert-area-box"></small>
-                                            </div>
-                                        </div>
-
-                                        <div class="legend-group">
-                                            <input class="layer-toggle" type="checkbox" value="infrastructure" checked="legend.infrastructure" ng-model="legend.infrastructure">
-                                            Infrastructure
-                                            <div class="legend-subtext" ng-show="legend.infrastructure">
-                                                <div class="bikerack"></div><small> Bike rack</small><br>
-                                                <div class="bikelane solidlane thicklane"></div><small> Protected Bike Lane</small><br>
-                                                <div class="bikelane solidlane"></div><small> Bike Lane</small><br>
-                                                <div class="bikelane dotlane"></div><small> Other Cycling Route</small>
-                                            </div>
-                                        </div>
-
+                                        <input class="bma-slider slider"/>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                </div>
-               <div ng-show="model.showTargetMarker">
-                    <div class="awesome-marker-icon-lightblue awesome-marker leaflet-zoom-animated bma-target-marker" tab-index="0" >
-                        <i class="fa fa-bicycle icon-black bma-target-bike"></i>
+                    <div class="bma-legend-group">
+                        <div class="bma-legend-item" ng-click="toggleStravaHM()">
+                            <input class="bma-layer-toggle" type="checkbox" value="stravaHM" checked="legend.stravaHM" ng-model="legend.stravaHM" ng-click="toggleStravaHM()">
+                            <span class="bma-legend-label">Strava ridership data</span>
+                            <div class="legend-subtext-strava" ng-show="legend.stravaHM">
+                                <span class="strava-gradient gradient-bar">less <div class="pull-right">more</div></span>
+                            </div>
+                        </div>
                     </div>
-                   <img class="bma-target-cross" src="img/PinCross.png">
-               </div>
-              <div class="bma-button-group" ng-show="model.showTargetMarker">
-                  <button class="btn btn-default bma-button bma-button-cancel" ng-click="cancelReporting()">
-                      <i class="ion-close-round"></i>
-                      <span class="bma-button-span">Cancel</span>
-                  </button>
-                  <button class="btn btn-default bma-button bma-button-continue" ng-click="showReportOptions()">
-                      <i class="ion-checkmark-round"></i>
-                     <span class="bma-button-span">Continue</span>
-                  </button>
 
-              </div>
+                    <div class="bma-legend-group">
+                        <div class="bma-legend-item" ng-click="toggleAlertAreas()">
+                            <input class="bma-layer-toggle" type="checkbox" value="alertAreas" checked="legend.alertAreas" ng-model="legend.alertAreas" ng-click="toggleAlertAreas()">
+                            <span class="bma-legend-label">Alert Areas</span>
+                            <div class="legend-subtext" ng-show="legend.alertAreas">
+                                <small class="alert-area-box"></small>
+                            </div>
+                        </div>
+                    </div>
 
-            </ion-content>
-
-        </ion-pane>
-
-        </ion-side-menu-content>
-        <ion-side-menu side="left">
-            <ion-list>
-                <ion-item>
-                    This is an item.
-                </ion-item>
-            </ion-list>
-        </ion-side-menu>
+                    <div class="bma-legend-group">
+                        <div class="bma-legend-item" ng-click="toggleInfrastructure()">
+                            <input class="bma-layer-toggle" type="checkbox" value="infrastructure" checked="legend.infrastructure" ng-model="legend.infrastructure" ng-click="toggleInfrastructure()">
+                             <span class="bma-legend-label">Infrastructure</span>
+                            <div class="legend-subtext-infrastructure" ng-show="legend.infrastructure">
+                                <div class="bikerack"></div><span> Bike rack</span><br>
+                                <div class="bikelane solidlane thicklane"></div><span> Protected Bike Lane</span><br>
+                                <div class="bikelane solidlane"></div><span> Bike Lane</span><br>
+                                <div class="bikelane dotlane"></div><span> Other Cycling Route</span>
+                            </div>
+                        </div>
+                    </div>
+                </ion-list>
+                    <div>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=bikemaps.org&t=BikeMaps.org%20is%20the%20coolest"
+                    </div>
+                </ion-content>
+            </ion-side-menu>
         </ion-side-menus>
     </ion-view>

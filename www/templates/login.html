@@ -1,13 +1,9 @@
-<ion-view>
-    <ion-nav-title>
-        <img src="img/BikeMapsORG_Logo_notxt_sm.png" style="height: 25px; vertical-align: middle; margin-right: 3px">
-        <span>Login</span>
-    </ion-nav-title>
-    <!--Hide the menu button-->
-    <ion-nav-buttons side="right" >
-    </ion-nav-buttons>
+<ion-modal-view>
+    <ion-header-bar class="bar bar-bikemaps" >
+            <h1 class="title">Login</h1>
+    </ion-header-bar>
 
-    <ion-content id="login" ng-controller="LoginCtrl">
+    <ion-content id="login">
         <form role="form" ng-submit="login(loginForm)" name="loginForm" novalidate>
             <div class="list">
                 <label class="item">
@@ -24,10 +20,17 @@
                 <div class="alert alert-danger" ng-if="error">{{error}}</div>
             </div>
             <div class="padding">
-                <button type="submit" class="button button-bikemaps button-block">
+                <button type="reset" class="button button-bikemaps-inverse" ng-click="closeModal()">
+                    Cancel
+                </button>
+                <button type="submit" class="button button-bikemaps">
                     Submit
                 </button>
             </div>
         </form>
+        <div class="bma-account">
+            <div class="padding" ng-click="createAccount()">Create an account</div>
+            <div class="padding" ng-click="resetPassword()">I don't know my password</div>
+        </div>
     </ion-content>
-</ion-view>
+</ion-modal-view>

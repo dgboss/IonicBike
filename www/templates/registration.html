@@ -1,0 +1,58 @@
+<ion-view>
+    <ion-nav-title class="bma-title">
+        <img src="img/BikeMapsORG_Logo_notxt_sm.png" style="height: 37px; vertical-align: middle">
+        <span>Create an account</span>
+    </ion-nav-title>
+    <!--Hide the menu button-->
+    <ion-nav-buttons side="right" >
+    </ion-nav-buttons>
+
+    <ion-content id="registration">
+        <div ng-if="complete == false">
+            <form role="form" name="registrationForm" ng-submit="register(registrationForm)" novalidate>
+                <ion-list>
+                    <ion-item>
+                        <span class="input-label">Username:</span>
+                        <input name="username" id="id_username" type="text" ng-model="model.username" placeholder="Username" required />
+                    </ion-item>
+                    <div class="alert alert-danger" ng-repeat="error in errors.username">{{error}}</div>
+
+                    <ion-item>
+                        <span class="input-label">Email:</span>
+                        <input name="email" id="id_email" type="email" ng-model="model.email" placeholder="Email" required />
+                    </ion-item>
+                    <div class="alert alert-danger" ng-repeat="error in errors.email">{{error}}</div>
+
+                    <ion-item>
+                        <span class="input-label">Password:</span>
+                        <input name="password1" id="id_password1" type="password" ng-model="model.password1" placeholder="Password" required />
+                    </ion-item>
+                    <div class="alert alert-danger" ng-repeat="error in errors.password1">{{error}}</div>
+
+                    <ion-item>
+                        <span class="input-label">Confirm password:</span>
+                        <input name="password" id="id_password2" type="password" ng-model="model.password2" placeholder="Confirm password" required />
+                    </ion-item>
+                    <div class="alert alert-danger" ng-repeat="error in errors.password2">{{error}}</div>
+                <ion-list>
+
+                <div class="padding">
+                    <button type="reset" class="button button-bikemaps-inverse" ng-click="cancelRegistration()" >
+                        Cancel
+                    </button>
+                    <button type="submit" class="button button-bikemaps">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div ng-if="complete == true">
+            <div class="alert alert-success">Great!  You've just registered.  You should receive an email shortly with instructions on how to activate your account.</div>
+            <div class="padding">
+                <button class="button button-bikemaps" ng-click="continue()">
+                    Continue
+                </button>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

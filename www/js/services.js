@@ -62,7 +62,7 @@ angular.module('bikeMapApp.services', ['ngResource'])
 
         service.setToken = function(tkn){
             _token = tkn;
-        }
+        };
 
         service.AlertAreas = function(){
                 return $resource(
@@ -78,7 +78,7 @@ angular.module('bikeMapApp.services', ['ngResource'])
                         },
                         delete: {
                             method: 'DELETE',
-                            headers: {'Authorization': 'Token' + _token}
+                            headers: {'Authorization': 'Token ' + _token}
                         }
                     })
                 };
@@ -176,7 +176,7 @@ angular.module('bikeMapApp.services', ['ngResource'])
             "dirty": false,
             "coordinates": [0,0]
         }
-    })
+    });
 
 
 /*    .factory('NotificationPopup_Service', function() {

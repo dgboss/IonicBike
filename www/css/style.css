@@ -62,7 +62,7 @@ ion-nav-view>ion-view>ion-side-menus>ion-side-menu-content>ion-pane>ion-content>
 }
 
 
-.title {
+.bma-title {
     color: #FFF;
     font-family: faktos;
     src: url('static/fonts/faktos.regular.ttf');
@@ -81,24 +81,45 @@ ion-nav-view>ion-view>ion-side-menus>ion-side-menu-content>ion-pane>ion-content>
 .legend-subtext {
     margin-left: 18px;
 }
-.marker-group>i{
-    height: 20px;
-    width: 20px;
+.legend-subtext-strava {
+     margin-left: 28px;
+ }
+.legend-subtext-infrastructure {
+    margin-left: 31px;
+}
+.marker-group>div>i{
+    height: 25px;
+    width: 25px;
     padding-top: 4px;
-    border-radius: 10px;
+    border-radius: 12.5px;
+
 }
-.marker-group>i.fa-bicycle{
-    padding-left: 2.5px;
-}
-.marker-group>i.fa-warning{
+.marker-group>div>i.fa-bicycle{
     padding-left: 4px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-25%);
+
 }
-.marker-group>i.fa-certificate, .marker-group>i.fa-user, .marker-group>i.fa-filter{
-    padding-left: 5px;
+.marker-group>div>i.fa-warning{
+    padding-left: 5.5px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-25%);
+}
+.marker-group>div>i.fa-certificate, .marker-group>i.fa-user {
+    padding-left: 6px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-25%);
+}
+.marker-group>div>span>i.fa-filter {
+    padding-left: 1.5px;
+
 }
 .marker-group span.fa-stack{
-    margin-top: -2px;
-    margin-left: -2px;
+    margin-top: -11px;
+    margin-left: -1px;
 }
 
 /* Legend gradients*/
@@ -143,6 +164,7 @@ ion-nav-view>ion-view>ion-side-menus>ion-side-menu-content>ion-pane>ion-content>
     width: 32.36px; /*THE GOLDEN RATIO*/
     margin-top: 5px;
     display: inline-block;
+    margin-left: 12px;
 }
 
 .bikerack{
@@ -393,20 +415,22 @@ textarea {
     height: 18px;
     width: 18px;
 }
-
 .bma-leaflet-button.leaflet-bar a {
-    height: 35px;
-    width: 35px;
-    min-width: 35px;
-    padding-left: 8px;
-    padding-right: 8px;
-    padding-top: 4px;
+    height: 30px;
+    width: 30px;
+    min-width: 30px;
+    left: 50%;
+    right: 50%;
+
     color: #2c3e50;
     font-weight: bold;
     font-family: "Roboto";
 }
+.bma-leaflet-button-legend.leaflet-bar a {
+
+}
 .bma-leaflet-text-button.leaflet-bar a {
-    height: 35px;
+    height: 32px;
     width: 75px;
     padding-left: 8px;
     padding-right: 8px;
@@ -503,6 +527,38 @@ textarea {
     left:10px;
     color: #2c3e50;
 }
+.bma-side-menu {
+    top: 44px;
+    color: #2c3e50;
+}
+.bma-side-menu-title {
+    color: #2c3e50;
+    font-weight:bold!important;
+}
+.bma-legend-button {
+    float: right;
+}
+.bma-legend-group {
+    padding-left: 10px;
+}
+.bma-legend-item {
+    min-height: 35px;
+}
+.bma-layer-toggle {
+    height: 20px;
+    width: 20px;
+    margin-right:3px!important;
+}
+.bma-legend-label {
+    padding-left: 3px;
+    font-size:larger;
+}
+.bma-account {
+    color: #979797;
+    font-font: Roboto;
+    margin-top: 20px;
+}
+
 
 
 

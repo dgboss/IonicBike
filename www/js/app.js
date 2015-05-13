@@ -39,11 +39,11 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
                 templateUrl: "templates/map.html"
             })
 
-            .state('login', {
+            /*.state('login', {
                 url: "/login",
                 templateUrl: "templates/login.html",
                 controller: 'LoginCtrl'
-            })
+            })*/
 
             .state('logout', {
                 url: "/logout",
@@ -86,6 +86,19 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
             .state('settings', {
                 url: "/settings",
                 templateUrl: "templates/settings.html"
+            })
+
+            .state('registration', {
+                    url: "/registration",
+                    templateUrl: "templates/registration.html",
+                    controller: "RegistrationCtrl"
+            })
+
+            .state('reset-password', {
+                url: "/password-reset",
+                templateUrl: "templates/password-reset.html",
+                controller: "PasswordResetCtrl"
+
             });
 
         $urlRouterProvider.otherwise('/');

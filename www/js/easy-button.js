@@ -3,7 +3,7 @@ L.Control.EasyButtons = L.Control.extend({
         position: 'bottomright',
         title: '',
         intentedIcon: 'fa-circle-o',
-        extraClasses: 'cat'
+        extraClasses: ''
     },
 
     onAdd: function () {
@@ -28,7 +28,7 @@ L.Control.EasyButtons = L.Control.extend({
     },
 
     _addImage: function () {
-        var extraClasses = this.options.intentedIcon.lastIndexOf('fa', 0) === 0 ? ' fa fa-2x' : ' glyphicon';
+        var extraClasses = this.options.intentedIcon.lastIndexOf('fa', 0) === 0 ? ' fa fa-lg' : ' glyphicon';
 
         L.DomUtil.create('i', this.options.intentedIcon + extraClasses, this.link);
     }
