@@ -1,6 +1,6 @@
 <ion-view>
     <ion-nav-title>
-        <img src="img/BikeMapsORG_Logo_notxt_sm.png" style="height: 37px; vertical-align: middle">
+        <img src="img/BikeMapsORG_Logo_notxt_sm.png" class="bma-header-logo">
         <span>Hazard Report</span>
     </ion-nav-title>
     <!--Hide the menu button-->
@@ -11,13 +11,16 @@
         <form role="form" ng-submit="submitIncident($scope.incidentForm)" ng-controller="IncidentCtrl" name="incidentForm" id="incidentForm" novalidate>
             <div class="padding">
                 <accordion close-others=false>
-                    <accordion-group heading="Incident Details" is-open=true >
+                    <accordion-group heading="Incident Details" is-open=true ng-class="{true: 'form-title-invalid', false: 'form-valid'}[model.dateAlert || model.incidentTypeAlert || model.incidentObjectAlert || model.incidentInjuryAlert]">
                         <div data-tap-disabled="true" class="form-group">
                             <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.dateAlert]">
                                 When was the incident?*
                             </label>
-                            <input type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date" dgb-datepicker="{autoclose: true, showMeridian: true, endDate: incidentDetails.maxDate, maxView: 2}" ng-model="incidentDetails.selectedDateTime" readonly>
-                            </input>
+                            <div id="date-container">
+                                <input id="date-input" type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date" dgb-datepicker="{autoclose: true, showMeridian: true, endDate: incidentDetails.maxDate, maxView: 2}" ng-model="incidentDetails.selectedDateTime" readonly>
+                                <i id="date-icon" class="ion-calendar"></i>
+                            </div>
+
                         </div>
                         <div class="form-group">
                             <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.incidentTypeAlert]">
@@ -251,8 +254,12 @@
                 </accordion>
             </div>
 
+            <div ng-show="model.dateAlert || model.incidentTypeAlert || model.incidentObjectAlert || model.incidentInjuryAlert" class="alert bma-required" >
+                Please complete all required fields in the Incident Details section.
+            </div>
+
             <div class="padding" ng-click="markCheckbox()" ng-controller='TermsAndConditionsCtrl'>
-                <input type="checkbox" class="bma-checkbox" ng-model="model.incidentChecked" ng-change="rememberCheck()"/>
+                <input type="checkbox" class="bma-checkbox" ng-model="model.incidentChecked"  ng-click="markCheckbox()" />
                 <span>I have read and understand the
                     <a ng-click="openModal()">
                         terms and conditions.

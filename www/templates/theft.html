@@ -1,6 +1,6 @@
 <ion-view>
     <ion-nav-title>
-        <img src="img/BikeMapsORG_Logo_notxt_sm.png" style="height: 37px; vertical-align: middle">
+        <img src="img/BikeMapsORG_Logo_notxt_sm.png" class="bma-header-logo">
         <span>Hazard Report</span>
     </ion-nav-title>
     <!--Hide the menu button-->
@@ -10,13 +10,15 @@
         <form role="form" ng-submit="submitTheft($scope.theftForm)" ng-controller="TheftCtrl" name="theftForm" id="theftForm" novalidate>
             <div class="padding">
                 <accordion close-others=false>
-                    <accordion-group heading="Theft Details" is-open=true >
+                    <accordion-group heading="Theft Details" is-open=true ng-class="{true: 'form-title-invalid', false: 'form-valid'}[model.dateAlert || model.theftChoiceAlert || model.theftLockedAlert || model.theftLockTypeAlert || model.theftLocationAlert || model.theftLightingAlert || model.theftTrafficAlert]">
                         <div data-tap-disabled="true" class="form-group">
                             <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.dateAlert]" >
                                 When was the incident?*
                             </label>
-                            <input type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date" dgb-datepicker="{autoclose: true, showMeridian: true, endDate: theftDetails.maxDate, maxView: 2}" ng-model="theftDetails.selectedDateTime" readonly >
-                            </input>
+                            <div id="date-container">
+                                <input id="date-input" type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date" dgb-datepicker="{autoclose: true, showMeridian: true, endDate: theftDetails.maxDate, maxView: 2}" ng-model="theftDetails.selectedDateTime" readonly >
+                                <i id="date-icon" class="ion-calendar"></i>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.theftChoiceAlert]">
@@ -152,9 +154,12 @@
                     </accordion-group>
                 </accordion>
             </div>
+            <div ng-show="model.dateAlert || model.theftChoiceAlert || model.theftLockedAlert || model.theftLockTypeAlert || model.theftLocationAlert || model.theftLightingAlert || model.theftTrafficAlert" class="alert bma-required" >
+                Please complete all required fields in the Theft Details section.
+            </div>
 
             <div class="padding" ng-click="markCheckbox()" ng-controller='TermsAndConditionsCtrl'>
-                <input type="checkbox" class="bma-checkbox" ng-model="model.theftChecked" ng-change="rememberCheck()"/>
+                <input type="checkbox" class="bma-checkbox" ng-model="model.theftChecked" ng-click="markCheckbox()"/>
                 <span>I have read and understand the
                     <a ng-click="openModal()">
                         terms and conditions.

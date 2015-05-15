@@ -2,61 +2,49 @@
  * Created by boss on 3/18/2015.
  */
 
-angular.module('bikeMapApp.services', ['ngResource'])
+angular.module('bikeMapApp.services', ['ngResource', 'bikeMapApp.constants'])
 
-    .factory('Collision_Service',  function($resource){
+    .factory('Collision_Service',  function($resource, Constants){
         return $resource(
-            "http://192.168.1.125:8000/collisions/\\.json/",
+            Constants.API + "collisions/\\.json/",
             {},
             {get: {method: 'GET'},
              save: {method:'POST'}});
     })
 
-    .factory('Nearmiss_Service',  function($resource){
+    .factory('Nearmiss_Service',  function($resource, Constants){
         return $resource(
-            "http://192.168.1.125:8000/nearmiss/\\.json",
+            Constants.API + "nearmiss/\\.json",
             {},
             {get: {method: 'GET'},
              save: {method:'POST'}});
     })
 
-    .factory('Hazard_Service',  function($resource){
+    .factory('Hazard_Service',  function($resource, Constants){
         return $resource(
-            "http://192.168.1.125:8000/hazards/\\.json",
+            Constants.API + "hazards/\\.json",
             {},
             {get: {method: 'GET'},
              save: {method:'POST'}});
     })
 
-    .factory('Theft_Service',  function($resource){
+    .factory('Theft_Service',  function($resource, Constants){
         return $resource(
-            "http://192.168.1.125:8000/thefts/\\.json",
+            Constants.API + "thefts/\\.json",
             {},
             {get: {method: 'GET'},
              save: {method:'POST'}});
     })
 
-    .factory('Official_Service',  function($resource){
+    .factory('Official_Service',  function($resource, Constants){
         return $resource(
-            "http://192.168.1.125:8000/official/\\.json",
+            Constants.API + "official/\\.json",
             {},
             {get: {method: 'GET'}});
     })
 
 
-
-   /* .factory('AlertArea_Service', function($resource, $window) {
-
-        return $resource(
-            "http://192.168.1.125:8000/alertareas/\\.json",
-            {},{
-            get: {
-                method: 'GET',
-                headers: {'Authorization': 'Token ' + $window.localStorage["token"]}
-            }});
-    })*/
-
-    .factory('AlertArea_Service', function($resource) {
+    .factory('AlertArea_Service', function($resource, Constants) {
         var service = {};
         var _token;
 
@@ -66,7 +54,7 @@ angular.module('bikeMapApp.services', ['ngResource'])
 
         service.AlertAreas = function(){
                 return $resource(
-                    "http://192.168.1.125:8000/alertareas/:id/\\.json",
+                    Constants.API + "alertareas/:id/\\.json",
                     {}, {
                         get: {
                             method: 'GET',
@@ -178,40 +166,5 @@ angular.module('bikeMapApp.services', ['ngResource'])
         }
     });
 
-
-/*    .factory('NotificationPopup_Service', function() {
-        return function getPopup(data) {
-            var type = data.type;
-            var i_type = data.i_type;
-            var date = data.date;
-            var details = data.details;
-            var incident_with = data.incident_with;
-            var popup;
-
-            if (type === "hazard") {
-                popup = '<strong>Hazard type:</strong> ' + i_type + '<br><strong>Date:</strong> ' + date; //moment(feature.properties.date).format("MMM. D, YYYY, h:mma");
-                if (details) {
-                    popup += '<br><div class="popup-details"><strong>Details:</strong> ' + details + '</div>';
-                }
-            } else if (type === "theft") {
-                popup = '<strong>Theft type:</strong> ' + i_type + '<br><strong>Date:</strong> ' + date; //moment(feature.properties.date).format("MMM. D, YYYY, h:mma");
-                if (feature.properties.details) {
-                    popup += '<br><div class="popup-details"><strong>Details:</strong> ' + details + '</div>';
-                }
-            } else {
-                popup = '<strong>Type:</strong> ' + type + '<br><strong>';
-                if (type != "Fall") popup += 'Incident with';
-                else popup += 'Due to';
-                popup += ':</strong> ' + incident_with + '<br><strong>Date:</strong> ' + date; //moment(feature.properties.date).format("MMM. D, YYYY, h:mma");
-
-                if(details){
-                    popup += '<br><div class="popup-details"><strong>Details:</strong> ' + details + '</div>';
-                }
-
-            }
-
-            return popup;
-        };
-    })*/
 
 

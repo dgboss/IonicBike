@@ -9,7 +9,14 @@ bikeMapApp.controller('SettingsCtrl', function($scope, $window, PushNotification
 
     $scope.toggleReceiveAlerts = function() {
         PushNotificationService.enabled = !PushNotificationService.enabled;
-        $window.localStorage["receiveAlerts"] = ! $window.localStorage["receiveAlerts"];
+        $window.localStorage["receiveAlerts"] = PushNotificationService.enabled;
+
+        // When toggling we need to enable/disable push notifications for this device on the server
+        if(PushNotificationService.enabled) {
+            PushNotificationService.register();
+        } else {
+            PushNotificationService.unregister();
+        }
     }
 
 });

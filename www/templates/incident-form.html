@@ -1,6 +1,6 @@
 <ion-view>
     <ion-nav-title>
-        <img src="img/BikeMapsORG_Logo_notxt_sm.png" style="height: 25px; vertical-align: middle; margin-right: 3px">
+        <img src="img/BikeMapsORG_Logo_notxt_sm.png" class="bma-header-logo">
         <span>Submit a new report</span>
     </ion-nav-title>
     <!--Hide the menu button-->
@@ -258,7 +258,7 @@
                     </div>
 
                     <div class="padding" ng-click="markCheckbox()" ng-controller='TermsAndConditionsCtrl'>
-                        <input type="checkbox" class="bma-checkbox" ng-model="model.incidentChecked" ng-change="rememberCheck()"/>
+                        <input type="checkbox" class="bma-checkbox" ng-model="model.incidentChecked" ng-click="markCheckbox()" ng-change="rememberCheck()"/>
                 <span>I have read and understand the
                     <a ng-click="openModal()">
                         terms and conditions.
@@ -362,7 +362,7 @@
                     </div>
 
                     <div class="padding" ng-click="markCheckbox()" ng-controller='TermsAndConditionsCtrl'>
-                        <input type="checkbox" class="bma-checkbox" ng-model="model.hazardChecked" ng-change="rememberCheck()"/>
+                        <input type="checkbox" class="bma-checkbox" ng-model="model.hazardChecked" ng-click="markCheckbox()" ng-change="rememberCheck()"/>
                     <span>I have read and understand the
                         <a ng-click="openModal()">
                             terms and conditions.
@@ -527,7 +527,7 @@
                     </div>
 
                     <div class="padding" ng-click="markCheckbox()" ng-controller='TermsAndConditionsCtrl'>
-                        <input type="checkbox" class="bma-checkbox" ng-model="model.theftChecked" ng-change="rememberCheck()"/>
+                        <input type="checkbox" class="bma-checkbox" ng-model="model.theftChecked" ng-click="markCheckbox()" ng-change="rememberCheck()"/>
                 <span>I have read and understand the
                     <a ng-click="openModal()">
                         terms and conditions.

@@ -7,13 +7,13 @@
         <form role="form" ng-submit="login(loginForm)" name="loginForm" novalidate>
             <div class="list">
                 <label class="item">
-                    <input name="username" id="id_username" type="text" ng-model="model.username" placeholder="Username" required />
+                    <input name="username" class="bma-text" id="id_username" type="text" ng-model="model.username" placeholder="Username" required />
                 </label>
                 <div class="alert alert-danger" ng-repeat="error in errors.username">
                     <span>{{error}}</span>
                 </div>
                 <label class="item">
-                    <input name="password" id="id_password" type="password" ng-model="model.password" placeholder="Password" required />
+                    <input name="password" class="bma-text" id="id_password" type="password" ng-model="model.password" placeholder="Password" required />
                 </label>
                 <div class="alert alert-danger" ng-repeat="error in errors.password">{{error}}</div>
                 <div class="alert alert-danger" ng-repeat="error in errors.non_field_errors">{{error}}</div>

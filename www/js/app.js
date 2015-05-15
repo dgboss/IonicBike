@@ -12,11 +12,11 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
       StatusBar.styleDefault();
     }
 
-/*
-      if($window.localStorage["notifications"]) {
-          PushNotificationService.notifications = $window.localStorage["notifcations"];
-      }
-*/
+
+     /* if($window.localStorage["notifications"]) {
+          PushNotificationService.notifications = $window.localStorage["notifications"];
+      }*/
+
 
     if($window.localStorage["authenticated"]){
         djangoAuth.authenticated = $window.localStorage["authenticated"];

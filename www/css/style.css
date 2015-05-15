@@ -329,10 +329,18 @@ textarea {
     border-color:#FF0000;
     color: #FF0000;
 }
-
-.form-valid {
+.form-title-invalid>div>h4>a>span {
+    border-color:#FF0000;
+    color: #FF0000;
+    font-weight: bold;
 }
+.form-valid {
 
+}
+.bma-required {
+    color: #FF0000;
+    font-weight: bold;
+}
 .filter{
     padding: 0 10px;
 }
@@ -514,7 +522,7 @@ textarea {
 .leaflet-left.leaflet-bottom {
     bottom: 32px;
 }
-.bma-actionsheet {
+.bma-actionsheet, .bma-popover {
     color: #2c3e50;
 }
 .bma-actionsheet-icon {
@@ -531,9 +539,14 @@ textarea {
     top: 44px;
     color: #2c3e50;
 }
-.bma-side-menu-title {
+.title.bma-side-menu-title {
     color: #2c3e50;
     font-weight:bold!important;
+    height: 50px;
+    margin-top: 5px;
+}
+.bma-legend.list {
+   padding-top: 10px;
 }
 .bma-legend-button {
     float: right;
@@ -543,6 +556,9 @@ textarea {
 }
 .bma-legend-item {
     min-height: 35px;
+}
+.bar.bma-legend-header {
+    height:50px;
 }
 .bma-layer-toggle {
     height: 20px;
@@ -557,6 +573,42 @@ textarea {
     color: #979797;
     font-font: Roboto;
     margin-top: 20px;
+}
+.bma-social {
+    text-align: right;
+}
+.bma-social>a>img {
+    height: 30px;
+    margin-top: 15px;
+    margin-right: 10px;
+}
+.button.button-clear.bma-legend-close-button {
+    color: #2c3e50;
+    margin-top: 5px;
+}
+.bma-text {
+    color: #2c3e50!important;
+    font-weight: normal;
+}
+.bma-header-logo {
+    height: 25px;
+    vertical-align: middle;
+    margin-right: 3px;
+}
+
+#date-container{
+    position:relative;
+    padding:0;
+    margin:0;
+}
+#date-input{
+    margin:0;
+    padding-right: 30px;
+}
+#date-icon {
+    position:absolute;
+    bottom:18px;
+    right:10px;
 }
 
 

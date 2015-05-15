@@ -1,5 +1,5 @@
 /**
- * Created by angeboss on 5/6/2015.
+ * Created by boss on 5/6/2015.
  */
 
 bikeMapApp.controller('NotificationCtrl', function($scope, $rootScope, $state, Coord_Service, PushNotificationService) {

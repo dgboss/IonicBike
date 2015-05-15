@@ -1,6 +1,6 @@
 <ion-popover-view>
     <ion-content>
-        <div ng-click="popover.hide()">
+        <div ng-click="popover.hide()" class="bma-popover">
             <div ng-show="authInfo.user === 'Guest'">
                 <a class="item" ng-click="openModal()" >
                     <span>Login</span>
@@ -11,12 +11,16 @@
                     <span>Logout</span>
                 </a>
             </div>
-            <a class="item" ui-sref="notifications" >
-                <span>Notifications</span>
-            </a>
-            <a class="item" ui-sref="settings" >
-                <span>Settings</span>
-            </a>
+            <div ng-hide="authInfo.user === 'Guest'">
+                <a class="item" ui-sref="notifications" >
+                    <span>Notifications</span>
+                </a>
+            </div>
+            <div>
+                <a class="item" ui-sref="settings" >
+                    <span>Settings</span>
+                </a>
+            </div>
             <div class="item" ng-click="clearLocalStorage()">
                 Clear local storage
             </div>

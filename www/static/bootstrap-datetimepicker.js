@@ -45,7 +45,7 @@
 
 		this.element = $(element);
 
-		// add container for single page application
+        // add container for single page application
 		// when page switch the datetimepicker div will be removed also.
 		this.container = options.container || 'body';
 

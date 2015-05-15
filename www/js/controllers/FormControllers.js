@@ -80,18 +80,6 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
         $scope.model.incidentChecked = !$scope.model.incidentChecked;
     };
 
-    /* If user has previously checked the box, keep the box checked when opening
-     the form in the future.
-     */
-    if($window.localStorage['rememberCheck']) {
-        if(typeof $window.localStorage['rememberCheck'] == 'string') {
-            $scope.model.incidentChecked = JSON.parse($window.localStorage['rememberCheck']);
-        }
-        else {
-            $scope.model.incidentChecked = $window.localStorage['rememberCheck'];
-        }
-    }
-
     $scope.submitIncident = function() {
         if( $scope.validateForm() ) {
             console.log("Form is valid");
@@ -153,8 +141,9 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
 
             post.$promise.then(
                 Coord_Service.dirty = true,
+                $(".datetimepicker").remove(),
                 $state.go('app')
-                );
+            );
 
         }
         else {
@@ -198,6 +187,7 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
     };
 
     $scope.cancelIncident = function() {
+        $(".datetimepicker").remove();
         $state.go('app');
     }
 });
@@ -243,18 +233,6 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
         $scope.model.hazardChecked = !$scope.model.hazardChecked;
     };
 
-    /* If user has previously checked the box, keep the box checked when opening
-        the form in the future.
-    */
-    if($window.localStorage['rememberCheck']) {
-        if(typeof $window.localStorage['rememberCheck'] == 'string') {
-            $scope.model.hazardChecked = JSON.parse($window.localStorage['rememberCheck']);
-        }
-        else {
-            $scope.model.hazardChecked = $window.localStorage['rememberCheck'];
-        }
-    }
-
     $scope.submitHazard = function() {
         if( $scope.validateForm() ) {
             console.log("Form is valid");
@@ -281,6 +259,7 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
             var post = Hazard_Service.save(hazardForm);
             post.$promise.then(
                 Coord_Service.dirty = true,
+                $(".datetimepicker").remove(),
                 $state.go('app')
             );
 
@@ -314,13 +293,9 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
     };
 
     $scope.cancelHazard = function() {
-        $state.go("app", {lng: Coord_Service.coordinates[0], lat: Coord_Service.coordinates[1]})
+        $(".datetimepicker").remove();
+        $state.go("app");
     };
-
-    $scope.rememberCheck = function() {
-        console.log("remember check func " + $scope.model.hazardChecked);
-        $window.localStorage['rememberCheck'] = $scope.model.hazardChecked;
-    }
 });
 
 
@@ -391,18 +366,6 @@ bikeMapApp.controller('TheftCtrl', function($scope, $state, $window, $ionicModal
         $scope.model.theftChecked = !$scope.model.theftChecked;
     };
 
-    /* If user has previously checked the box, keep the box checked when opening
-     the form in the future.
-     */
-    if($window.localStorage['rememberCheck']) {
-        if(typeof $window.localStorage['rememberCheck'] == 'string') {
-            $scope.model.theftChecked = JSON.parse($window.localStorage['rememberCheck']);
-        }
-        else {
-            $scope.model.theftChecked = $window.localStorage['rememberCheck'];
-        }
-    }
-
     $scope.submitTheft = function() {
         if( $scope.validateForm() ) {
             console.log("Form is valid");
@@ -435,6 +398,7 @@ bikeMapApp.controller('TheftCtrl', function($scope, $state, $window, $ionicModal
             var post = Theft_Service.save(theftForm);
             post.$promise.then(
                 Coord_Service.dirty = true,
+                $(".datetimepicker").remove(),
                 $state.go('app')
             );
         }
@@ -499,6 +463,7 @@ bikeMapApp.controller('TheftCtrl', function($scope, $state, $window, $ionicModal
     };
 
     $scope.cancelTheft = function() {
+        $(".datetimepicker").remove();
         $state.go('app');
     }
 

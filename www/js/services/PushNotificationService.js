@@ -2,13 +2,13 @@
  * Created by boss on 4/10/2015.
  */
 
-bikeMapApp.service('PushNotificationService', function PushNotificationService($rootScope, $state, $location, $window, $cordovaPush, $cordovaDialogs, $cordovaMedia, $http, $resource, $ionicPopup){
+bikeMapApp.service('PushNotificationService', function PushNotificationService($rootScope, $state, $location, $window, $cordovaPush, $cordovaDialogs, $cordovaMedia, $http, $resource, $ionicPopup, Constants){
 
 
     var service = {
-       /* 'notifications': $window.localStorage["notifications"] ? JSON.parse($window.localStorage["notifications"]) : [],
-       */ 'enabled': $window.localStorage["receiveAlerts"] ? JSON.parse($window.localStorage["receiveAlerts"]) : true,
-        'notifications': [{
+        'notifications': $window.localStorage["notifications"] ? JSON.parse($window.localStorage["notifications"]) : [],
+        'enabled': $window.localStorage["receiveAlerts"] ? JSON.parse($window.localStorage["receiveAlerts"]) : true,
+        /*'notifications': [{
             payload: {
                 type: "hazard",
                 i_type: "Poor Signage",
@@ -29,7 +29,7 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
                 pk: 3
             }
         }
-        ],
+        ],*/
 
         'saveNotification': function(notification) {
             // allow max of 20 notifications on the device
@@ -53,30 +53,33 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
         },
 
         'register': function(){
-            var config = null;
+            // Only register is the user has not disabled push notification on settings page
+            if(this.enabled) {
+                var config = null;
 
-            if (ionic.Platform.isAndroid()) {
-                config = {
-                    "senderID": "648574514687"
-                };
-            }
-            else if (ionic.Platform.isIOS()) {
-                config = {
-                    "badge": "true",
-                    "sound": "true",
-                    "alert": "true"
+                if (ionic.Platform.isAndroid()) {
+                    config = {
+                        "senderID": "648574514687"
+                    };
                 }
-            }
+                else if (ionic.Platform.isIOS()) {
+                    config = {
+                        "badge": "true",
+                        "sound": "true",
+                        "alert": "true"
+                    }
+                }
 
-            $cordovaPush.register(config).then(function (result) {
-                console.log("Register success " + result);
-                // ** NOTE: Android regid result comes back in the pushNotificationReceived, only iOS returned here
-                if (ionic.Platform.isIOS()) {
-                    this.storeDeviceToken("ios");
-                }
-            }, function (err) {
-                console.log("Register error " + err)
-            });
+                $cordovaPush.register(config).then(function (result) {
+                    console.log("Register success " + result);
+                    // ** NOTE: Android regid result comes back in the pushNotificationReceived, only iOS returned here
+                    if (ionic.Platform.isIOS()) {
+                        this.storeDeviceToken("ios");
+                    }
+                }, function (err) {
+                    console.log("Register error " + err)
+                });
+            }
         },
 
         'unregister': function(){
@@ -119,7 +122,7 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
                 name = "anonymous";
             }
             console.log($window.localStorage["token"]);
-            $http.post('http://192.168.1.125:8000/gcmdevices/', JSON.stringify(
+            $http.post( Constants.API + 'gcmdevices/', JSON.stringify(
                 {
                     "name": name,
                     "active": true,
@@ -138,7 +141,7 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
             if($window.localStorage["regid"]){
                 $http({
                     method: 'DELETE',
-                    url: 'http://192.168.1.125:8000/gcmdevices/' + $window.localStorage["regid"] + '/'
+                    url:  Constants.API + 'gcmdevices/' + $window.localStorage["regid"] + '/'
                 })
                     .success(function (data, status) {
                         console.log("Regid successfully deleted");
