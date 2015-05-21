@@ -2,19 +2,10 @@
  * Created by Boss on 3/13/2015.
  */
 
-bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$window', '$state', '$stateParams', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'Official_Service', 'AlertArea_Service', 'Coord_Service', 'Icon', 'Popup_Service', 'NotificationPopup_Service', 'djangoAuth', '$cordovaToast', '$cordovaVibration', '$ionicActionSheet', '$ionicSideMenuDelegate',
-    function($rootScope, $scope, $log, $timeout, $window, $state, $stateParams, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, Official_Service, AlertArea_Service, Coord_Service, Icon, Popup_Service, NotificationPopup_Service, djangoAuth, $cordovaToast, $cordovaVibration, $ionicActionSheet, $ionicSideMenuDelegate) {
+bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$window', '$state', '$stateParams', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'Official_Service', 'AlertArea_Service', 'Coord_Service', 'Icon', 'Popup_Service', 'NotificationPopup_Service', 'djangoAuth', '$cordovaToast', '$cordovaVibration', '$ionicActionSheet', '$ionicSideMenuDelegate', '$cordovaDatePicker',
+    function($rootScope, $scope, $log, $timeout, $window, $state, $stateParams, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, Official_Service, AlertArea_Service, Coord_Service, Icon, Popup_Service, NotificationPopup_Service, djangoAuth, $cordovaToast, $cordovaVibration, $ionicActionSheet, $ionicSideMenuDelegate, $cordovaDatePicker) {
 
-        $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
-            if(toState.name === 'app') {
-                if(Coord_Service.dirty) {
-                    $scope.map.setView(new L.LatLng(Coord_Service.coordinates[1], Coord_Service.coordinates[0]), 17);
-                    updateIncidents(true);
-                }
-                Coord_Service.dirty = false;
-            }
-            $window.dispatchEvent(new Event('resize'));
-        });
+
 
         // Scope variables
         $scope.map = new L.Map('map', {
@@ -40,7 +31,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
             }).addTo($scope.map);
 
        // Add Strava data
-       var stravaHM = L.tileLayer('https://d2z9m7k9h4f0yp.cloudfront.net/tiles/cycling/color5/{z}/{x}/{y}.png', {
+       var stravaHM = L.tileLayer('http://d2z9m7k9h4f0yp.cloudfront.net/tiles/cycling/color5/{z}/{x}/{y}.png', {
             minZoom: 3,
             maxZoom: 17,
             opacity: 0.8,
@@ -58,31 +49,40 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
        // Geolocation
         var userMarker;
         $scope.geolocate = function () {
-        $scope.map.locate({setView: true, watch: false, maxZoom: 15, enableHighAccuracy: true})
-            .on('locationfound', function (location) {
+            $scope.map.locate({setView: true, watch: false, maxZoom: 15, enableHighAccuracy: true})
+                .on('locationfound', function (location) {
 
-                if (!userMarker) {
-                    userMarker = L.userMarker(location.latlng, {
-                        smallIcon: true,
-                        circleOpts: {weight: 1, opacity: 0.3, fillOpacity: 0.05}
-                    }).addTo($scope.map);
-                }
-                userMarker.setLatLng(location.latlng);
-                userMarker.setAccuracy(location.accuracy);
-            })
-            .on('locationerror', function (e) {
-                console.log(e);
-                if(userMarker) {
-                    $scope.map.removeLayer(userMarker);
-                }
-                alert("Location access was denied. Please enable location services.");
-            });
+                    if (!userMarker) {
+                        userMarker = L.userMarker(location.latlng, {
+                            smallIcon: true,
+                            circleOpts: {weight: 1, opacity: 0.3, fillOpacity: 0.05}
+                        }).addTo($scope.map);
+                    }
+                    userMarker.setLatLng(location.latlng);
+                    userMarker.setAccuracy(location.accuracy);
+                })
+                .on('locationerror', function (e) {
+                    console.log(e);
+                    if(userMarker) {
+                        $scope.map.removeLayer(userMarker);
+                    }
+                    alert("Location access was denied. Please enable location services.");
+                });
         };
 
        /* If location services are enabled, center map on users current location
           Consider storing last viewed map center and open map there
        */
        $scope.geolocate();
+
+      $scope.geolocateButtonPressed = function() {
+          try {
+              $cordovaVibration.vibrate(100);
+          } catch(err) {
+              console.log(err);
+          }
+          $scope.geolocate();
+      };
 
         // Marker cluster layer for clustering incident data
         var incidentData = new L.MarkerClusterGroup({
@@ -125,6 +125,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
             },
             edit: {
                 featureGroup: alertareaLayer, //REQUIRED!!
+                edit: false,
                 remove: true
             }
         };
@@ -255,6 +256,50 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
     var officialIcon = Icon.marker('official');
 
     var collisionLayer, nearmissLayer, hazardLayer, theftLayer, officialLayer, geofenceLayer;
+    var collisions, nearmiss, hazards, thefts, official;
+    var unfiltered_collisions, unfiltered_nearmiss, unfiltered_hazards, unfiltered_thefts, unfiltered_official;
+
+     var filterPoints = function() {
+        console.log("Filtering");
+         var start_date = $scope.sliderDate($scope.sliderRange.values[0]);
+         var end_date = $scope.sliderDate($scope.sliderRange.values[1]).add(1,'M').subtract(1,'d');
+         var d;
+
+        if(unfiltered_collisions) {
+            collisions.features = unfiltered_collisions.features.filter(function (feature) {
+                d = moment(feature.properties.date);
+                return d >= start_date && d <= end_date;
+            });
+        }
+
+         if(unfiltered_nearmiss) {
+             nearmiss.features = unfiltered_nearmiss.features.filter(function (feature) {
+                 d = moment(feature.properties.date);
+                 return d >= start_date && d <= end_date;
+             });
+         }
+
+         if(unfiltered_hazards) {
+             hazards.features = unfiltered_hazards.features.filter(function (feature) {
+                 d = moment(feature.properties.date);
+                 return d >= start_date && d <= end_date;
+             });
+         }
+
+         if(unfiltered_thefts) {
+             thefts.features = unfiltered_thefts.features.filter(function (feature) {
+                 d = moment(feature.properties.date);
+                 return d >= start_date && d <= end_date;
+             });
+         }
+
+         if(unfiltered_official) {
+             official.features = unfiltered_official.features.filter(function (feature) {
+                 d = moment(feature.properties.date);
+                 return d >= start_date && d <= end_date;
+             });
+         }
+     };
 
     // Get data from the Bike Maps api and add to Marker Cluster Layer
     function getIncidents(bnds){
@@ -268,8 +313,12 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         officialLayer = null;
 
         // Get collision data from BikeMaps api and add to map if visible in the legend
-        var collisions = Collision_Service.get({bbox: bnds.toBBoxString()});
+        collisions = Collision_Service.get({bbox: bnds.toBBoxString()});
         collisions.$promise.then(function () {
+            unfiltered_collisions = collisions;
+            if($scope.legend.filter) {
+                filterPoints();
+            }
             collisionLayer = L.geoJson(collisions.features, {
                 pointToLayer: function (feature, latlng) {
                     return L.marker(latlng, {icon: collisionIcon,
@@ -285,8 +334,12 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         });
 
         // Get nearmiss data from BikeMaps api and add to map
-        var nearmiss = Nearmiss_Service.get({bbox: bnds.toBBoxString()});
+        nearmiss = Nearmiss_Service.get({bbox: bnds.toBBoxString()});
         nearmiss.$promise.then(function () {
+            unfiltered_nearmiss = nearmiss;
+            if($scope.legend.filter) {
+                filterPoints();
+            }
             nearmissLayer = L.geoJson(nearmiss.features, {
                 pointToLayer: function (feature, latlng) {
                     return L.marker(latlng, {icon: nearmissIcon,
@@ -303,8 +356,12 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         });
 
         // Get hazard data from BikeMaps api and add to map
-        var hazards = Hazard_Service.get({bbox: bnds.toBBoxString()});
+        hazards = Hazard_Service.get({bbox: bnds.toBBoxString()});
         hazards.$promise.then(function () {
+            unfiltered_hazards = hazards;
+            if($scope.legend.filter) {
+                filterPoints();
+            }
             hazardLayer = L.geoJson(hazards.features, {
                 pointToLayer: function (feature, latlng) {
                     return L.marker(latlng, {icon: hazardIcon,
@@ -320,8 +377,12 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         });
 
         // Get theft data from BikeMaps api and add to map
-        var thefts = Theft_Service.get({bbox: bnds.toBBoxString()});
+        thefts = Theft_Service.get({bbox: bnds.toBBoxString()});
         thefts.$promise.then(function () {
+            unfiltered_thefts = thefts;
+            if($scope.legend.filter) {
+                filterPoints();
+            }
             theftLayer = L.geoJson(thefts.features, {
                 pointToLayer: function (feature, latlng) {
                     return L.marker(latlng, {icon: theftIcon,
@@ -337,8 +398,12 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         });
 
         // Get theft data from BikeMaps api and add to map
-        var official = Official_Service.get({bbox: bnds.toBBoxString()});
+        official = Official_Service.get({bbox: bnds.toBBoxString()});
         official.$promise.then(function () {
+            unfiltered_official = official;
+            if($scope.legend.filter) {
+                filterPoints();
+            }
             officialLayer = L.geoJson(official.features, {
                 pointToLayer: function (feature, latlng) {
                     return L.marker(latlng, {icon: officialIcon,
@@ -405,15 +470,16 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
 
        // Delete geofences
        function deleteAlertAreas(layers) {
+           var deleteError = false;
            layers.eachLayer(function(layer) {
                if(layer.options && layer.options.pk) {
                    AlertArea_Service.AlertAreas().delete({id: layer.options.pk}).$promise.then(function() {
                         }, function error(err) {
-                           console.log("Alert areas could not be deleted.")
+                           deleteError = true;
                        })
                }
            });
-/*           // Do something if an error occurred while trying to delete the geofences on the server
+           // Do something if an error occurred while trying to delete the geofences on the server
            if(!deleteError) {
                try {
                    $cordovaToast.showShortBottom("Alert areas successfully deleted.");
@@ -426,10 +492,22 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                } catch (err) {
                    console.log("An error occurred while deleting the alert area(s).");
                }
-           }*/
+           }
        }
 
         /***************************** Event Listeners ***********************************************/
+
+        $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+            if(toState.name === 'app') {
+                if(Coord_Service.dirty) {
+                    $scope.map.setView(new L.LatLng(Coord_Service.coordinates[1], Coord_Service.coordinates[0]), 17);
+                    updateIncidents(true);
+                }
+                Coord_Service.dirty = false;
+            }
+            $window.dispatchEvent(new Event('resize'));
+            console.log(fromState);
+        });
 
         $scope.map.on('moveend', function(){
             updateIncidents(false);
@@ -448,17 +526,18 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         });
 
         $rootScope.$on('BMA.panToPoint', function(e, notification) {
+            $scope.map.stopLocate();
+            $(".datetimepicker").remove()
             if(notification && notification.data && notification.data.payload && notification.data.payload.lat && notification.data.payload.lng) {
                 $scope.map.setView(new L.LatLng(notification.data.payload.lat, notification.data.payload.lng), 18);
                 updateIncidents(true);
-                var popup = L.popup({offset: L.point(0,-26)})
+               /* var popup = L.popup({offset: L.point(0,-26)})
                  .setLatLng(new L.LatLng(notification.data.payload.lat, notification.data.payload.lng))
                  .setContent(NotificationPopup_Service(notification.data.payload))
-                 .openOn($scope.map)
+                 .openOn($scope.map)*/
                  }
-
-                //$scope.map.openPopup(NotificationPopup_Service(notification.data.payload), new L.LatLng(notification.data.payload.lat, notification.data.payload.lng) , {offset: L.point(0, -26), minWidth:150});
-            });
+        }
+        );
 
 
         /* Define actions triggered by new drawings */
@@ -492,6 +571,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
 
 
         $scope.addReport = function() {
+            $scope.map.removeLayer(incidentData);
             $scope.$apply(function() {
                 $scope.model.showTargetMarker = true;
             });
@@ -506,22 +586,23 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
 
         // Handle user selected report type from action sheet
         $scope.showReportOptions = function() {
-            $scope.model.showTargetMarker = false;
+
             Coord_Service.coordinates[0] = $scope.map.getCenter().lng;
             Coord_Service.coordinates[1] = $scope.map.getCenter().lat;
             Coord_Service.dirty = true;
 
             $ionicActionSheet.show({
                 buttons: [
-                    { text: '<div class="awesome-marker-icon-red awesome-marker"><i class="fa fa-bicycle icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Collision</span>' },
-                    { text: '<div class="awesome-marker-icon-orange awesome-marker"><i class="fa fa-bicycle icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Near miss</span>' },
-                    { text: '<div class="awesome-marker-icon-green awesome-marker"><i class="fa fa-warning icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Hazard</span>' },
-                    { text: '<div class="awesome-marker-icon-lightgray awesome-marker"><i class="fa fa-bicycle icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Theft</span>' },
+                    { text: '<div class="awesome-marker-icon-red awesome-marker bma-actionsheet-marker"><i class="fa fa-bicycle icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Collision</span>' },
+                    { text: '<div class="awesome-marker-icon-orange awesome-marker bma-actionsheet-marker"><i class="fa fa-bicycle icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Near miss</span>' },
+                    { text: '<div class="awesome-marker-icon-green awesome-marker bma-actionsheet-marker"><i class="fa fa-warning icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Hazard</span>' },
+                    { text: '<div class="awesome-marker-icon-lightgray awesome-marker bma-actionsheet-marker"><i class="fa fa-bicycle icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Theft</span>' },
                     { text: '<div class="bma-actionsheet-icon-close"><i class="fa fa-close"></i></div><span class="bma-actionsheet">Cancel</span>' }
                 ],
                 titleText: 'What type of incident are you reporting?',
                 buttonClicked: function(index) {
-                    console.log(index);
+                    $scope.map.addLayer(incidentData);
+                    $scope.model.showTargetMarker = false;
                     switch (index) {
                         case 0:
                             $state.go('incident');
@@ -651,6 +732,9 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
             $scope.legend.official = !$scope.legend.official;
         }
     };
+    $scope.toggleFilter = function() {
+        updateIncidents(true);
+    };
     $scope.toggleStravaHM = function() {
         if(stravaHM) {
             $scope.legend.stravaHM ? $scope.map.removeLayer(stravaHM) : $scope.map.addLayer(stravaHM);
@@ -670,8 +754,41 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         }
     };
 
+    $scope.sliderDate = function(m) {
+        return moment({
+            year: 1970 + m / 12,
+            month: m % 12
+        })
+    };
 
-           // Initialize the slider
+    $scope.sliderRange = {
+        values: [
+            (moment().weekYear() - 1980) * 12  + moment().month(),
+            (moment().weekYear() - 1970) * 12 + moment().month()
+        ]
+    };
+
+    $scope.slider = {
+      step: 1,
+        min: (moment().weekYear() - 1980) * 12  + moment().month(), //months since epoch minus 10 years
+        max: (moment().weekYear() - 1970) * 12 + moment().month(), //months since epoch
+        range: true,
+        tooltip: 'hide',
+        value: $scope.sliderRange.values
+    };
+
+    var timeout;
+    $scope.$watch('sliderRange.values', function() {
+        if(timeout) {
+            $timeout.cancel(timeout);
+        }
+        timeout = $timeout(updateIncidents, 200);
+        console.log('Values are changing: ' + $scope.sliderRange.values[0] + ' and ' + $scope.sliderRange.values[1]);
+        //updateIncidents(true);
+    });
+
+
+/*           // Initialize the slider
         $("input.slider").ready(function(){
             var mySlider = $("input.slider").slider({
                 step: 1,
@@ -713,22 +830,25 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 // Add all points back to map
                 resetPoints();
             }
-        });
+        });*/
 
-        // Toggle the legend side menu open/cosed
+
+
+
+       // Toggle the legend side menu open/cosed
         $scope.toggleLegend = function() {
             $ionicSideMenuDelegate.toggleRight();
             $window.dispatchEvent(new Event('resize'));
         };
 
         // Add marker/pin control to map
-        var markerControl = L.easyButton('fa fa-map-marker bma-leaflet-button', $scope.addReport,'', $scope.map, 'topleft', 'bma-leaflet-button');
+        var markerControl = L.easyButton('fa fa-map-marker bma-leaflet-button bma-location-button', $scope.addReport,'', $scope.map, 'topleft', 'bma-leaflet-button');
 
         // Add geolocation button to the map
-        var glControl = L.easyButton('fa fa-crosshairs bma-leaflet-button', $scope.geolocate,'', $scope.map, 'topleft', 'bma-leaflet-button');
+        var glControl = L.easyButton('fa fa-crosshairs bma-leaflet-button bma-map-button', $scope.geolocateButtonPressed,'', $scope.map, 'topleft', 'bma-leaflet-button');
 
         // Add legend open/close control to the map
-        var legendControl = L.easyButton('fa fa-list-ul bma-leaflet-button', $scope.toggleLegend, '' , $scope.map, 'topright', 'bma-leaflet-button' +
+        var legendControl = L.easyButton('bma-layers bma-leaflet-button', $scope.toggleLegend, '' , $scope.map, 'topright', 'bma-leaflet-button' +
         '');
 
         // Add drawing controls to the map if user is logged in
@@ -739,6 +859,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         // Cancel reporting UI - remove target marker and buttons
         $scope.cancelReporting = function() {
             $scope.model.showTargetMarker = false;
+            $scope.map.addLayer(incidentData);
         };
 
         // Hack to ensure layout is correct

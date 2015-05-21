@@ -20,8 +20,6 @@
                                 <input id="date-input" type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date" dgb-datepicker="{autoclose: true, showMeridian: true, endDate: hazardDetails.maxDate, maxView: 2}" ng-model="hazardDetails.selectedDateTime" readonly>
                                 <i id="date-icon" class="ion-calendar"></i>
                             </div>
-
-                            </input>
                         </div>
                         <div class="form-group">
                             <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.hazardTypeAlert]">
@@ -35,6 +33,7 @@
                                     >
                             </group-select>
                         </div>
+
                     </accordion-group>
                     <accordion-group heading="Description">
                         <div class="form-group">

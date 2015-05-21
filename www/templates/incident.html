@@ -1,7 +1,7 @@
 <ion-view>
     <ion-nav-title>
         <img src="img/BikeMapsORG_Logo_notxt_sm.png" class="bma-header-logo">
-        <span>Hazard Report</span>
+        <span>Incident Report</span>
     </ion-nav-title>
     <!--Hide the menu button-->
     <ion-nav-buttons side="right" >
@@ -17,8 +17,9 @@
                                 When was the incident?*
                             </label>
                             <div id="date-container">
-                                <input id="date-input" type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date" dgb-datepicker="{autoclose: true, showMeridian: true, endDate: incidentDetails.maxDate, maxView: 2}" ng-model="incidentDetails.selectedDateTime" readonly>
-                                <i id="date-icon" class="ion-calendar"></i>
+                                <input ng-model="incidentDetails.selectedDateTime" ng-click="incidentDate()">
+                                <!--<input id="date-input" type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date" dgb-datepicker="{autoclose: true, showMeridian: true, endDate: incidentDetails.maxDate, maxView: 2}" ng-model="incidentDetails.selectedDateTime" readonly>
+                               --> <i id="date-icon" class="ion-calendar"></i>
                             </div>
 
                         </div>

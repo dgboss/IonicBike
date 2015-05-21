@@ -12,14 +12,6 @@ bikeMapApp.directive('dgbDatepicker', function() {
     }
 });
 
-bikeMapApp.directive('bmaSlider', function() {
-    return {
-        restrict: 'A',
-        link: function(scope, element, attrs, controller) {
-            $(element).slider(scope.$eval(attrs.bmaslider));
-        }
-    }
-});
 
 
 /* Directive to display a basic form input field as a modal on click */
@@ -51,30 +43,6 @@ bikeMapApp.directive('basicSelect',
                 // scope.text          = attrs.text || '';
                 scope.defaultText   = scope.displayText || '';
 
-
-                /* Optionnal callback function */
-                // scope.callback = attrs.callback || null;
-
-                /* Instanciate ionic modal view and set params */
-
-                /* Some additionnal notes here :
-                 *
-                 * In previous version of the directive,
-                 * we were using attrs.parentSelector
-                 * to open the modal box within a selector.
-                 *
-                 * This is handy in particular when opening
-                 * the "fancy select" from the right pane of
-                 * a side view.
-                 *
-                 * But the problem is that I had to edit ionic.bundle.js
-                 * and the modal component each time ionic team
-                 * make an update of the FW.
-                 *
-                 * Also, seems that animations do not work
-                 * anymore.
-                 *
-                 */
                 $ionicModal.fromTemplateUrl(
                     'templates/basic-select-items.html',
                     {'scope': scope}
@@ -147,30 +115,6 @@ bikeMapApp.directive('groupSelect',
                 // scope.text          = attrs.text || '';
                 scope.defaultText   = scope.displayText || '';
 
-
-                /* Optionnal callback function */
-                // scope.callback = attrs.callback || null;
-
-                /* Instanciate ionic modal view and set params */
-
-                /* Some additionnal notes here :
-                 *
-                 * In previous version of the directive,
-                 * we were using attrs.parentSelector
-                 * to open the modal box within a selector.
-                 *
-                 * This is handy in particular when opening
-                 * the "fancy select" from the right pane of
-                 * a side view.
-                 *
-                 * But the problem is that I had to edit ionic.bundle.js
-                 * and the modal component each time ionic team
-                 * make an update of the FW.
-                 *
-                 * Also, seems that animations do not work
-                 * anymore.
-                 *
-                 */
                 $ionicModal.fromTemplateUrl(
                     'templates/group-select-items.html',
                     {'scope': scope}
@@ -213,57 +157,3 @@ bikeMapApp.directive('groupSelect',
         };
     }
 ]);
-
-bikeMapApp.directive('dgbDatepicker2', function($parse) {
-    return {
-        restrict: "E",
-        replace: true,
-        transclude: false,
-        compile: function (element, attrs) {
-            var modelAccessor = $parse(attrs.ngModel);
-
-            var html = "<input type='text' id='" + attrs.id + "' >" +
-                "</input>";
-
-            var newElem = $(html);
-            element.replaceWith(newElem);
-
-            return function (scope, element, attrs, controller) {
-
-                var processChange = function () {
-                    var date = new Date(element.datetimepicker("getDate"));
-
-                    scope.$apply(function (scope) {
-                        // Change bound variable
-                        modelAccessor.assign(scope, date);
-                    });
-                };
-
-                element.datetimepicker({
-                    inline: true,
-                    onClose: processChange,
-                    onSelect: processChange
-                });
-
-                scope.$watch(modelAccessor, function (val) {
-                    var date = new Date(val);
-                    element.datetimepicker("setDate", date);
-                });
-
-            };
-
-        }
-    };
-})
-
-bikeMapApp.directive('scrollOnClick', function() {
-    return {
-        restrict: 'A',
-        link: function(scope, $elm) {
-            $elm.on('click', function() {
-                $("body").animate({scrollTop: $elm.offset().top}, "slow");
-            });
-        }
-    }
-});
-

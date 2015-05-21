@@ -8,7 +8,7 @@
     </ion-nav-buttons>
 
     <ion-content id="registration">
-        <div ng-if="complete == false">
+        <div ng-show="complete == false">
             <form role="form" name="registrationForm" ng-submit="register(registrationForm)" novalidate>
                 <ion-list>
                     <ion-item>
@@ -46,7 +46,7 @@
                 </div>
             </form>
         </div>
-        <div ng-if="complete == true">
+        <div ng-hide="complete == false">
             <div class="alert alert-success">Great!  You've just registered.  You should receive an email shortly with instructions on how to activate your account.</div>
             <div class="padding">
                 <button class="button button-bikemaps" ng-click="continue()">

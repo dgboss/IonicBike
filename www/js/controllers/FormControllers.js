@@ -5,7 +5,20 @@
 /*
  Controller for incident portion of incident form
  */
-bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicModal, $location, $anchorScroll, Constants, IncidentReportService, CyclingFrequencyService, BirthYearService, BirthMonthService, GenderService, YesNoService, Coord_Service, Collision_Service, Nearmiss_Service) {
+bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicModal, $location, $anchorScroll, Constants, IncidentReportService, CyclingFrequencyService, BirthYearService, BirthMonthService, GenderService, YesNoService, Coord_Service, Collision_Service, Nearmiss_Service, $cordovaDatePicker) {
+
+    var options = {
+        date: new Date(),
+        mode: 'date' // or 'time'
+    };
+
+    $scope.incidentDate = function() {
+        $cordovaDatePicker.show(options).then(function(date){
+            alert(date);
+        });
+    };
+
+
 
     $scope.incidentDetails = {
         selectedDateTime: null,
@@ -226,7 +239,13 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
     $scope.model = {
         hazardChecked: false,
         dateAlert: false,
-        hazardTypeAlert: false
+        hazardTypeAlert: false,
+        choices: [
+        {name: 'Choice 1'},
+        {name: 'Choice 2'},
+        {name: 'Choice 3'}
+        ],
+        selected:''
     };
 
     $scope.markCheckbox = function() {

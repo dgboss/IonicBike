@@ -31,13 +31,13 @@
                 </ion-content>
             </ion-pane>
         </ion-side-menu-content>
-            <ion-side-menu side="left">
+<!--            <ion-side-menu side="left">
                 <ion-list>
                     <ion-item>
                         This is an item.
                     </ion-item>
                 </ion-list>
-            </ion-side-menu>
+            </ion-side-menu>-->
             <ion-side-menu class="bma-side-menu" side="right">
                 <ion-header-bar align-title="left" class="bar bma-legend-header">
                     <h2 class="title bma-side-menu-title">Layers</h2>
@@ -59,12 +59,12 @@
                                     <div class="bma-legend-item" ng-click="toggleCollisions()">
                                         <input type="checkbox" class="bma-layer-toggle" id="collisionCheckbox" checked="legend.collision" ng-model="legend.collision" ng-click="toggleCollisions()">
                                         <i class="collision fa fa-bicycle icon-black"></i>
-                                        <span class="bma-legend-label"> Citizen collision report</span>
+                                        <span class="bma-legend-label"> Citizen collision</span>
                                     </div>
                                     <div class="bma-legend-item" ng-click="toggleNearmiss()">
                                         <input type="checkbox" class="bma-layer-toggle" id="nearmissCheckbox" checked="legend.nearmiss" ng-model="legend.nearmiss" ng-click="toggleNearmiss()">
                                             <i class="nearmiss fa fa-bicycle icon-black"></i>
-                                            <span class="bma-legend-label"> Citizen near miss report</span><br>
+                                            <span class="bma-legend-label"> Citizen near miss</span><br>
                                     </div>
                                     <div class="bma-legend-item" ng-click="toggleHazards()">
                                         <input type="checkbox" class="bma-layer-toggle" id="hazardCheckbox" checked="legend.hazard" ng-model="legend.hazard" ng-click="toggleHazards()">
@@ -81,21 +81,37 @@
                                             <i class="official fa fa-certificate"></i>
                                             <span class="bma-legend-label"> Official collision report</span>
                                     </div>
-                                    <div class="bma-legend-item">
-                                        <input id="filterCheckbox" class="bma-layer-toggle" type="checkbox" checked = "legend.filter" ng-model="legend.filter">
+                                    <!--<div class="bma-legend-item" ng-click="toggleFilter()">
+                                        <input id="filterCheckbox" class="bma-layer-toggle" type="checkbox" checked="legend.filter" ng-model="legend.filter" >
                                         <span class="fa-stack">
                                           <i class="fa fa-filter fa-stack-1x"></i>
                                           <i class="fa fa-circle-thin fa-stack-2x"></i>
-                                        </span></i>
-                                        <span class="bma-legend-label"> Filter</span>
-                                        <div class="filter">
-                                            <div class="date-container">
-                                                <span class="start-date"></span>
-                                                <span class="end-date pull-right"></span>
-                                            </div>
-
-                                            <input class="bma-slider slider"/>
+                                        </span>
+                                        <span class="bma-legend-label">Filter</span>
+                                        <div class="date-container" ng-show="legend.filter" style="margin:3px 0px 3px;">
+                                            <small class="bma-start-date"><span>{{sliderDate(sliderRange.values[0]).format('MMM-YYYY')}}</span></small>
+                                            <small class="bma-end-date"><span></span>{{sliderDate(sliderRange.values[1]).format('MMM-YYYY')}}</small>
                                         </div>
+                                        <slider
+                                                ng-model="sliderRange.values"
+                                                min="slider.min"
+                                                step="1"
+                                                max="slider.max"
+                                                range="true"
+                                                class="bma-slider"
+                                                ng-mouseup="filterPoints()"
+                                                ng-show="legend.filter"
+                                                ></slider>-->
+
+        <!--                                <div style="margin-top:10px;">
+                                            <label style="display:inline-block;float:left;text-align:left;margin:7px 3px;width:75px;">Start date: </label>
+                                                <input style="display:inline-block;width:125px" dgb-datepicker="{autoclose: true, startView: 3, minView: 3, maxView: 4, startDate: filter.minDate, endDate: filter.maxDate, format: 'M-yyyy'}" class="form-control" ng-model="filter.start" readonly>
+                                        </div>
+                                        <br>
+                                        <div >
+                                            <label style="display:inline-block;float:left;text-align:left;margin:7px 3px;width:75px;">End date: </label>
+                                                <input style="display:inline-block;width:125px" dgb-datepicker="{autoclose: true, startView: 3, minView: 3, maxView: 4, endDate: filter.maxDate, format: 'M-yyyy'}" class="form-control" readonly ng-model="filter.end">
+                                        </div>-->
                                     </div>
                                 </div>
                             </div>

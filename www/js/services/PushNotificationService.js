@@ -90,8 +90,6 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
         },
 
         'handleAndroid': function(notification){
-            // ** NOTE: ** You could add code for when app is in foreground or not, or coming from coldstart here too
-            //             via the console fields as shown.
             if (notification.event == "registered") {
                 $window.localStorage["regid"] = notification.regid;
                 this.storeDeviceToken("android");
@@ -105,10 +103,13 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
                     });
                     confirmPopup.then(function(res){
                         if(res){
-                            $location.path("/");
+                            $state.go('app');
                             $rootScope.$broadcast("BMA.panToPoint", {data: notification});
                         }
                     })
+                } else {
+                    $state.go('app');
+                    $rootScope.$broadcast("BMA.panToPoint", {data: notification});
                 }
             }
         },

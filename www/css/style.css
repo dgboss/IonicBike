@@ -347,37 +347,60 @@ textarea {
 .date-container{
     padding: 0 10px;
 }
+
+
+/*
+.bma-slider {
+    margin-left: 28px;
+}
+
+
+.slider.slider-horizontal .slider-track {
+    width: 175px!important;
+    margin-left: 10px;
+}*/
+
 /* Bootstrap-slider customization */
-.bma-slider .slider{
-    margin: 0px 10px;
+div .slider{
+    margin: 0px 28px;
+    visibility: visible;
 }
-.bma-slider .slider.slider-horizontal{
-    width: 130px;
+div .slider.slider-horizontal{
+    width: 180px;
 }
-.slider-handle.custom::before {
+div .slider.slider-horizontal .slider-track {
+    width: 145px;
+    margin-left: 17px;
+}
+div .slider.slider-horizontal .slider-handle {
+    background: none;
+    color: #485059;
+}
+div .slider-handle::before {
     line-height: 18px;
     font-size: 22px;
-    color: #1a242f;
+    color: #485059;
     font-family: FontAwesome;
     position:relative;
     top: 1px;
+    background: none;
 }
-.min-slider-handle.custom::before {
+div .min-slider-handle::before {
     content: '\f10c';
     right: 6px;
 }
-.max-slider-handle.custom::before {
+div .max-slider-handle::before {
     content: '\f111';
     left: 7px;
 }
 
-.slider-selection {
+div .slider-selection {
     background: #18bc9c;
 }
-.slider-disabled .slider-selection{
+div .slider-disabled .slider-selection{
     opacity: 0.3;
 }
-.slider-disabled .slider-handle{
+div .slider-disabled .slider-handle{
     background-image: none !important;
     opacity: 0.3;
 }
@@ -429,6 +452,7 @@ textarea {
     min-width: 30px;
     left: 50%;
     right: 50%;
+    z-index: 1000;
 
     color: #2c3e50;
     font-weight: bold;
@@ -528,11 +552,15 @@ textarea {
 .bma-actionsheet-icon {
     position: relative;
     bottom: 3px;
+
+}
+.bma-actionsheet-marker {
+    margin-left: 8px;
 }
 .bma-actionsheet-icon-close {
     position: absolute;
     display: inline-block;
-    left:10px;
+    left:18px;
     color: #2c3e50;
 }
 .bma-side-menu {
@@ -593,7 +621,6 @@ textarea {
 .bma-header-logo {
     height: 25px;
     vertical-align: middle;
-    margin-right: 3px;
 }
 
 #date-container{
@@ -610,6 +637,52 @@ textarea {
     bottom:18px;
     right:10px;
 }
+.ui-select-container {
+    height: 46px;
+}
+.bma-start-date {
+    margin-left: 19px;
+}
+.bma-end-date {
+    float: right;
+    padding-right: 15px;
+}
+.bma-about {
+    color: #2c3e50;
+    margin: 15px 0px 0px 8px;
+}
+.row.bma-about {
+    margin: 15px 0px;
+}
+
+
+ion-popover-view.bma-fit {
+    height: auto !important;
+}
+
+ion-popover-view.bma-fit ion-content {
+    position: relative !important;
+}
+
+.platform-android ion-popover-view.bma-fit {
+    margin-top: 10px !important;
+}
+.bma-layers {
+    background:url(../lib/leaflet/images/layers.png);
+    background-repeat: no-repeat;
+    width: 26px;
+    height: 26px;
+}
+.bma-menu-button {
+    margin-right: 5px;
+}
+.bma-map-button {
+    color: #464646;
+}
+
+
+
+
 
 
 

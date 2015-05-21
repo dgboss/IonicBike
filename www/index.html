@@ -13,14 +13,10 @@
     <link rel="stylesheet" href="lib/leaflet/plugins/awesome-markers/leaflet.awesome-markers.css" />
     <link rel="stylesheet" href="lib/leaflet/plugins/leaflet-markercluster/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="lib/leaflet/plugins/leaflet-markercluster/MarkerCluster.css" />
-    <link rel="stylesheet" href="lib/leaflet/plugins/leaflet-control-geocoder/Control.Geocoder.css" />
     <link rel="stylesheet" href="lib/leaflet/plugins/leaflet-draw/leaflet.draw.css" />
-    <link rel="stylesheet" href="lib/leaflet/plugins/leaflet-sidebar/L.Control.Sidebar.css" />
-    <link rel="stylesheet" href="lib/ionic/ionic-ion-drawer/ionic.contrib.drawer.css" />
     <link rel="stylesheet" href="static/bootstrap/css/bootstrap.css" />
-    <link rel="stylesheet" href="lib/bootstrap-slider/css/bootstrap-slider.css" />
+    <link rel="stylesheet" href="lib/bootstrap-slider/css/bootstrap-slider.min.css" />
     <link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css" />
-    <link rel="stylesheet" href="lib/ui-select/select.css" />
 
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
@@ -40,16 +36,12 @@
 
     <!-- your app's js -->
     <script src="js/easy-button.js"></script>
-    <script src="js/easy-text-button.js"></script>
     <script src="static/d3.min.js"></script>
-    <script src="lib/bootstrap-slider/bootstrap-slider.js"></script>
+    <script src="lib/bootstrap-slider/bootstrap-slider.min.js"></script>
     <script src="lib/leaflet/plugins/leaflet-usermarker/leaflet.usermarker.js"></script>
     <script src="lib/leaflet/plugins/awesome-markers/leaflet.awesome-markers.js"></script>
     <script src="lib/leaflet/plugins/leaflet-markercluster/leaflet.markercluster.js"></script>
-    <script src="lib/leaflet/plugins/leaflet-control-geocoder/Control.Geocoder.js"></script>
     <script src="lib/leaflet/plugins/leaflet-draw/leaflet.draw.js"></script>
-    <script src="lib/leaflet/plugins/leaflet-sidebar/L.Control.Sidebar.js"></script>
-    <script src="lib/ionic/ionic-ion-drawer/ionic.contrib.drawer.js"></script>
     <script src="lib/moment.min.js"></script>
     <script src="js/icons.js"></script>
     <script src="js/app.js"></script>
@@ -61,14 +53,15 @@
     <script src="js/controllers/FormControllers.js"></script>
     <script src="js/controllers/NotificationsController.js"></script>
     <script src="js/controllers/SettingsController.js"></script>
+    <script src="js/controllers/AboutController.js"></script>
     <script src="js/directives/directives.js"></script>
     <script src="js/services.js"></script>
     <script src="js/services/djangoAuth.js"></script>
     <script src="js/services/validate.js"></script>
     <script src="js/services/PushNotificationService.js"></script>
     <script src="js/services/FormServices.js"></script>
-    <script src="lib/ui-bootstrap/ui-bootstrap-tpls-0.12.1.js"></script>
-    <script src="lib/ui-select/select.js"></script>
+    <script src="lib/ui-bootstrap/ui-bootstrap-tpls-0.12.1.min.js"></script>
+    <script src="static/slider.js"></script>
 
   </head>
 
@@ -79,7 +72,7 @@
           </ion-nav-back-button>
           <ion-nav-buttons side="right">
               <button class="button button-bikemaps button-icon" ng-click="popover.show($event)">
-                  <i class="ion-android-more-vertical"></i>
+                  <i class="fa fa-bars bma-menu-button"></i>
               </button>
           </ion-nav-buttons>
       </ion-nav-bar>

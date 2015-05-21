@@ -14,7 +14,7 @@
             </ion-item>
         </ion-list>
         <ion-list ng-hide="!model.notifications.length" show-delete=true>
-            <ion-item class="capitalizeFirstLetter" ng-repeat="notification in model.notifications"  ng-click="viewNotificationOnMap(notification)">
+            <ion-item class="capitalizeFirstLetter item-text-wrap" ng-repeat="notification in model.notifications"  ng-click="viewNotificationOnMap(notification)">
                 {{notification.payload.type}}: {{notification.payload.i_type}}
                 <ion-delete-button class="ion-minus-circled"  ng-click="deleteItem(notification)"></ion-delete-button>
 

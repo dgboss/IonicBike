@@ -1,5 +1,5 @@
 
-var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 'ngResource', 'ngCookies', 'bikeMapApp.services', 'bikeMapApp.icons', 'bikeMapApp.FormServices', 'bikeMapApp.constants', 'ngCordova', 'ui.bootstrap', 'ui.select'])
+var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ngResource', 'ngCookies', 'bikeMapApp.services', 'bikeMapApp.icons', 'bikeMapApp.FormServices', 'bikeMapApp.constants', 'ngCordova', 'ui.bootstrap', 'ui.bootstrap-slider' ])
 
 .run(['$ionicPlatform', '$cookies', '$window', 'djangoAuth', 'PushNotificationService', function($ionicPlatform, $cookies, $window, djangoAuth, PushNotificationService) {
   $ionicPlatform.ready(function() {
@@ -11,12 +11,6 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
-
-
-     /* if($window.localStorage["notifications"]) {
-          PushNotificationService.notifications = $window.localStorage["notifications"];
-      }*/
-
 
     if($window.localStorage["authenticated"]){
         djangoAuth.authenticated = $window.localStorage["authenticated"];
@@ -99,7 +93,13 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ionic.contrib.drawer', 
                 templateUrl: "templates/password-reset.html",
                 controller: "PasswordResetCtrl"
 
-            });
+            })
+
+        .state('about', {
+            url: "/about",
+            templateUrl: "templates/about.html",
+            controller: "AboutCtrl"
+        });
 
         $urlRouterProvider.otherwise('/');
 });
