@@ -7,21 +7,9 @@
  */
 bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicModal, $location, $anchorScroll, Constants, IncidentReportService, CyclingFrequencyService, BirthYearService, BirthMonthService, GenderService, YesNoService, Coord_Service, Collision_Service, Nearmiss_Service, $cordovaDatePicker) {
 
-    var options = {
-        date: new Date(),
-        mode: 'date' // or 'time'
-    };
-
-    $scope.incidentDate = function() {
-        $cordovaDatePicker.show(options).then(function(date){
-            alert(date);
-        });
-    };
-
-
-
     $scope.incidentDetails = {
-        selectedDateTime: null,
+        selectedDate: null,
+        selectedTime: null,
         maxDate: new Date(),
         incidentTypeChoices: IncidentReportService.incidentChoices,
         selectedIncidentType: {
@@ -86,8 +74,45 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
         incidentTypeAlert: false,
         incidentObjectAlert: false,
         incidentInjuryAlert: false,
-        p_type: ""
+        p_type: "",
+        savePersonalDetailsChecked: false
     };
+
+    $scope.togglePersonalDetailsCheckbox = function() {
+        $scope.model.savePersonalDetailsChecked = !$scope.model.savePersonalDetailsChecked;
+        console.log($scope.model.savePersonalDetailsChecked);
+    };
+
+    // Populate Personal Details of form if user has previously saved the data
+    function populatePersonalDetails() {
+        if($window.localStorage["savePersonalDetails"] === "true") {
+            $scope.model.savePersonalDetailsChecked = $window.localStorage["savePersonalDetails"];
+            $scope.personalDetails.selectedHazardBirthYear = JSON.parse($window.localStorage["birthYear"]);
+            $scope.personalDetails.selectedHazardBirthMonth = JSON.parse($window.localStorage["birthMonth"]);
+            $scope.personalDetails.selectedHazardGender = JSON.parse($window.localStorage["gender"]);
+            $scope.personalDetails.selectedHazardCyclingFrequency = JSON.parse($window.localStorage["frequency"]);
+        }
+    }
+    populatePersonalDetails();
+
+    // Save/remove personal details to/from local storage
+    function savePersonalDetails() {
+
+        if($scope.model.savePersonalDetailsChecked) {
+            $window.localStorage["savePersonalDetails"] = true;
+            $window.localStorage["birthYear"] = JSON.stringify($scope.personalDetails.selectedHazardBirthYear);
+            $window.localStorage["birthMonth"] = JSON.stringify($scope.personalDetails.selectedHazardBirthMonth);
+            $window.localStorage["gender"] = JSON.stringify($scope.personalDetails.selectedHazardGender);
+            $window.localStorage["frequency"] = JSON.stringify($scope.personalDetails.selectedHazardCyclingFrequency);
+        }
+        else {
+            $window.localStorage["savePersonalDetails"] = false;
+            $window.localStorage["birthYear"] = '';
+            $window.localStorage["birthMonth"] = '';
+            $window.localStorage["gender"] = '';
+            $window.localStorage["frequency"] = '';
+        }
+    }
 
     $scope.markCheckbox = function() {
         $scope.model.incidentChecked = !$scope.model.incidentChecked;
@@ -95,7 +120,7 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
 
     $scope.submitIncident = function() {
         if( $scope.validateForm() ) {
-            console.log("Form is valid");
+
 
             if($scope.incidentDetails.selectedIncidentType.key === IncidentReportService.incidentChoices[1].items[0].key ||
                 $scope.incidentDetails.selectedIncidentType.key === IncidentReportService.incidentChoices[1].items[1].key) {
@@ -103,6 +128,16 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
             } else {
                 $scope.model.p_type = 'collision';
             }
+
+            var coeff = 1000*60*5; //rounding coefficient = millis in 5 min
+            var roundedTime = new Date(Math.round($scope.incidentDetails.selectedTime/coeff)*coeff); //round users time selection to nearest 5 min
+            // Construct time string from user selected date and time
+            var selectedDateTime = $scope.incidentDetails.selectedDate.getFullYear() + "-" +
+                ($scope.incidentDetails.selectedDate.getMonth()+1) + "-" +
+                $scope.incidentDetails.selectedDate.getDate() + " " +
+                roundedTime.getHours() + ":" +
+                roundedTime.getMinutes();
+
                 var incidentForm = {
                 "geometry": {
                     "type": "Point",
@@ -113,7 +148,7 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
                 },
                 "properties": {
                     // Incident details to POST
-                    "date": $scope.incidentDetails.selectedDateTime,
+                    "date": selectedDateTime,
                     "i_type": $scope.incidentDetails.selectedIncidentType.key,
                     "incident_with": $scope.incidentDetails.selectedObjectType.key,
                     "injury": $scope.incidentDetails.selectedInjuryType.key,
@@ -143,6 +178,8 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
                 }
             };
 
+            savePersonalDetails();
+
             var post;
 
             // Is this a collision/fall or a near miss?
@@ -154,7 +191,6 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
 
             post.$promise.then(
                 Coord_Service.dirty = true,
-                $(".datetimepicker").remove(),
                 $state.go('app')
             );
 
@@ -200,7 +236,6 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
     };
 
     $scope.cancelIncident = function() {
-        $(".datetimepicker").remove();
         $state.go('app');
     }
 });
@@ -211,7 +246,8 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
 bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicModal, HazardGroupService, BirthYearService, BirthMonthService, GenderService, CyclingFrequencyService, Coord_Service, Hazard_Service) {
     /* Hazard details pane */
     $scope.hazardDetails = {
-        selectedDateTime: null,
+        selectedDate: null,
+        selectedTime: null,
         maxDate: new Date(),
         selectedHazardType: {
             'key': '---------', 'text': '---------'
@@ -239,22 +275,58 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
     $scope.model = {
         hazardChecked: false,
         dateAlert: false,
+        timeAlert: false,
         hazardTypeAlert: false,
-        choices: [
-        {name: 'Choice 1'},
-        {name: 'Choice 2'},
-        {name: 'Choice 3'}
-        ],
-        selected:''
+        savePersonalDetailsChecked: false
     };
 
-    $scope.markCheckbox = function() {
-        $scope.model.hazardChecked = !$scope.model.hazardChecked;
+    $scope.togglePersonalDetailsCheckbox = function() {
+        $scope.model.savePersonalDetailsChecked = !$scope.model.savePersonalDetailsChecked;
+      console.log($scope.model.savePersonalDetailsChecked);
     };
+
+    // Populate Personal Details of form if user has previously saved the data
+    function populatePersonalDetails() {
+      if($window.localStorage["savePersonalDetails"] === "true") {
+          $scope.model.savePersonalDetailsChecked = $window.localStorage["savePersonalDetails"];
+          $scope.personalDetails.selectedHazardBirthYear = JSON.parse($window.localStorage["birthYear"]);
+          $scope.personalDetails.selectedHazardBirthMonth = JSON.parse($window.localStorage["birthMonth"]);
+          $scope.personalDetails.selectedHazardGender = JSON.parse($window.localStorage["gender"]);
+          $scope.personalDetails.selectedHazardCyclingFrequency = JSON.parse($window.localStorage["frequency"]);
+      }
+    }
+    populatePersonalDetails();
+
+    // Save/remove personal details to/from local storage
+    function savePersonalDetails() {
+
+        if($scope.model.savePersonalDetailsChecked) {
+            $window.localStorage["savePersonalDetails"] = true;
+            $window.localStorage["birthYear"] = JSON.stringify($scope.personalDetails.selectedHazardBirthYear);
+            $window.localStorage["birthMonth"] = JSON.stringify($scope.personalDetails.selectedHazardBirthMonth);
+            $window.localStorage["gender"] = JSON.stringify($scope.personalDetails.selectedHazardGender);
+            $window.localStorage["frequency"] = JSON.stringify($scope.personalDetails.selectedHazardCyclingFrequency);
+        }
+        else {
+            $window.localStorage["savePersonalDetails"] = false;
+            $window.localStorage["birthYear"] = '';
+            $window.localStorage["birthMonth"] = '';
+            $window.localStorage["gender"] = '';
+            $window.localStorage["frequency"] = '';
+        }
+    }
 
     $scope.submitHazard = function() {
         if( $scope.validateForm() ) {
-            console.log("Form is valid");
+            var coeff = 1000*60*5; //rounding coefficient = millis in 5 min
+            var roundedTime = new Date(Math.round($scope.hazardDetails.selectedTime/coeff)*coeff); //round users time selection to nearest 5 min
+            // Construct time string from user selected date and time
+            var selectedDateTime = $scope.hazardDetails.selectedDate.getFullYear() + "-" +
+                ($scope.hazardDetails.selectedDate.getMonth()+1) + "-" +
+                    $scope.hazardDetails.selectedDate.getDate() + " " +
+                    roundedTime.getHours() + ":" +
+                    roundedTime.getMinutes();
+
             var hazardForm = {
                 "geometry": {
                     "type": "Point",
@@ -265,7 +337,7 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
                 },
                 "properties": {
                     "i_type": $scope.hazardDetails.selectedHazardType.key,
-                    "date": $scope.hazardDetails.selectedDateTime,
+                    "date": selectedDateTime,
                     "p_type": "hazard",
                     "details": $scope.description.details,
                     "age": $scope.personalDetails.selectedHazardBirthYear.key,
@@ -275,10 +347,11 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
                 }
             };
 
+            savePersonalDetails();
+
             var post = Hazard_Service.save(hazardForm);
             post.$promise.then(
                 Coord_Service.dirty = true,
-                $(".datetimepicker").remove(),
                 $state.go('app')
             );
 
@@ -291,11 +364,16 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
 
 
     $scope.validateForm = function() {
-      if( $scope.hazardDetails.selectedDateTime === null || $scope.hazardDetails.selectedHazardType.key === "---------" ) {
-          if ($scope.hazardDetails.selectedDateTime === null) {
+      if( $scope.hazardDetails.selectedDate === null || $scope.hazardDetails.selectedTime === null || $scope.hazardDetails.selectedHazardType.key === "---------" ) {
+          if ($scope.hazardDetails.selectedDate === null) {
               $scope.model.dateAlert = true;
           } else {
               $scope.model.dateAlert = false;
+          }
+          if ($scope.hazardDetails.selectedTime === null) {
+              $scope.model.timeAlert = true;
+          } else {
+              $scope.model.timeAlert = false;
           }
           if ($scope.hazardDetails.selectedHazardType.key === "---------") {
               $scope.model.hazardTypeAlert = true;
@@ -312,7 +390,6 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
     };
 
     $scope.cancelHazard = function() {
-        $(".datetimepicker").remove();
         $state.go("app");
     };
 });
@@ -325,7 +402,8 @@ bikeMapApp.controller('TheftCtrl', function($scope, $state, $window, $ionicModal
 
     /* Theft details pane */
     $scope.theftDetails = {
-        selectedDateTime: null,
+        selectedDate: null,
+        selectedTime: null,
         maxDate: new Date(),
         theftChoices: TheftReportService.theftChoices,
         selectedTheftChoice: {
@@ -387,7 +465,16 @@ bikeMapApp.controller('TheftCtrl', function($scope, $state, $window, $ionicModal
 
     $scope.submitTheft = function() {
         if( $scope.validateForm() ) {
-            console.log("Form is valid");
+
+            var coeff = 1000*60*5; //rounding coefficient = millis in 5 min
+            var roundedTime = new Date(Math.round($scope.theftDetails.selectedTime/coeff)*coeff); //round users time selection to nearest 5 min
+            // Construct time string from user selected date and time
+            var selectedDateTime = $scope.theftDetails.selectedDate.getFullYear() + "-" +
+                ($scope.theftDetails.selectedDate.getMonth()+1) + "-" +
+                $scope.theftDetails.selectedDate.getDate() + " " +
+                roundedTime.getHours() + ":" +
+                roundedTime.getMinutes();
+
             var theftForm = {
                 "geometry": {
                     "type": "Point",
@@ -398,7 +485,7 @@ bikeMapApp.controller('TheftCtrl', function($scope, $state, $window, $ionicModal
                 },
                 "properties": {
                     "i_type": $scope.theftDetails.selectedTheftChoice.key,
-                    "date": $scope.theftDetails.selectedDateTime,
+                    "date": selectedDateTime,
                     "p_type": "theft",
                     "details": $scope.theftDescription.details,
                     "how_locked": $scope.theftDetails.selectedLockedChoice.key,
@@ -417,7 +504,6 @@ bikeMapApp.controller('TheftCtrl', function($scope, $state, $window, $ionicModal
             var post = Theft_Service.save(theftForm);
             post.$promise.then(
                 Coord_Service.dirty = true,
-                $(".datetimepicker").remove(),
                 $state.go('app')
             );
         }
@@ -482,7 +568,6 @@ bikeMapApp.controller('TheftCtrl', function($scope, $state, $window, $ionicModal
     };
 
     $scope.cancelTheft = function() {
-        $(".datetimepicker").remove();
         $state.go('app');
     }
 

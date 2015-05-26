@@ -17,11 +17,19 @@
                                 When was the incident?*
                             </label>
                             <div id="date-container">
-                                <input ng-model="incidentDetails.selectedDateTime" ng-click="incidentDate()">
-                                <!--<input id="date-input" type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date" dgb-datepicker="{autoclose: true, showMeridian: true, endDate: incidentDetails.maxDate, maxView: 2}" ng-model="incidentDetails.selectedDateTime" readonly>
-                               --> <i id="date-icon" class="ion-calendar"></i>
+                                <!--<input ng-model="incidentDetails.selectedDateTime" ng-click="incidentDate()" readonly>-->
+                                <input ng-model="incidentDetails.selectedDate" bs-datepicker type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date">
+                                <i id="date-icon" class="ion-calendar"></i>
                             </div>
-
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.timeAlert]">
+                                What time did the incident occur?
+                            </label>
+                            <div id="time-container">
+                                <input ng-model="incidentDetails.selectedTime" bs-timepicker data-time-format="HH:mm" data-length="1" data-minute-step="5" data-arrow-behavior="picker" type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date">
+                                <i id="time-icon" class="ion-clock"></i>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.incidentTypeAlert]">
@@ -250,6 +258,11 @@
                                     items="personalDetails.intoxicatedChoices"
                                     >
                             </basic-select>
+                        </div>
+
+                        <div class="padding">
+                            <input type="checkbox" class="bma-checkbox"  ng-checked="model.savePersonalDetailsChecked" ng-click="togglePersonalDetailsCheckbox()"/>
+                            <span ng-click="togglePersonalDetailsCheckbox()">Remember birth year, birth month, gender and biking frequency for all future reports.</span>
                         </div>
                     </accordion-group>
                 </accordion>

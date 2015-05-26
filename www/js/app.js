@@ -1,5 +1,5 @@
 
-var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ngResource', 'ngCookies', 'bikeMapApp.services', 'bikeMapApp.icons', 'bikeMapApp.FormServices', 'bikeMapApp.constants', 'ngCordova', 'ui.bootstrap', 'ui.bootstrap-slider' ])
+var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ngResource', 'ngCookies', 'bikeMapApp.services', 'bikeMapApp.icons', 'bikeMapApp.FormServices', 'bikeMapApp.constants', 'ngCordova', 'ui.bootstrap', 'ui.bootstrap-slider', 'mgcrea.ngStrap' ])
 
 .run(['$ionicPlatform', '$cookies', '$window', 'djangoAuth', 'PushNotificationService', function($ionicPlatform, $cookies, $window, djangoAuth, PushNotificationService) {
   $ionicPlatform.ready(function() {

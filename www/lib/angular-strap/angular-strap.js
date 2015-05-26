@@ -3765,7 +3765,7 @@ angular.module('mgcrea.ngStrap.timepicker', [
       length: 5,
       hourStep: 1,
       minuteStep: 5,
-      roundDisplay: false,
+      roundDisplay: true,
       iconUp: 'glyphicon glyphicon-chevron-up',
       iconDown: 'glyphicon glyphicon-chevron-down',
       arrowBehavior: 'pager'

@@ -2,18 +2,6 @@
  * Created by boss on 4/22/2015.
  */
 
-/* Directive to display bootstrap datetimepicker */
-bikeMapApp.directive('dgbDatepicker', function() {
-    return {
-        restrict: 'A',
-        link: function(scope, element, attrs, controller) {
-            $(element).datetimepicker(scope.$eval(attrs.dgbDatepicker));
-        }
-    }
-});
-
-
-
 /* Directive to display a basic form input field as a modal on click */
 bikeMapApp.directive('basicSelect',
 [

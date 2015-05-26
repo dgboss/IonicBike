@@ -5,14 +5,11 @@
 bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$window', '$state', '$stateParams', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'Official_Service', 'AlertArea_Service', 'Coord_Service', 'Icon', 'Popup_Service', 'NotificationPopup_Service', 'djangoAuth', '$cordovaToast', '$cordovaVibration', '$ionicActionSheet', '$ionicSideMenuDelegate', '$cordovaDatePicker',
     function($rootScope, $scope, $log, $timeout, $window, $state, $stateParams, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, Official_Service, AlertArea_Service, Coord_Service, Icon, Popup_Service, NotificationPopup_Service, djangoAuth, $cordovaToast, $cordovaVibration, $ionicActionSheet, $ionicSideMenuDelegate, $cordovaDatePicker) {
 
-
-
         // Scope variables
         $scope.map = new L.Map('map', {
             center: [48,-100],
             zoom: 15,
-            zoomControl: false,
-            worldCopyJump: true
+            zoomControl: false
         });
         $scope.authInfo = djangoAuth;
         $scope.model = {
@@ -31,7 +28,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
             }).addTo($scope.map);
 
        // Add Strava data
-       var stravaHM = L.tileLayer('http://d2z9m7k9h4f0yp.cloudfront.net/tiles/cycling/color5/{z}/{x}/{y}.png', {
+       var stravaHM = L.tileLayer('http://globalheat.strava.com/tiles/cycling/color5/{z}/{x}/{y}.png', {
             minZoom: 3,
             maxZoom: 17,
             opacity: 0.8,
@@ -242,8 +239,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
             }
         }
 
-
-
     extendedBounds = getExtendedBounds($scope.map.getBounds());
     getIncidents(extendedBounds);
     getAlertAreas();
@@ -397,7 +392,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
             console.log("An error occurred while retrieving theft data.");
         });
 
-        // Get theft data from BikeMaps api and add to map
+        // Get official data from BikeMaps api and add to map
         official = Official_Service.get({bbox: bnds.toBBoxString()});
         official.$promise.then(function () {
             unfiltered_official = official;
@@ -435,7 +430,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
 
         // Get geofences for the logged in user and add to map
         function getAlertAreas(){
-           if($window.localStorage["authenticated"] !== "null" && $window.localStorage["authenticated"] && $window.localStorage["token"] !== "null" && $window.localStorage["token"]) {
+           if($window.localStorage["authenticated"] !== "null" && $window.localStorage["authenticated"] === "true" && $window.localStorage["token"] !== "null" && $window.localStorage["token"]) {
                console.log("Going to get alert areas");
                AlertArea_Service.setToken($window.localStorage["token"]);
                var alertareas = AlertArea_Service.AlertAreas().get();
@@ -506,7 +501,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 Coord_Service.dirty = false;
             }
             $window.dispatchEvent(new Event('resize'));
-            console.log(fromState);
         });
 
         $scope.map.on('moveend', function(){

@@ -633,6 +633,16 @@ div .slider-disabled .slider-handle{
     padding-right: 30px;
 }
 #date-icon {
+     position:absolute;
+     bottom:18px;
+     right:10px;
+ }
+#time-container{
+    position:relative;
+    padding:0;
+    margin:0;
+}
+#time-icon {
     position:absolute;
     bottom:18px;
     right:10px;

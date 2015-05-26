@@ -8,17 +8,26 @@
     </ion-nav-buttons>
 
     <ion-content id="hazard">
-        <form role="form" ng-submit="submitHazard($scope.hazardForm)" ng-controller="HazardCtrl" name="hazardForm" id="hazardForm" novalidate>
+        <form role="form" ng-submit="submitHazard($scope.hazardForm)" name="hazardForm" id="hazardForm" novalidate>
             <div class="padding">
                 <accordion close-others=false>
-                    <accordion-group heading="Hazard Details" is-open=true ng-class="{true: 'form-title-invalid', false: 'form-valid'}[model.dateAlert || model.hazardTypeAlert]">
-                        <div id="div_id_date" data-tap-disabled="true" class="form-group">
+                    <accordion-group heading="Hazard Details" is-open=true ng-class="{true: 'form-title-invalid', false: 'form-valid'}[model.dateAlert || model.timeAlert || model.hazardTypeAlert]">
+                        <div id="div_id_date" class="form-group">
                             <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.dateAlert]" for="div_id_date">
                                 When was the incident?*
                             </label>
                             <div id="date-container">
-                                <input id="date-input" type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date" dgb-datepicker="{autoclose: true, showMeridian: true, endDate: hazardDetails.maxDate, maxView: 2}" ng-model="hazardDetails.selectedDateTime" readonly>
+                                <input ng-model="hazardDetails.selectedDate" bs-datepicker type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date">
                                 <i id="date-icon" class="ion-calendar"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.timeAlert]" for="div_id_date">
+                                What time did the incident occur?
+                            </label>
+                            <div id="time-container">
+                                <input ng-model="hazardDetails.selectedTime" bs-timepicker data-time-format="HH:mm" data-length="1" data-minute-step="5" data-arrow-behavior="picker" type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date">
+                                <i id="time-icon" class="ion-clock"></i>
                             </div>
                         </div>
                         <div class="form-group">
@@ -91,6 +100,11 @@
                                     items="personalDetails.cyclingFrequencyChoices"
                                     >
                             </basic-select>
+                        </div>
+
+                        <div class="padding">
+                            <input type="checkbox" class="bma-checkbox"  ng-checked="model.savePersonalDetailsChecked" ng-click="togglePersonalDetailsCheckbox()"/>
+                            <span ng-click="togglePersonalDetailsCheckbox()">Remember birth year, birth month, gender and biking frequency for all future reports.</span>
                         </div>
                     </accordion-group>
                 </accordion>

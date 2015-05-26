@@ -79,10 +79,6 @@ bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $state, $location,
         $scope.closeModal();
         $state.go("reset-password");
     };
-    $scope.resendActivationEmail = function() {
-        $scope.closeModal();
-        alert("You want the activation email resent");
-    };
 
     // Login Modal
     $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -109,6 +105,9 @@ bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $state, $location,
     $scope.$on('modal.removed', function() {
         // Execute action
     });
+
+    
+
 
 
     /* TEMP: To be removed. For testing purposes */

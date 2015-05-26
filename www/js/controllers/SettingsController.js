@@ -1,5 +1,5 @@
 /**
- * Created by angeboss on 5/8/2015.
+ * Created by boss on 5/8/2015.
  */
 
 bikeMapApp.controller('SettingsCtrl', function($scope, $window, PushNotificationService) {
