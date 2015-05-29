@@ -54,7 +54,7 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
                         this.storeDeviceToken("ios");
                     }
                 }, function (err) {
-                    console.log("Register error " + err)
+                    //console.log("Register error " + err)
                 });
             }
         },
@@ -108,10 +108,10 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
                 headers: {'Authorization': 'Token ' + $window.localStorage["token"]}
             })
                 .success(function (data, status) {
-                    console.log("Token stored, device is successfully subscribed to receive push notifications.");
+                    //console.log("Token stored, device is successfully subscribed to receive push notifications.");
                 })
                 .error(function (data, status) {
-                    console.log("Error storing device token." + data + " " + status)
+                    //console.log("Error storing device token." + data + " " + status)
                 });
         },
 
@@ -122,10 +122,10 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
                     url:  Constants.API + 'gcmdevices/' + $window.localStorage["regid"] + '/'
                 })
                     .success(function (data, status) {
-                        console.log("Regid successfully deleted");
+                        //console.log("Regid successfully deleted");
                     })
                     .error(function(data, status) {
-                        console.log("Regid could not be deleted");
+                        //console.log("Regid could not be deleted");
                     })
             }
         }};
