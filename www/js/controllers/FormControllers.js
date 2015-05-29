@@ -5,7 +5,7 @@
 /*
  Controller for incident portion of incident form
  */
-bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicModal, $location, $anchorScroll, Constants, IncidentReportService, CyclingFrequencyService, BirthYearService, BirthMonthService, GenderService, YesNoService, Coord_Service, Collision_Service, Nearmiss_Service, $cordovaDatePicker) {
+bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicModal, $ionicPopup, Constants, IncidentReportService, CyclingFrequencyService, BirthYearService, BirthMonthService, GenderService, YesNoService, Coord_Service, Collision_Service, Nearmiss_Service) {
 
     $scope.incidentDetails = {
         selectedDate: null,
@@ -80,17 +80,16 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
 
     $scope.togglePersonalDetailsCheckbox = function() {
         $scope.model.savePersonalDetailsChecked = !$scope.model.savePersonalDetailsChecked;
-        console.log($scope.model.savePersonalDetailsChecked);
     };
 
     // Populate Personal Details of form if user has previously saved the data
     function populatePersonalDetails() {
         if($window.localStorage["savePersonalDetails"] === "true") {
             $scope.model.savePersonalDetailsChecked = $window.localStorage["savePersonalDetails"];
-            $scope.personalDetails.selectedHazardBirthYear = JSON.parse($window.localStorage["birthYear"]);
-            $scope.personalDetails.selectedHazardBirthMonth = JSON.parse($window.localStorage["birthMonth"]);
-            $scope.personalDetails.selectedHazardGender = JSON.parse($window.localStorage["gender"]);
-            $scope.personalDetails.selectedHazardCyclingFrequency = JSON.parse($window.localStorage["frequency"]);
+            $scope.personalDetails.selectedIncidentBirthYear = JSON.parse($window.localStorage["birthYear"]);
+            $scope.personalDetails.selectedIncidentBirthMonth = JSON.parse($window.localStorage["birthMonth"]);
+            $scope.personalDetails.selectedIncidentGender = JSON.parse($window.localStorage["gender"]);
+            $scope.personalDetails.selectedIncidentCyclingFrequency = JSON.parse($window.localStorage["frequency"]);
         }
     }
     populatePersonalDetails();
@@ -100,10 +99,10 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
 
         if($scope.model.savePersonalDetailsChecked) {
             $window.localStorage["savePersonalDetails"] = true;
-            $window.localStorage["birthYear"] = JSON.stringify($scope.personalDetails.selectedHazardBirthYear);
-            $window.localStorage["birthMonth"] = JSON.stringify($scope.personalDetails.selectedHazardBirthMonth);
-            $window.localStorage["gender"] = JSON.stringify($scope.personalDetails.selectedHazardGender);
-            $window.localStorage["frequency"] = JSON.stringify($scope.personalDetails.selectedHazardCyclingFrequency);
+            $window.localStorage["birthYear"] = JSON.stringify($scope.personalDetails.selectedIncidentBirthYear);
+            $window.localStorage["birthMonth"] = JSON.stringify($scope.personalDetails.selectedIncidentBirthMonth);
+            $window.localStorage["gender"] = JSON.stringify($scope.personalDetails.selectedIncidentGender);
+            $window.localStorage["frequency"] = JSON.stringify($scope.personalDetails.selectedIncidentCyclingFrequency);
         }
         else {
             $window.localStorage["savePersonalDetails"] = false;
@@ -120,7 +119,7 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
 
     $scope.submitIncident = function() {
         if( $scope.validateForm() ) {
-
+            Coord_Service.dirty = true;
 
             if($scope.incidentDetails.selectedIncidentType.key === IncidentReportService.incidentChoices[1].items[0].key ||
                 $scope.incidentDetails.selectedIncidentType.key === IncidentReportService.incidentChoices[1].items[1].key) {
@@ -189,13 +188,22 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
                 post = Collision_Service.save(incidentForm);
             }
 
-            post.$promise.then(
-                Coord_Service.dirty = true,
-                $state.go('app')
+            post.$promise.then(function() {
+                    Coord_Service.dirty = true;
+                    $state.go('app');
+                }, function() {
+                        var alertPopup = $ionicPopup.alert({
+                            title: "Report could not be saved",
+                            template: "We're sorry, your report could not be saved. Please check your Internet connection and try again. If the problem persists, please contact us at admin@bikemaps.org.",
+                            buttons: [
+                                { text: "<span>OK</span>"}
+                            ]
+                        });
+                    }
             );
-
         }
         else {
+            // Should never be reached
             console.log("Form is invalid");
         }
     };
@@ -243,7 +251,7 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
 /*
  Controller for hazard portion of incident form
  */
-bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicModal, HazardGroupService, BirthYearService, BirthMonthService, GenderService, CyclingFrequencyService, Coord_Service, Hazard_Service) {
+bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicModal, $ionicPopup, HazardGroupService, BirthYearService, BirthMonthService, GenderService, CyclingFrequencyService, Coord_Service, Hazard_Service) {
     /* Hazard details pane */
     $scope.hazardDetails = {
         selectedDate: null,
@@ -282,7 +290,6 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
 
     $scope.togglePersonalDetailsCheckbox = function() {
         $scope.model.savePersonalDetailsChecked = !$scope.model.savePersonalDetailsChecked;
-      console.log($scope.model.savePersonalDetailsChecked);
     };
 
     // Populate Personal Details of form if user has previously saved the data
@@ -316,8 +323,13 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
         }
     }
 
+    $scope.markCheckbox = function() {
+        $scope.model.hazardChecked = !$scope.model.hazardChecked;
+    };
+
     $scope.submitHazard = function() {
         if( $scope.validateForm() ) {
+            Coord_Service.dirty = true;
             var coeff = 1000*60*5; //rounding coefficient = millis in 5 min
             var roundedTime = new Date(Math.round($scope.hazardDetails.selectedTime/coeff)*coeff); //round users time selection to nearest 5 min
             // Construct time string from user selected date and time
@@ -350,14 +362,23 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
             savePersonalDetails();
 
             var post = Hazard_Service.save(hazardForm);
-            post.$promise.then(
-                Coord_Service.dirty = true,
-                $state.go('app')
+
+            post.$promise.then(function() {
+                    Coord_Service.dirty = true;
+                    $state.go('app');
+                }, function() {
+                    var alertPopup = $ionicPopup.alert({
+                        title: "Report could not be saved",
+                        template: "We're sorry, your report could not be saved. Please check your Internet connection and try again. If the problem persists, please contact us at admin@bikemaps.org.",
+                        buttons: [
+                            { text: "<span>OK</span>"}
+                        ]
+                    });
+                }
             );
-
-
         }
         else {
+            // Should never be reached
             console.log("Form is invalid");
         }
     };
@@ -398,7 +419,7 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
 /*
 Controller for theft portion of incident form
 */
-bikeMapApp.controller('TheftCtrl', function($scope, $state, $window, $ionicModal, Constants, Theft_Service, TheftReportService, CyclingFrequencyService, YesNoService, Coord_Service){
+bikeMapApp.controller('TheftCtrl', function($scope, $state, $window, $ionicModal, $ionicPopup, Constants, Theft_Service, TheftReportService, CyclingFrequencyService, YesNoService, Coord_Service){
 
     /* Theft details pane */
     $scope.theftDetails = {
@@ -465,7 +486,7 @@ bikeMapApp.controller('TheftCtrl', function($scope, $state, $window, $ionicModal
 
     $scope.submitTheft = function() {
         if( $scope.validateForm() ) {
-
+            Coord_Service.dirty = true;
             var coeff = 1000*60*5; //rounding coefficient = millis in 5 min
             var roundedTime = new Date(Math.round($scope.theftDetails.selectedTime/coeff)*coeff); //round users time selection to nearest 5 min
             // Construct time string from user selected date and time
@@ -502,12 +523,22 @@ bikeMapApp.controller('TheftCtrl', function($scope, $state, $window, $ionicModal
             };
 
             var post = Theft_Service.save(theftForm);
-            post.$promise.then(
-                Coord_Service.dirty = true,
-                $state.go('app')
+            post.$promise.then(function() {
+                    Coord_Service.dirty = true;
+                    $state.go('app');
+                }, function() {
+                    var alertPopup = $ionicPopup.alert({
+                        title: "Report could not be saved",
+                        template: "We're sorry, your report could not be saved. Please check your Internet connection and try again. If the problem persists, please contact us at admin@bikemaps.org.",
+                        buttons: [
+                            { text: "<span>OK</span>"}
+                        ]
+                    });
+                }
             );
         }
         else {
+            // Should never be reached
             console.log("Form is invalid");
         }
     };

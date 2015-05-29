@@ -4,8 +4,8 @@
   <description>&#xD;
         An Ionic Framework and Cordova project.&#xD;
     </description>
-  <author email="hi@ionicframework" href="http://ionicframework.com/">&#xD;
-      Ionic Framework Team&#xD;
+  <author email="admin@bikemaps.org" href="https://bikemaps.org">&#xD;
+      UVic Spar lab&#xD;
     </author>
   <content src="index.html"/>
   <access origin="*"/>
@@ -17,7 +17,6 @@
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
   <platform name="android">
-	<icon src="resources\android\icon\notification.png" />
     <icon src="resources\android\icon\drawable-ldpi-icon.png" density="ldpi"/>
     <icon src="resources\android\icon\drawable-mdpi-icon.png" density="mdpi"/>
     <icon src="resources\android\icon\drawable-hdpi-icon.png" density="hdpi"/>

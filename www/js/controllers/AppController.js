@@ -1,8 +1,11 @@
 
-bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $state, $location, $ionicModal, $ionicPopup, $ionicPopover, $window, $cordovaPush, $cordovaMedia, $cordovaDialogs, $http, djangoAuth, Validate, PushNotificationService) {
+bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $state, $location, $ionicModal, $ionicPopover, $window, $cordovaPush, $cordovaMedia, $cordovaDialogs, $http, $timeout, djangoAuth, Validate, PushNotificationService) {
 
     $scope.authInfo = djangoAuth;
     $scope.notifications = [];
+    $scope.model = {
+        hideIntro: $window.localStorage["hideIntro"] ? $window.localStorage["hideIntro"] : false
+    };
 
     /* Popover/main menu */
     $ionicPopover.fromTemplateUrl('templates/popover.html', {
@@ -13,7 +16,6 @@ bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $state, $location,
 
     $scope.openPopover = function ($event) {
         $scope.popover.show($event);
-
     };
 
     $scope.closePopover = function () {
@@ -106,8 +108,45 @@ bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $state, $location,
         // Execute action
     });
 
-    
+    // Intro Modal
+    $ionicModal.fromTemplateUrl('templates/intro.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+    }).then(function(modal) {
+        $scope.introModal = modal;
+    });
+    $scope.openIntroModal = function() {
+        $scope.introModal.show();
+    };
+    $scope.closeIntroModal = function() {
+        if($scope.model.hideIntro) {
+            $window.localStorage["skipIntro"] = true;
+        } else {
+            $window.localStorage["skipIntro"] = false;
+        }
+        $scope.introModal.hide();
+    };
+    //Cleanup the modal when we're done with it!
+    $scope.$on('$destroy', function() {
+        $scope.modal.remove();
+    });
+    // Execute action on hide modal
+    $scope.$on('introModal.hidden', function() {
+        // Execute action
+    });
+    // Execute action on remove modal
+    $scope.$on('introModal.removed', function() {
+        // Execute action
+    });
 
+
+    if(!($window.localStorage["skipIntro"] === "true")) {
+        $timeout($scope.openIntroModal, 500);
+    }
+
+    $scope.markCheckbox = function() {
+        $scope.model.hideIntro = !$scope.model.hideIntro;
+    };
 
 
     /* TEMP: To be removed. For testing purposes */

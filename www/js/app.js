@@ -1,5 +1,5 @@
 
-var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ngResource', 'ngCookies', 'bikeMapApp.services', 'bikeMapApp.icons', 'bikeMapApp.FormServices', 'bikeMapApp.constants', 'ngCordova', 'ui.bootstrap', 'ui.bootstrap-slider', 'mgcrea.ngStrap' ])
+var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ngResource', 'ngCookies', 'bikeMapApp.services', 'bikeMapApp.icons', 'bikeMapApp.FormServices', 'bikeMapApp.constants', 'ngCordova', 'ui.bootstrap', 'mgcrea.ngStrap' ])
 
 .run(['$ionicPlatform', '$cookies', '$window', 'djangoAuth', 'PushNotificationService', function($ionicPlatform, $cookies, $window, djangoAuth, PushNotificationService) {
   $ionicPlatform.ready(function() {
@@ -18,9 +18,10 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ngResource', 'ngCookies
 
     if($window.localStorage["user"]) {
         djangoAuth.user = $window.localStorage["user"];
-        PushNotificationService.register();
+        if($window.localStorage["user"] !== 'Guest') {
+            PushNotificationService.register();
+        }
     }
-
   });
 }])
 
@@ -67,11 +68,6 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ngResource', 'ngCookies
                 controller: "TheftCtrl"
             })
 
-            .state('incidentform', {
-                url: "/incidentform",
-                templateUrl: "templates/incident-form.html"
-            })
-
             .state('notifications', {
                 url: "/notifications",
                 templateUrl: "templates/notifications.html"
@@ -95,11 +91,16 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ngResource', 'ngCookies
 
             })
 
-        .state('about', {
-            url: "/about",
-            templateUrl: "templates/about.html",
-            controller: "AboutCtrl"
-        });
+            .state('about', {
+                url: "/about",
+                templateUrl: "templates/about.html",
+                controller: "AboutCtrl"
+            })
+
+            .state('tutorial', {
+                url: "/tutorial",
+                templateUrl: "templates/tutorial.html",
+            });
 
         $urlRouterProvider.otherwise('/');
 });

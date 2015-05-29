@@ -80,8 +80,6 @@
             });
         },
         'login': function(username,password){
-            console.log(username);
-            console.log(password);
             var djangoAuth = this;
             return this.request({
                 'method': "POST",

@@ -2,13 +2,13 @@
  * Created by Boss on 3/13/2015.
  */
 
-bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$window', '$state', '$stateParams', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'Official_Service', 'AlertArea_Service', 'Coord_Service', 'Icon', 'Popup_Service', 'NotificationPopup_Service', 'djangoAuth', '$cordovaToast', '$cordovaVibration', '$ionicActionSheet', '$ionicSideMenuDelegate', '$cordovaDatePicker',
-    function($rootScope, $scope, $log, $timeout, $window, $state, $stateParams, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, Official_Service, AlertArea_Service, Coord_Service, Icon, Popup_Service, NotificationPopup_Service, djangoAuth, $cordovaToast, $cordovaVibration, $ionicActionSheet, $ionicSideMenuDelegate, $cordovaDatePicker) {
+bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'Official_Service', 'AlertArea_Service', 'Coord_Service', 'Icon', 'Popup_Service', 'NotificationPopup_Service', 'djangoAuth', '$cordovaToast', '$cordovaVibration', '$ionicActionSheet', '$ionicSideMenuDelegate',
+    function($rootScope, $scope, $window, $state, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, Official_Service, AlertArea_Service, Coord_Service, Icon, Popup_Service, NotificationPopup_Service, djangoAuth, $cordovaToast, $cordovaVibration, $ionicActionSheet, $ionicSideMenuDelegate) {
 
         // Scope variables
         $scope.map = new L.Map('map', {
-            center: [48,-100],
-            zoom: 15,
+            center: [54.1,-124.7],
+            zoom: 4,
             zoomControl: false
         });
         $scope.authInfo = djangoAuth;
@@ -48,7 +48,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         $scope.geolocate = function () {
             $scope.map.locate({setView: true, watch: false, maxZoom: 15, enableHighAccuracy: true})
                 .on('locationfound', function (location) {
-
+                    extendedBounds = getExtendedBounds($scope.map.getBounds());
                     if (!userMarker) {
                         userMarker = L.userMarker(location.latlng, {
                             smallIcon: true,
@@ -255,7 +255,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
     var unfiltered_collisions, unfiltered_nearmiss, unfiltered_hazards, unfiltered_thefts, unfiltered_official;
 
      var filterPoints = function() {
-        console.log("Filtering");
          var start_date = $scope.sliderDate($scope.sliderRange.values[0]);
          var end_date = $scope.sliderDate($scope.sliderRange.values[1]).add(1,'M').subtract(1,'d');
          var d;
@@ -325,7 +324,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 incidentData.addLayer(collisionLayer);
             }
         }, function(err) {
-            console.log("An error occurred while retrieving collision data.");
         });
 
         // Get nearmiss data from BikeMaps api and add to map
@@ -347,7 +345,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 incidentData.addLayer(nearmissLayer);
             }
         }, function(err) {
-            console.log("An error occurred while retrieving near miss data.");
         });
 
         // Get hazard data from BikeMaps api and add to map
@@ -368,7 +365,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 incidentData.addLayer(hazardLayer);
             }
         }, function(err) {
-            console.log("An error occurred while retrieving hazard data.");
         });
 
         // Get theft data from BikeMaps api and add to map
@@ -389,7 +385,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 incidentData.addLayer(theftLayer);
             }
         }, function(err) {
-            console.log("An error occurred while retrieving theft data.");
         });
 
         // Get official data from BikeMaps api and add to map
@@ -410,7 +405,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 incidentData.addLayer(officialLayer);
             }
         }, function(err) {
-            console.log("An error occurred while retrieving official collision data.");
         });
     }
 
@@ -427,11 +421,9 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         }
     }
 
-
         // Get geofences for the logged in user and add to map
         function getAlertAreas(){
            if($window.localStorage["authenticated"] !== "null" && $window.localStorage["authenticated"] === "true" && $window.localStorage["token"] !== "null" && $window.localStorage["token"]) {
-               console.log("Going to get alert areas");
                AlertArea_Service.setToken($window.localStorage["token"]);
                var alertareas = AlertArea_Service.AlertAreas().get();
                alertareas.$promise.then(function() {
@@ -450,7 +442,11 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                    $scope.map.addLayer(alertareaLayer);
                    $scope.legend.alertAreas = true;
                }, function(err) {
-                   console.log("Alert areas could not be retrieved from the server.")
+                   try {
+                       $cordovaToast.showShortBottom("Alert areas could not be retrieved.");
+                   } catch (err) {
+                       console.log("Alert areas could not be retrieved.");
+                   }
                })
         }}
 
@@ -583,7 +579,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
 
             Coord_Service.coordinates[0] = $scope.map.getCenter().lng;
             Coord_Service.coordinates[1] = $scope.map.getCenter().lat;
-            Coord_Service.dirty = true;
 
             $ionicActionSheet.show({
                 buttons: [
@@ -595,6 +590,12 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
                 ],
                 titleText: 'What type of incident are you reporting?',
                 buttonClicked: function(index) {
+                    // try to vibrate when user activates the control
+                    try {
+                        $cordovaVibration.vibrate(100);
+                    } catch(err) {
+                        console.log(err);
+                    }
                     $scope.map.addLayer(incidentData);
                     $scope.model.showTargetMarker = false;
                     switch (index) {
@@ -638,12 +639,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
     // Determine if the new bounding box is with in the old bounding box
     // Return true if new BBox is contained within the old BBox
     function newBoundsWithinExtended(newMapBnds, extendedBnds) {
-        //console.log(newMapBnds._southWest.lat + ', ' + newMapBnds._southWest.lng + ', ' + newMapBnds._northEast.lat + ', ' + newMapBnds._northEast.lng );
-        //console.log(extendedBnds._southWest.lat + ', ' + extendedBnds._southWest.lng + ', ' + extendedBnds._northEast.lat + ', ' + extendedBnds._northEast.lng );
-        //console.log(newMapBnds._southWest.lat < extendedBnds._southWest.lat);
-        //console.log(newMapBnds._southWest.lng < extendedBnds._southWest.lng );
-        //console.log(newMapBnds._northEast.lat > extendedBnds._northEast.lat );
-        //console.log(newMapBnds._northEast.lng > extendedBnds._northEast.lng);
         if(newMapBnds._southWest.lat < extendedBnds._southWest.lat ||
             newMapBnds._southWest.lng < extendedBnds._southWest.lng ||
             newMapBnds._northEast.lat > extendedBnds._northEast.lat ||
@@ -748,7 +743,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         }
     };
 
-    $scope.sliderDate = function(m) {
+    /*$scope.sliderDate = function(m) {
         return moment({
             year: 1970 + m / 12,
             month: m % 12
@@ -780,7 +775,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$log', '$timeout', '$
         console.log('Values are changing: ' + $scope.sliderRange.values[0] + ' and ' + $scope.sliderRange.values[1]);
         //updateIncidents(true);
     });
-
+*/
 
 /*           // Initialize the slider
         $("input.slider").ready(function(){

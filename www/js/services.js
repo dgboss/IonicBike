@@ -112,7 +112,7 @@ angular.module('bikeMapApp.services', ['ngResource', 'bikeMapApp.constants'])
                     var date = moment(feature.properties.date).format("MMM. D, YYYY");
                 }
                 popup += '<br><strong>Date:</strong> ' + date;
-                popup += '<br><strong>Data source: </strong> ' + feature.properties.data_source + '<a href="#" data-toggle="collapse" data-target="#official-metadata"><small> (metadata)</small></a><br>' + '<div id="official-metadata" class="metadata collapse">' + '<strong>Metadata: </strong><small>' + feature.properties.metadata + '</small></div>';
+                popup += '<br><strong>Data source: </strong> ' + feature.properties.data_source + '<a href="#" ng-show="feature.properties.metadata" data-toggle="collapse" data-target="#official-metadata"><small> (metadata)</small></a><br>' + '<div id="official-metadata" class="metadata collapse">' + '<strong>Metadata: </strong><small>' + feature.properties.metadata + '</small></div>';
 
             } else return "error";
 

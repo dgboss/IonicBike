@@ -2,7 +2,7 @@
  * Created by boss on 4/10/2015.
  */
 
-bikeMapApp.service('PushNotificationService', function PushNotificationService($rootScope, $state, $location, $window, $cordovaPush, $cordovaDialogs, $cordovaMedia, $http, $resource, $ionicPopup, Constants){
+bikeMapApp.service('PushNotificationService', function PushNotificationService($rootScope, $state, $location, $window, $cordovaPush, $http, $ionicPopup, Constants){
 
 
     var service = {
@@ -49,7 +49,6 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
                 }
 
                 $cordovaPush.register(config).then(function (result) {
-                    console.log("Register success " + result);
                     // ** NOTE: Android regid result comes back in the pushNotificationReceived, only iOS returned here
                     if (ionic.Platform.isIOS()) {
                         this.storeDeviceToken("ios");
@@ -100,13 +99,14 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
             } else {
                 name = "anonymous";
             }
-            console.log($window.localStorage["token"]);
             $http.post( Constants.API + 'gcmdevices/', JSON.stringify(
                 {
                     "name": name,
                     "active": true,
                     "registration_id": $window.localStorage["regid"]
-                }))
+                }), {
+                headers: {'Authorization': 'Token ' + $window.localStorage["token"]}
+            })
                 .success(function (data, status) {
                     console.log("Token stored, device is successfully subscribed to receive push notifications.");
                 })
@@ -116,7 +116,6 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
         },
 
         'removeDeviceToken': function(){
-            console.log("About to unregister a device");
             if($window.localStorage["regid"]){
                 $http({
                     method: 'DELETE',

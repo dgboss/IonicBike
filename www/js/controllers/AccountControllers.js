@@ -12,7 +12,6 @@ bikeMapApp.controller('RegistrationCtrl', function ($scope, $ionicHistory, djang
                 .then(function(data){
                     // success case
                     $scope.complete = true;
-                    alert("Registration succeeded!")
                 },function(data){
                     // error case
                     $scope.errors = data;

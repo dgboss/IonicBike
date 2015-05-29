@@ -17,16 +17,16 @@
                                 When was the incident?*
                             </label>
                             <div id="date-container">
-                                <input ng-model="hazardDetails.selectedDate" bs-datepicker type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date">
+                                <input ng-model="hazardDetails.selectedDate" bs-datepicker use-native="true" type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date">
                                 <i id="date-icon" class="ion-calendar"></i>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.timeAlert]" for="div_id_date">
-                                What time did the incident occur?
+                                What time did the incident occur?*
                             </label>
                             <div id="time-container">
-                                <input ng-model="hazardDetails.selectedTime" bs-timepicker data-time-format="HH:mm" data-length="1" data-minute-step="5" data-arrow-behavior="picker" type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date">
+                                <input ng-model="hazardDetails.selectedTime" bs-timepicker use-native="true" data-time-format="HH:mm" data-length="1" data-minute-step="5" data-arrow-behavior="picker" type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date">
                                 <i id="time-icon" class="ion-clock"></i>
                             </div>
                         </div>
