@@ -427,6 +427,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
                AlertArea_Service.setToken($window.localStorage["token"]);
                var alertareas = AlertArea_Service.AlertAreas().get();
                alertareas.$promise.then(function() {
+                   removeAlertAreas();
                    geofenceLayer = L.geoJson(alertareas, {
                        style: function(feature) {
                            return {
@@ -505,7 +506,15 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
 
         $rootScope.$on("djangoAuth.logged_in", function() {
             getAlertAreas();
-            $scope.map.addControl(drawControlUser);
+            try {
+                $scope.map.removeControl(drawControlUser);
+            }
+            catch(err) {
+
+            }
+            finally {
+                $scope.map.addControl(drawControlUser);
+            }
             $scope.legend.alertAreas = true;
         });
 
@@ -539,7 +548,6 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
                 var post = AlertArea_Service.AlertAreas().save(feature);
                 post.$promise
                     .then(function() {
-                        removeAlertAreas();
                         getAlertAreas();
                         try {
                             $cordovaToast.showShortBottom("Alert area successfully created.");

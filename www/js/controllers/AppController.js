@@ -1,5 +1,5 @@
 
-bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $state, $location, $ionicModal, $ionicPopover, $window, $cordovaPush, $cordovaMedia, $cordovaDialogs, $http, $timeout, djangoAuth, Validate, PushNotificationService) {
+bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $state, $location, $ionicModal, $ionicPopover, $window, $cordovaPush, $cordovaMedia, $cordovaDialogs, $http, $timeout, djangoAuth, Validate, PushNotificationService, authService) {
 
     $scope.authInfo = djangoAuth;
     $scope.notifications = [];
@@ -41,6 +41,10 @@ bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $state, $location,
         }
     });
 
+    $rootScope.$on('event:auth-loginRequired', function() {
+        $scope.openModal();
+    });
+
 
     /* Push Notification received */
     $rootScope.$on('$cordovaPush:notificationReceived', function (event, notification) {
@@ -66,11 +70,17 @@ bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $state, $location,
                 .then(function(data){
                     // success case
                     $scope.closeModal();
+                    authService.loginConfirmed();
                 },function(data){
                     // error case
                     $scope.errors = data;
                 });
         }
+    };
+
+    $scope.cancelLogin = function() {
+        $scope.closeModal();
+        authService.loginCancelled();
     };
 
     $scope.createAccount = function() {
