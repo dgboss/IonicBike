@@ -30,7 +30,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
        // Add Strava data
        var stravaHM = L.tileLayer('http://globalheat.strava.com/tiles/cycling/color5/{z}/{x}/{y}.png', {
             minZoom: 3,
-            maxZoom: 17,
+            maxZoom: 16,
             opacity: 0.8,
             attribution: '<a href=http://labs.strava.com/heatmap/>http://labs.strava.com/heatmap/</a>'
        }).addTo($scope.map);
@@ -298,20 +298,20 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
     // Get data from the Bike Maps api and add to Marker Cluster Layer
     function getIncidents(bnds){
 
-        // Clear existing data from map
-        incidentData.clearLayers();
-        collisionLayer = null;
-        nearmissLayer = null;
-        hazardLayer = null;
-        theftLayer = null;
-        officialLayer = null;
-
         // Get collision data from BikeMaps api and add to map if visible in the legend
         collisions = Collision_Service.get({bbox: bnds.toBBoxString()});
         collisions.$promise.then(function () {
             unfiltered_collisions = collisions;
             if($scope.legend.filter) {
                 filterPoints();
+            }
+            if($scope.legend.incidentData && $scope.legend.collision) {
+                try {
+                    incidentData.removeLayer(collisionLayer);
+                }
+                catch(err) {
+                    // Nothing to do...tried to remove a layer that doesn't exist
+                }
             }
             collisionLayer = L.geoJson(collisions.features, {
                 pointToLayer: function (feature, latlng) {
@@ -332,6 +332,14 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
             unfiltered_nearmiss = nearmiss;
             if($scope.legend.filter) {
                 filterPoints();
+            }
+            if($scope.legend.incidentData && $scope.legend.nearmiss) {
+                try {
+                    incidentData.removeLayer(nearmissLayer);
+                }
+                catch(err) {
+                    // Nothing to do...tried to remove a layer that doesn't exist
+                }
             }
             nearmissLayer = L.geoJson(nearmiss.features, {
                 pointToLayer: function (feature, latlng) {
@@ -354,6 +362,14 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
             if($scope.legend.filter) {
                 filterPoints();
             }
+            if($scope.legend.incidentData && $scope.legend.hazard) {
+                try {
+                    incidentData.removeLayer(hazardLayer);
+                }
+                catch(err) {
+                    // Nothing to do...tried to remove a layer that doesn't exist
+                }
+            }
             hazardLayer = L.geoJson(hazards.features, {
                 pointToLayer: function (feature, latlng) {
                     return L.marker(latlng, {icon: hazardIcon,
@@ -374,6 +390,14 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
             if($scope.legend.filter) {
                 filterPoints();
             }
+            if($scope.legend.incidentData && $scope.legend.theft) {
+                try {
+                    incidentData.removeLayer(theftLayer);
+                }
+                catch(err) {
+                    // Nothing to do...tried to remove a layer that doesn't exist
+                }
+            }
             theftLayer = L.geoJson(thefts.features, {
                 pointToLayer: function (feature, latlng) {
                     return L.marker(latlng, {icon: theftIcon,
@@ -393,6 +417,14 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
             unfiltered_official = official;
             if($scope.legend.filter) {
                 filterPoints();
+            }
+            if($scope.legend.incidentData && $scope.legend.official) {
+                try {
+                    incidentData.removeLayer(officialLayer);
+                }
+                catch(err) {
+                    // Nothing to do...tried to remove a layer that doesn't exist
+                }
             }
             officialLayer = L.geoJson(official.features, {
                 pointToLayer: function (feature, latlng) {
