@@ -9,5 +9,16 @@
 /data
 
 platforms
-plugins
 engine
+com.ionic.keyboard
+com.phonegap.plugins.PushPlugin
+com.plugin.datepicker
+cordova-plugin-inappbrowser
+nl.x-services.plugins.toast
+org.apache.cordova.device
+org.apache.cordova.dialogs
+org.apache.cordova.file
+org.apache.cordova.geolocation
+org.apache.cordova.media
+org.apache.cordova.vibration
+org.crosswalk.engine
