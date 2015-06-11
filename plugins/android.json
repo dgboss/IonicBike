@@ -9,6 +9,18 @@
                 "parents": {
                     "/*": [
                         {
+                            "xml": "<preference name=\"webView\" value=\"org.crosswalk.engine.XWalkWebViewEngine\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"SplashScreen\"><param name=\"android-package\" value=\"org.apache.cordova.splashscreen.SplashScreen\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
                             "xml": "<feature name=\"Keyboard\"><param name=\"android-package\" value=\"com.ionic.keyboard.IonicKeyboard\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
                         },
@@ -33,10 +45,6 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"Notification\"><param name=\"android-package\" value=\"org.apache.cordova.dialogs.Notification\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<feature name=\"File\"><param name=\"android-package\" value=\"org.apache.cordova.file.FileUtils\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
                         },
@@ -46,10 +54,6 @@
                         },
                         {
                             "xml": "<feature name=\"Vibration\"><param name=\"android-package\" value=\"org.apache.cordova.vibration.Vibration\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<preference name=\"webView\" value=\"org.crosswalk.engine.XWalkCordovaWebView\" />",
                             "count": 1
                         }
                     ]
@@ -132,13 +136,22 @@
         }
     },
     "installed_plugins": {
+        "cordova-plugin-crosswalk-webview": {
+            "PACKAGE_NAME": "com.bikemaps.sparlab"
+        },
+        "org.apache.cordova.splashscreen": {
+            "PACKAGE_NAME": "com.bikemaps.sparlab"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.bikemaps.sparlab"
+        },
         "com.ionic.keyboard": {
             "PACKAGE_NAME": "com.bikemaps.sparlab"
         },
         "com.phonegap.plugins.PushPlugin": {
             "PACKAGE_NAME": "com.bikemaps.sparlab"
         },
-        "com.plugin.datepicker": {
+        "cordova-plugin-datepicker": {
             "PACKAGE_NAME": "com.bikemaps.sparlab"
         },
         "cordova-plugin-inappbrowser": {
@@ -147,25 +160,19 @@
         "nl.x-services.plugins.toast": {
             "PACKAGE_NAME": "com.bikemaps.sparlab"
         },
-        "org.apache.cordova.device": {
+        "cordova-plugin-device": {
             "PACKAGE_NAME": "com.bikemaps.sparlab"
         },
-        "org.apache.cordova.dialogs": {
+        "cordova-plugin-file": {
             "PACKAGE_NAME": "com.bikemaps.sparlab"
         },
-        "org.apache.cordova.file": {
+        "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "com.bikemaps.sparlab"
         },
-        "org.apache.cordova.geolocation": {
+        "cordova-plugin-media": {
             "PACKAGE_NAME": "com.bikemaps.sparlab"
         },
-        "org.apache.cordova.media": {
-            "PACKAGE_NAME": "com.bikemaps.sparlab"
-        },
-        "org.apache.cordova.vibration": {
-            "PACKAGE_NAME": "com.bikemaps.sparlab"
-        },
-        "org.crosswalk.engine": {
+        "cordova-plugin-vibration": {
             "PACKAGE_NAME": "com.bikemaps.sparlab"
         }
     },
