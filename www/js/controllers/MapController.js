@@ -2,8 +2,8 @@
  * Created by Boss on 3/13/2015.
  */
 
-bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'Official_Service', 'AlertArea_Service', 'Coord_Service', 'Icon', 'Popup_Service', 'NotificationPopup_Service', 'djangoAuth', '$cordovaToast', '$cordovaVibration', '$ionicActionSheet', '$ionicSideMenuDelegate',
-    function($rootScope, $scope, $window, $state, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, Official_Service, AlertArea_Service, Coord_Service, Icon, Popup_Service, NotificationPopup_Service, djangoAuth, $cordovaToast, $cordovaVibration, $ionicActionSheet, $ionicSideMenuDelegate) {
+bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '$ionicPlatform', '$ionicLoading', 'Collision_Service', 'Nearmiss_Service', 'Theft_Service', 'Hazard_Service', 'Official_Service', 'AlertArea_Service', 'Coord_Service', 'Icon', 'Popup_Service', 'NotificationPopup_Service', 'djangoAuth', '$cordovaToast', '$cordovaVibration', '$ionicActionSheet', '$ionicSideMenuDelegate',
+    function($rootScope, $scope, $window, $state, $ionicPlatform, $ionicLoading, Collision_Service, Nearmiss_Service, Theft_Service, Hazard_Service, Official_Service, AlertArea_Service, Coord_Service, Icon, Popup_Service, NotificationPopup_Service, djangoAuth, $cordovaToast, $cordovaVibration, $ionicActionSheet, $ionicSideMenuDelegate) {
 
         // Scope variables
         $scope.map = new L.Map('map', {
@@ -46,6 +46,9 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
        // Geolocation
         var userMarker;
         $scope.geolocate = function () {
+            $ionicLoading.show({
+                template: '<ion-spinner></ion-spinner>',
+            });
             $scope.map.locate({setView: true, watch: false, maxZoom: 15, enableHighAccuracy: true})
                 .on('locationfound', function (location) {
                     extendedBounds = getExtendedBounds($scope.map.getBounds());
@@ -57,20 +60,24 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
                     }
                     userMarker.setLatLng(location.latlng);
                     userMarker.setAccuracy(location.accuracy);
+                    $ionicLoading.hide();
                 })
                 .on('locationerror', function (e) {
                     console.log(e);
                     if(userMarker) {
                         $scope.map.removeLayer(userMarker);
                     }
-                    alert("Location access was denied. Please enable location services.");
+                    $ionicLoading.hide();
+                    navigator.notification.alert("We could not find your current location. Please enable location services.", null,"Location access denied");
                 });
         };
 
        /* If location services are enabled, center map on users current location
           Consider storing last viewed map center and open map there
        */
-       $scope.geolocate();
+        $ionicPlatform.ready( function() {
+          $scope.geolocate();
+      });
 
       $scope.geolocateButtonPressed = function() {
           try {
@@ -558,15 +565,21 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
 
         $rootScope.$on('BMA.panToPoint', function(e, notification) {
             $scope.map.stopLocate();
-            $(".datetimepicker").remove()
-            if(notification && notification.data && notification.data.payload && notification.data.payload.lat && notification.data.payload.lng) {
-                $scope.map.setView(new L.LatLng(notification.data.payload.lat, notification.data.payload.lng), 18);
-                updateIncidents(true);
-               /* var popup = L.popup({offset: L.point(0,-26)})
-                 .setLatLng(new L.LatLng(notification.data.payload.lat, notification.data.payload.lng))
-                 .setContent(NotificationPopup_Service(notification.data.payload))
-                 .openOn($scope.map)*/
-                 }
+            if(ionic.Platform.isAndroid()) {
+                if (notification && notification.data && notification.data.payload && notification.data.payload.lat && notification.data.payload.lng) {
+                    $scope.map.setView(new L.LatLng(notification.data.payload.lat, notification.data.payload.lng), 18);
+                    updateIncidents(true);
+                    /* var popup = L.popup({offset: L.point(0,-26)})
+                     .setLatLng(new L.LatLng(notification.data.payload.lat, notification.data.payload.lng))
+                     .setContent(NotificationPopup_Service(notification.data.payload))
+                     .openOn($scope.map)*/
+                }
+            } else if(ionic.Platform.isIOS()) {
+                if(notification && notification.data && notification.data.lat && notification.data.lng) {
+                    $scope.map.setView(new L.LatLng(notification.data.lat, notification.data.lng), 18);
+                    updateIncidents(true);
+                }
+            }
         }
         );
 

@@ -8,8 +8,8 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ngResource', 'ngCookies
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
-    if(window.StatusBar) {
-      StatusBar.styleDefault();
+    if(window.StatusBar && !ionic.Platform.isAndroid()) {
+      StatusBar.styleLightContent();
     }
 
     if($window.localStorage["authenticated"]){

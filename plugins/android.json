@@ -55,6 +55,14 @@
                         {
                             "xml": "<feature name=\"Vibration\"><param name=\"android-package\" value=\"org.apache.cordova.vibration.Vibration\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"StatusBar\"><param name=\"android-package\" value=\"org.apache.cordova.statusbar.StatusBar\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Notification\"><param name=\"android-package\" value=\"org.apache.cordova.dialogs.Notification\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -111,14 +119,6 @@
                             "count": 2
                         },
                         {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
-                            "count": 1
-                        },
-                        {
                             "xml": "<uses-permission android:name=\"android.permission.RECORD_AUDIO\" />",
                             "count": 1
                         },
@@ -128,6 +128,14 @@
                         },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
                             "count": 1
                         }
                     ]
@@ -166,13 +174,19 @@
         "cordova-plugin-file": {
             "PACKAGE_NAME": "com.bikemaps.sparlab"
         },
-        "cordova-plugin-geolocation": {
-            "PACKAGE_NAME": "com.bikemaps.sparlab"
-        },
         "cordova-plugin-media": {
             "PACKAGE_NAME": "com.bikemaps.sparlab"
         },
         "cordova-plugin-vibration": {
+            "PACKAGE_NAME": "com.bikemaps.sparlab"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.bikemaps.sparlab"
+        },
+        "org.apache.cordova.geolocation": {
+            "PACKAGE_NAME": "com.bikemaps.sparlab"
+        },
+        "cordova-plugin-dialogs": {
             "PACKAGE_NAME": "com.bikemaps.sparlab"
         }
     },

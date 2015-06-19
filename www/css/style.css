@@ -362,7 +362,8 @@ textarea {
     margin-left: 10px;
 }*/
 
-/* Bootstrap-slider customization */
+/*
+/!* Bootstrap-slider customization *!/
 div .slider{
     margin: 0px 28px;
     visibility: visible;
@@ -406,6 +407,7 @@ div .slider-disabled .slider-handle{
     background-image: none !important;
     opacity: 0.3;
 }
+*/
 
 /* Notifications */
 
@@ -546,13 +548,15 @@ div .slider-disabled .slider-handle{
 .leaflet-left.leaflet-bottom {
     bottom: 32px;
 }
-.bma-actionsheet, .bma-popover {
+.bma-actionsheet {
+    color: #2c3e50;
+}
+.bma-popover {
     color: #2c3e50;
 }
 .bma-actionsheet-icon {
     position: relative;
-    bottom: 3px;
-
+    bottom: 3px
 }
 .bma-actionsheet-marker {
     margin-left: 8px;
@@ -575,12 +579,14 @@ div .slider-disabled .slider-handle{
 }
 .bma-legend.list {
    padding-top: 10px;
+   margin-bottom: 0px;
 }
 .bma-legend-button {
     float: right;
 }
 .bma-legend-group {
     padding-left: 10px;
+    margin-top: 10px;
 }
 .bma-legend-item {
     min-height: 35px;
@@ -677,10 +683,14 @@ ion-popover-view.bma-fit ion-content {
     margin-top: 10px !important;
 }
 .bma-layers {
-    background:url(../lib/leaflet/images/layers.png);
+    /*background:url(../lib/leaflet/images/layers.png);*/
+    background:url(../img/layers.png);
     background-repeat: no-repeat;
+    background-size: 26px 26px;
     width: 26px;
     height: 26px;
+
+    margin-top:2px;
 }
 .bma-menu-button {
     margin-right: 5px;
@@ -709,6 +719,45 @@ ion-popover-view.bma-fit ion-content {
 #date-container > input, #time-container > input {
     color: #2c3e50;
 }
+ion-content>div.slider {
+    height:100%;
+}
+
+.help-img {
+    height: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.loading-container .loading{
+    background-color: rgba(0,0,0,0);
+}
+.spinner {
+    stroke: #fff;
+}
+.ng-hide-add,
+.ng-hide-remove {
+    display: none !important;
+}
+
+
+
+/*.platform-ipad .bma-actionsheet {
+    padding-left: 50%;
+}*/
+.platform-ipad .bma-actionsheet-icon-close {
+    left:37%;
+    padding-left: 17px;
+}
+.platform-ipad .bma-actionsheet-block {
+    display: inline-block;
+}
+.platform-ipad .bma-actionsheet-marker {
+    left:37%;
+}
+
+
+
 
 
 

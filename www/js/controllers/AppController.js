@@ -52,10 +52,7 @@ bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $state, $location,
             PushNotificationService.handleAndroid(notification);
         }
         else if (ionic.Platform.isIOS()) {
-            handleIOS(notification);
-            $scope.$apply(function () {
-                $scope.notifications.push(JSON.stringify(notification.alert));
-            })
+            PushNotificationService.handleIOS(notification);
         }
     });
 
