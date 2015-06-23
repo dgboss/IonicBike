@@ -99,6 +99,7 @@ ion-nav-view>ion-view>ion-side-menus>ion-side-menu-content>ion-pane>ion-content>
     position: relative;
     top: 50%;
     transform: translateY(-25%);
+    -webkit-transform: translateY(-25%);
 
 }
 .marker-group>div>i.fa-warning{
@@ -106,12 +107,14 @@ ion-nav-view>ion-view>ion-side-menus>ion-side-menu-content>ion-pane>ion-content>
     position: relative;
     top: 50%;
     transform: translateY(-25%);
+    -webkit-transform: translateY(-25%);
 }
 .marker-group>div>i.fa-certificate, .marker-group>i.fa-user {
     padding-left: 6px;
     position: relative;
     top: 50%;
     transform: translateY(-25%);
+    -webkit-transform: translateY(-25%);
 }
 .marker-group>div>span>i.fa-filter {
     padding-left: 1.5px;
@@ -235,8 +238,8 @@ ion-nav-view>ion-view>ion-side-menus>ion-side-menu-content>ion-pane>ion-content>
     color: black;
 }
 .theft{
-    background: #a3a3a3;
-    color: black;
+    background: #575757;
+    color: #cbcbcb !important;
 }
 .official{
     background: #436978;
@@ -618,7 +621,7 @@ div .slider-disabled .slider-handle{
 }
 .button.button-clear.bma-legend-close-button {
     color: #2c3e50;
-    margin-top: 5px;
+    /*margin-top: 5px;*/
 }
 .bma-text {
     color: #2c3e50!important;
@@ -683,8 +686,8 @@ ion-popover-view.bma-fit ion-content {
     margin-top: 10px !important;
 }
 .bma-layers {
-    /*background:url(../lib/leaflet/images/layers.png);*/
-    background:url(../img/layers.png);
+    background:url(../lib/leaflet/images/layers.png);
+    /*background:url(../img/layers.png);*/
     background-repeat: no-repeat;
     background-size: 26px 26px;
     width: 26px;

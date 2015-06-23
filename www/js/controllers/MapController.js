@@ -9,7 +9,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
         $scope.map = new L.Map('map', {
             center: [54.1,-124.7],
             zoom: 4,
-            zoomControl: true
+            zoomControl: false
         });
         $scope.authInfo = djangoAuth;
         $scope.model = {
@@ -638,7 +638,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
                     { text: '<div class="awesome-marker-icon-red awesome-marker bma-actionsheet-marker"><i class="fa fa-bicycle icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Collision</span>' },
                     { text: '<div class="awesome-marker-icon-orange awesome-marker bma-actionsheet-marker"><i class="fa fa-bicycle icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Near miss</span>' },
                     { text: '<div class="awesome-marker-icon-green awesome-marker bma-actionsheet-marker"><i class="fa fa-warning icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Hazard</span>' },
-                    { text: '<div class="awesome-marker-icon-lightgray awesome-marker bma-actionsheet-marker"><i class="fa fa-bicycle icon-black bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Theft</span>' },
+                    { text: '<div class="awesome-marker-icon-gray awesome-marker bma-actionsheet-marker"><i class="fa fa-bicycle theft bma-actionsheet-icon"></i></div><span class="bma-actionsheet">Theft</span>' },
                     { text: '<div class="bma-actionsheet-icon-close"><i class="fa fa-close"></i></div><span class="bma-actionsheet">Cancel</span>' }
                 ],
                 titleText: 'What type of incident are you reporting?',

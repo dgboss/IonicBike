@@ -26,7 +26,9 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ngResource', 'ngCookies
 }])
 
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+        $ionicConfigProvider.backButton.text('');
+
         $stateProvider
 
             .state('app', {

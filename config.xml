@@ -15,14 +15,13 @@
   <preference name="BackupWebStorage" value="none"/>
   <preference name="SplashScreen" value="screen"/>
   <preference name="SplashScreenDelay" value="3000"/>
+  <preference name="StatusBarStyle" value="lightcontent"/>
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
   <feature name="Geolocation">
-      <param name="ios-package" value="CDVLocation" />
+    <param name="ios-package" value="CDVLocation"/>
   </feature>
-      
-  <preference name="StatusBarStyle" value="lightcontent" />
   <platform name="android">
     <icon src="resources/android/icon/drawable-ldpi-icon.png" density="ldpi"/>
     <icon src="resources/android/icon/drawable-mdpi-icon.png" density="mdpi"/>

@@ -52,7 +52,7 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
                 }
                 else if (ionic.Platform.isIOS()) {
                     config = {
-                        "badge": "true",
+                        "badge": "false",		
                         "sound": "true",
                         "alert": "true"
                     }
