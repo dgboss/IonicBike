@@ -10,28 +10,36 @@ angular.module('bikeMapApp.FormServices', [])
             {
                 text: 'Infrastructure',
                 items: [
-                    { key: 'Curb', text: 'Curb' },
-                    { key: 'Island', text: 'Island' },
-                    { key: 'Train track', text: 'Train track' },
-                    { key: 'Pothole', text: 'Pothole' },
-                    { key: 'Road surface', text: 'Road surface' },
-                    { key: 'Poor signage', text: 'Poor signage' },
-                    { key: 'Speed limits', text: 'Speed limits' },
-                    { key: 'Other infrastructure', text: 'Other infrastructure' }
+                    { key: 'Curb', text: 'Curb', h_type: 'infrastructure' },
+                    { key: 'Island', text: 'Island', h_type: 'infrastructure' },
+                    { key: 'Train track', text: 'Train track', h_type: 'infrastructure' },
+                    { key: 'Pothole', text: 'Pothole', h_type: 'infrastructure' },
+                    { key: 'Road surface', text: 'Road surface', h_type: 'infrastructure' },
+                    { key: 'Poor signage', text: 'Poor signage', h_type: 'infrastructure' },
+                    { key: 'Speed limits', text: 'Speed limits', h_type: 'infrastructure' },
+                    { key: 'Other infrastructure', text: 'Other (please describe)', h_type: 'infrastructure' }
                 ]
             },
             {
-                text: "Other",
+                text: "Environmental",
                 items: [
-                    { key: 'Poor visibility', text: 'Poor visibility' },
-                    { key: 'Parked car', text: 'Parked car' },
-                    { key: 'Traffic flow', text: 'Traffic flow' },
-                    { key: 'Driver behaviour', text: 'Driver behaviour' },
-                    { key: 'Cyclist behaviour', text: 'Cyclist behaviour' },
-                    { key: 'Pedestrian behavior', text: 'Pedestrian behaviour' },
-                    { key: 'Congestion', text: 'Congestion' },
-                    { key: 'Broken glass', text: 'Broken glass on road' },
-                    { key: 'Other', text: 'Other (please describe)' }
+                    { key: 'Poor visibility', text: 'Poor visibility', h_type: 'environmental' },
+                    { key: 'Broken glass', text: 'Broken glass on road', h_type: 'environmental' },
+                    { key: 'Wet leaves', text: 'Wet leaves on road', h_type: 'environmental'},
+                    { key: 'Other', text: 'Other (please describe)', h_type: 'environmental' }
+                ]
+            },
+            {
+                text: "Human Behaviour",
+                items: [
+                    { key: 'Poor visibility', text: 'Poor visibility', h_type: 'human behaviour' },
+                    { key: 'Parked car', text: 'Parked car', h_type: 'human behaviour' },
+                    { key: 'Traffic flow', text: 'Traffic flow', h_type: 'human behaviour' },
+                    { key: 'Driver behaviour', text: 'Driver behaviour', h_type: 'human behaviour' },
+                    { key: 'Cyclist behaviour', text: 'Cyclist behaviour', h_type: 'human behaviour' },
+                    { key: 'Pedestrian behavior', text: 'Pedestrian behaviour', h_type: 'human behaviour' },
+                    { key: 'Congestion', text: 'Congestion', h_type: 'human behaviour' },
+                    { key: 'Other', text: 'Other (please describe)', h_type: 'human behaviour' }
                 ]
             }]
     })

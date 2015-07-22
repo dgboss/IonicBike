@@ -285,7 +285,8 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
         dateAlert: false,
         timeAlert: false,
         hazardTypeAlert: false,
-        savePersonalDetailsChecked: false
+        savePersonalDetailsChecked: false,
+        hazardCategory: null
     };
 
     $scope.togglePersonalDetailsCheckbox = function() {
@@ -355,7 +356,8 @@ bikeMapApp.controller('HazardCtrl', function ($scope, $state, $window, $ionicMod
                     "age": $scope.personalDetails.selectedHazardBirthYear.key,
                     "birthmonth": $scope.personalDetails.selectedHazardBirthMonth.key,
                     "sex": $scope.personalDetails.selectedHazardGender.key,
-                    "regular_cyclist": $scope.personalDetails.selectedHazardCyclingFrequency.key
+                    "regular_cyclist": $scope.personalDetails.selectedHazardCyclingFrequency.key,
+                    "hazard_category": $scope.hazardDetails.selectedHazardType.h_type
                 }
             };
 
