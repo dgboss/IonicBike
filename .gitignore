@@ -23,3 +23,5 @@ org.apache.cordova.media
 org.apache.cordova.vibration
 org.crosswalk.engine
 my-release-key.keystore
+plugins
+

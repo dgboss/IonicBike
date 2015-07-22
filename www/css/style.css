@@ -286,6 +286,7 @@ ion-nav-view>ion-view>ion-side-menus>ion-side-menu-content>ion-pane>ion-content>
 .incident-textarea {
     width: 100%;
     white-space: pre-wrap;
+    color: #2c3e50;
 }
 
 .incident-item-right {
@@ -664,7 +665,6 @@ div .slider-disabled .slider-handle{
     margin: 15px 0px;
 }
 
-
 ion-popover-view.bma-fit {
     height: auto !important;
 }
@@ -691,6 +691,25 @@ ion-popover-view.bma-fit ion-content {
 .ion-record::before {
     color: #00ADAB;
 }
+.sponsor-logo {
+    width: 125px;
+}
+.leaflet-control-container {
+    -webkit-transform: translate3d(0,0,0);
+}
+#hazard, #incident, #theft {
+    color: #2c3e50;
+}
+.panel-default > .panel-heading span {
+    color: #2c3e50;
+}
+.report-colour {
+    color: #2c3e50;
+}
+#date-container > input, #time-container > input {
+    color: #2c3e50;
+}
+
 
 
 

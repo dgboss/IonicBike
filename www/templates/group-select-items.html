@@ -8,10 +8,10 @@
     <ion-content>
         <div class="list">
             <div ng-repeat="group in groups">
-                <div class="bma-group">
+                <div class="bma-group report-colour">
                     <span>{{group.text}}</span>
                 </div>
-                <div class="item bma-item item-text-wrap"
+                <div class="item bma-item item-text-wrap report-colour"
                      ng-repeat="item in group.items"
                      ng-click='select(item)'>
                     {{item.text}}

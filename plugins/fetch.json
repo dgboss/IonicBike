@@ -1,22 +1,21 @@
 {
-    "org.apache.cordova.geolocation": {
-        "source": {
-            "type": "registry",
-            "id": "org.apache.cordova.geolocation"
-        }
-    },
     "com.ionic.keyboard": {
         "source": {
-            "type": "registry",
-            "id": "com.ionic.keyboard"
-        }
+            "type": "git",
+            "url": "https://github.com/driftyco/ionic-plugins-keyboard.git",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
     },
     "com.phonegap.plugins.PushPlugin": {
         "source": {
             "type": "git",
-            "url": "https://github.com/phonegap-build/PushPlugin",
+            "url": "https://github.com/phonegap-build/PushPlugin.git",
             "subdir": "."
-        }
+        },
+        "is_top_level": true,
+        "variables": {}
     },
     "org.apache.cordova.console": {
         "source": {
@@ -50,17 +49,19 @@
     },
     "nl.x-services.plugins.toast": {
         "source": {
-            "type": "git",
-            "url": "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
-            "subdir": "."
-        }
+            "type": "registry",
+            "id": "nl.x-services.plugins.toast"
+        },
+        "is_top_level": true,
+        "variables": {}
     },
     "cordova-plugin-inappbrowser": {
         "source": {
-            "type": "git",
-            "url": "https://git-wip-us.apache.org/repos/asf/cordova-plugin-inappbrowser.git",
-            "subdir": "."
-        }
+            "type": "registry",
+            "id": "cordova-plugin-inappbrowser"
+        },
+        "is_top_level": true,
+        "variables": {}
     },
     "nl.x-services.plugins.socialsharing": {
         "source": {
@@ -87,5 +88,80 @@
             "type": "local",
             "path": "engine\\cordova-crosswalk-engine-c0.6.2"
         }
+    },
+    "cordova-plugin-crosswalk-webview": {
+        "source": {
+            "type": "local",
+            "path": "engine/cordova-crosswalk-engine-c0.7.1"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "org.apache.cordova.splashscreen": {
+        "source": {
+            "type": "registry",
+            "id": "org.apache.cordova.splashscreen"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-whitelist": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/apache/cordova-plugin-whitelist.git",
+            "subdir": ".",
+            "ref": "r1.0.0"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-datepicker": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/VitaliiBlagodir/cordova-plugin-datepicker",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-device": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-device"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-file": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-file"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-geolocation": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-geolocation"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-media": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-media"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-vibration": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-vibration"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

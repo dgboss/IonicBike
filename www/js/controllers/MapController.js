@@ -9,7 +9,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
         $scope.map = new L.Map('map', {
             center: [54.1,-124.7],
             zoom: 4,
-            zoomControl: false
+            zoomControl: true
         });
         $scope.authInfo = djangoAuth;
         $scope.model = {
