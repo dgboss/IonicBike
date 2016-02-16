@@ -1,5 +1,5 @@
 
-bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $state, $location, $ionicModal, $ionicPopover, $window, $cordovaPush, $cordovaMedia, $cordovaDialogs, $http, $timeout, djangoAuth, Validate, PushNotificationService, authService) {
+bikeMapApp.controller('AppCtrl', function($rootScope, $scope, $state, $location, $ionicModal, $ionicPopover, $window, $cordovaPush, $http, $timeout, djangoAuth, Validate, PushNotificationService, authService) {
 
     $scope.authInfo = djangoAuth;
     $scope.notifications = [];

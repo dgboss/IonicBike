@@ -1,18 +1,16 @@
 {
     "com.ionic.keyboard": {
         "source": {
-            "type": "git",
-            "url": "https://github.com/driftyco/ionic-plugins-keyboard.git",
-            "subdir": "."
+            "type": "registry",
+            "id": "com.ionic.keyboard"
         },
         "is_top_level": true,
         "variables": {}
     },
     "com.phonegap.plugins.PushPlugin": {
         "source": {
-            "type": "git",
-            "url": "https://github.com/phonegap-build/PushPlugin.git",
-            "subdir": "."
+            "type": "registry",
+            "id": "com.phonegap.plugins.pushplugin"
         },
         "is_top_level": true,
         "variables": {}
@@ -107,10 +105,8 @@
     },
     "cordova-plugin-whitelist": {
         "source": {
-            "type": "git",
-            "url": "https://github.com/apache/cordova-plugin-whitelist.git",
-            "subdir": ".",
-            "ref": "r1.0.0"
+            "type": "registry",
+            "id": "cordova-plugin-whitelist"
         },
         "is_top_level": true,
         "variables": {}
@@ -176,6 +172,22 @@
         "source": {
             "type": "registry",
             "id": "cordova-plugin-dialogs"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-geolocation": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-geolocation"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-x-toast": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-x-toast"
         },
         "is_top_level": true,
         "variables": {}

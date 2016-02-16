@@ -11,27 +11,36 @@ angular.module('bikeMapApp.FormServices', [])
                 text: 'Infrastructure',
                 items: [
                     { key: 'Curb', text: 'Curb' },
-                    { key: 'Island', text: 'Island' },
                     { key: 'Train track', text: 'Train track' },
                     { key: 'Pothole', text: 'Pothole' },
                     { key: 'Road surface', text: 'Road surface' },
                     { key: 'Poor signage', text: 'Poor signage' },
                     { key: 'Speed limits', text: 'Speed limits' },
-                    { key: 'Other infrastructure', text: 'Other infrastructure' }
+                    { key: 'Blind corner', text: 'Blind corner or turn'},
+                    { key: 'Bike lane disappears', text: 'Bike lane disappears'},
+                    { key: 'Vehicles enter exit', text: 'Vehicles entering/exiting roadway'},
+                    { key: 'Dooring risk', text: 'Dooring risk zone'},
+                    { key: 'Vehicle in bike lane', text: 'Vehicle use of bike lane'},
+                    { key: 'Dangerous intersection', text: 'Dangerous intersection'},
+                    { key: 'Dangerous vehicle left turn', text: 'Dangerous vehicle left turn'},
+                    { key: 'Dangerous vehicle right turn', text: 'Dangerous vehicle right turn'},
+                    { key: 'Sensor does not detect bikes', text: 'Sensor does not pick up bikes'},
+                    { key: 'Steep hill', text: 'Steep hill - bike speed affected'},
+                    { key: 'Narrow road', text: 'Narrow road'},
+                    { key: 'Pedestrian conflict zone', text: 'Pedestrian conflict zone'},
+                    { key: 'Other infrastructure', text: 'Other (Please describe)' }
                 ]
             },
             {
-                text: "Other",
+                text: "Environmental",
                 items: [
+                    { key: 'Icy/Snowy', text: 'Icy/Snowy' },
                     { key: 'Poor visibility', text: 'Poor visibility' },
-                    { key: 'Parked car', text: 'Parked car' },
-                    { key: 'Traffic flow', text: 'Traffic flow' },
-                    { key: 'Driver behaviour', text: 'Driver behaviour' },
-                    { key: 'Cyclist behaviour', text: 'Cyclist behaviour' },
-                    { key: 'Pedestrian behavior', text: 'Pedestrian behaviour' },
-                    { key: 'Congestion', text: 'Congestion' },
                     { key: 'Broken glass', text: 'Broken glass on road' },
-                    { key: 'Other', text: 'Other (please describe)' }
+                    { key: 'Wet leaves', text: 'Wet leaves on road' },
+                    { key: 'Gravel rocks or debris', text: 'Gravel, rocks or debris on road' },
+                    { key: 'Construction', text: 'Construction' },
+                    { key: 'Other', text: 'Other (Please describe)' }
                 ]
             }]
     })
