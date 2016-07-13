@@ -553,6 +553,7 @@ div .slider-disabled .slider-handle{
 }
 .bma-actionsheet {
     color: #2c3e50;
+    padding-left:15%
 }
 .bma-popover {
     color: #2c3e50;
@@ -686,8 +687,8 @@ ion-popover-view.bma-fit ion-content {
     margin-top: 10px !important;
 }
 .bma-layers {
-    background:url(../lib/leaflet/images/layers.png);
-    /*background:url(../img/layers.png);*/
+    /*background:url(../lib/leaflet/images/layers.png);*/
+    background:url(../img/layers.png);
     background-repeat: no-repeat;
     background-size: 26px 26px;
     width: 26px;
@@ -745,9 +746,7 @@ ion-content>div.slider {
 
 
 
-/*.platform-ipad .bma-actionsheet {
-    padding-left: 50%;
-}*/
+
 .platform-ipad .bma-actionsheet-icon-close {
     left:37%;
     padding-left: 17px;
@@ -757,6 +756,291 @@ ion-content>div.slider {
 }
 .platform-ipad .bma-actionsheet-marker {
     left:37%;
+}
+.platform-ipad .bma-side-menu {
+    top: 50px;
+}
+/*.platform-ios .bma-actionsheet-marker {
+    left: 25%;
+}
+.platform-ios .bma-actionsheet-icon-close {
+    left: 25%;
+    padding-left: 17px;
+}*/
+.platform-ios .bma-side-menu {
+    top: 50px;
+}
+
+
+
+
+/*
+/!* iPad in landscape *!/
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation: landscape) {
+    .platform-ipad .bma-actionsheet-icon-close {
+        left:37%;
+        padding-left: 17px;
+    }
+    .platform-ipad .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ipad .bma-actionsheet-marker {
+        left:37%;
+    }
+}
+
+/!* iPad in portrait *!/
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation: portrait) {
+    .platform-ipad .bma-actionsheet-icon-close {
+        left:37%;
+        padding-left: 17px;
+    }
+    .platform-ipad .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ipad .bma-actionsheet-marker {
+        left:37%;
+    }
+}
+
+/!* iPad Retina in landscape *!/
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : landscape)
+and (-webkit-min-device-pixel-ratio: 2) {
+    .platform-ipad .bma-actionsheet-icon-close {
+        left:37%;
+        padding-left: 17px;
+    }
+    .platform-ipad .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ipad .bma-actionsheet-marker {
+        left:37%;
+    }
+}
+
+/!* iPad Retina in portrait *!/
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : portrait)
+and (-webkit-min-device-pixel-ratio: 2) {
+    .platform-ipad .bma-actionsheet-icon-close {
+        left:37%;
+        padding-left: 17px;
+    }
+    .platform-ipad .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ipad .bma-actionsheet-marker {
+        left:37%;
+    }
+}
+
+/!* iPad mini in landscape *!/
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : landscape)
+and (-webkit-min-device-pixel-ratio: 1)  {
+    .platform-ipad .bma-actionsheet-icon-close {
+        left:37%;
+        padding-left: 17px;
+    }
+    .platform-ipad .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ipad .bma-actionsheet-marker {
+        left:37%;
+    }
+}
+/!* iPad mini in portrait *!/
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : portrait)
+and (-webkit-min-device-pixel-ratio: 1)  {
+    .platform-ipad .bma-actionsheet-icon-close {
+        left:37%;
+        padding-left: 17px;
+    }
+    .platform-ipad .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ipad .bma-actionsheet-marker {
+        left:37%;
+    }
+}
+/!* iPad mini retina in landscape *!/
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : landscape)
+and (-webkit-min-device-pixel-ratio: 2)  {
+    .platform-ipad .bma-actionsheet-icon-close {
+        left:37%;
+        padding-left: 17px;
+    }
+    .platform-ipad .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ipad .bma-actionsheet-marker {
+        left:37%;
+    }
+}
+/!* iPad mini retina in portrait *!/
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : portrait)
+and (-webkit-min-device-pixel-ratio: 2)  {
+    .platform-ipad .bma-actionsheet-icon-close {
+        left:37%;
+        padding-left: 17px;
+    }
+    .platform-ipad .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ipad .bma-actionsheet-marker {
+        left:37%;
+    }
+}
+*/
+/* iPhone 6 in landscape */
+@media only screen
+and (min-device-width : 375px)
+and (max-device-width : 667px)
+and (orientation : landscape) {
+    .platform-ios .bma-actionsheet-icon-close {
+        left:37%;
+        padding-left: 17px;
+    }
+    .platform-ios .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ios .bma-actionsheet-marker {
+        left:37%;
+    }
+}
+/* iPhone 6 in portrait */
+@media only screen
+and (min-device-width : 375px)
+and (max-device-width : 667px)
+and (orientation : portrait) {
+    .platform-ios .bma-actionsheet-icon-close {
+        left:37%;
+        padding-left: 17px;
+    }
+    .platform-ios .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ios .bma-actionsheet-marker {
+        left:37%;
+    }
+}
+/* iPhone 6+ in landscape */
+@media only screen
+and (min-device-width : 414px)
+and (max-device-width : 736px)
+and (orientation : landscape) {
+    .platform-ios .bma-actionsheet-icon-close {
+        left:25%;
+        padding-left: 17px;
+    }
+    .platform-ios .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ios .bma-actionsheet-marker {
+        left:25%;
+    }
+}
+/* iPhone 6+ in portrait */
+@media only screen
+and (min-device-width : 414px)
+and (max-device-width : 736px)
+and (orientation : portrait) {
+    .platform-ios .bma-actionsheet-icon-close {
+        left:25%;
+        padding-left: 17px;
+    }
+    .platform-ios .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ios .bma-actionsheet-marker {
+        left:25%;
+    }
+}
+/* iPhone 5 and 5s in landscape */
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 568px)
+and (orientation : landscape) {
+    .platform-ios .bma-actionsheet-icon-close {
+        left:37%;
+        padding-left: 17px;
+    }
+    .platform-ios .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ios .bma-actionsheet-marker {
+        left:37%;
+    }
+}
+/* iPhone 5 and 5s in portrait */
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 568px)
+and (orientation : portrait) {
+    .platform-ios .bma-actionsheet-icon-close {
+        left:25%;
+        padding-left: 17px;
+    }
+    .platform-ios .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ios .bma-actionsheet-marker {
+        left:25%;
+    }
+}
+/* iPhone 4 and 4s in landscape */
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 480px)
+and (orientation : landscape) {
+    .platform-ios .bma-actionsheet-icon-close {
+        left:37%;
+        padding-left: 17px;
+    }
+    .platform-ios .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ios .bma-actionsheet-marker {
+        left:37%;
+    }
+}
+/* iPhone 4 and 4s in portrait */
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 480px)
+and (orientation : portrait) {
+    .platform-ios .bma-actionsheet-icon-close {
+        left:25%;
+        padding-left: 17px;
+    }
+    .platform-ios .bma-actionsheet-block {
+        display: inline-block;
+    }
+    .platform-ios .bma-actionsheet-marker {
+        left:25%;
+    }
 }
 
 

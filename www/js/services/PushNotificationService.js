@@ -120,16 +120,16 @@ bikeMapApp.service('PushNotificationService', function PushNotificationService($
         'handleIOS': function(notification){
             this.saveNotification(notification);
             if(notification.foreground === "1") {
-                var confirmPopup = $ionicPopup.confirm({
-                    title: "New incident reported",
-                    template: "Would you like to view the incident on the map?"
-                });
-                confirmPopup.then(function(res){
-                    if(res){
-                        $state.go('app');
-                        $rootScope.$broadcast("BMA.panToPoint", {data: notification});
-                    }
-                })
+                navigator.notification.confirm(
+                                    "Would you like to view the incident on the map?",
+                    function(btnIndex) {
+                        if(btnIndex === 1) {
+                            $state.go('app');
+                            $rootScope.$broadcast("BMA.panToPoint", {data: notification});
+                        }
+                    },
+                    "New incident reported"
+                );
             }
             else {
                 $state.go('app');

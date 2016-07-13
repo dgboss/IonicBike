@@ -1,11 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget android-versionCode="3" id="com.bikemaps.sparlab" version="0.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>BikeMaps</name>
-    <description>
-        An Ionic Framework and Cordova project.
+    <description>
+
+        An Ionic Framework and Cordova project.
+
     </description>
-    <author email="admin@bikemaps.org" href="https://bikemaps.org">
-      UVic SPAR lab
+    <author email="admin@bikemaps.org" href="https://bikemaps.org">
+
+      UVic SPAR lab
+
     </author>
     <content src="index.html" />
     <access origin="*" />
@@ -77,3 +81,4 @@
     <preference name="xwalkMode" value="embedded" />
     <preference name="xwalkMultipleApk" value="true" />
 </widget>
+
