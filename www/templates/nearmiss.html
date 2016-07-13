@@ -1,0 +1,292 @@
+<ion-view>
+    <ion-nav-title>
+        <img src="img/BikeMapsORG_Logo_notxt_sm.png" class="bma-header-logo">
+        <span>Near Miss Report</span>
+    </ion-nav-title>
+    <!--Hide the menu button-->
+    <ion-nav-buttons side="right" >
+    </ion-nav-buttons>
+
+    <ion-content id="nearmiss">
+        <form role="form" ng-submit="submitNearmiss($scope.nearmissForm)" name="nearmissForm" id="nearmissForm" novalidate>
+            <div class="padding">
+                <accordion close-others=false>
+                    <accordion-group heading="Near Miss Details" is-open=true ng-class="{true: 'form-title-invalid', false: 'form-valid'}[model.dateAlert || model.timeAlert || model.incidentTypeAlert || model.incidentObjectAlert || model.incidentInjuryAlert]">
+                        <div data-tap-disabled="true" class="form-group">
+                            <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.dateAlert]">
+                                When was the incident?*
+                            </label>
+                            <div id="date-container">
+                                <input ng-model="nearmissDetails.selectedDate" bs-datepicker use-native="true" type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date">
+                                <i id="date-icon" class="ion-calendar"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.timeAlert]">
+                                What time did the incident occur?*
+                            </label>
+                            <div id="time-container">
+                                <input ng-model="nearmissDetails.selectedTime" bs-timepicker use-native="true" data-time-format="HH:mm" data-length="1" data-minute-step="5" data-arrow-behavior="picker" type="text" style="background-color: #fff; border:1px solid #ddd; padding-left: 20px;" class="form-control incident-date">
+                                <i id="time-icon" class="ion-clock"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.nearmissTypeAlert]">
+                                What type of incident was it?*
+                            </label>
+                            <group-select
+                                    header-text="Select an incident type"
+                                    display-text="nearmissDetails.selectedNearmissType.text"
+                                    selected-item="nearmissDetails.selectedNearmissType"
+                                    groups="nearmissDetails.nearmissTypeChoices"
+                                    >
+                            </group-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.nearmissObjectAlert]">
+                                What sort of object did you collide with or nearly collide with?*
+                            </label>
+                            <group-select
+                                    header-text="Select an object type"
+                                    display-text="nearmissDetails.selectedObjectType.text"
+                                    selected-item="nearmissDetails.selectedObjectType"
+                                    groups="nearmissDetails.nearmissObjectChoices"
+                                    >
+                            </group-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.nearmissInjuryAlert]">
+                                Were you injured?*
+                            </label>
+                            <group-select
+                                    header-text="Were you injured?"
+                                    display-text="nearmissDetails.selectedInjuryType.text"
+                                    selected-item="nearmissDetails.selectedInjuryType"
+                                    groups="nearmissDetails.nearmissInjuryChoices"
+                                    >
+                            </group-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                What was the purpose of your trip?
+                            </label>
+                            <basic-select
+                                    header-text="What was the purpose of your trip?"
+                                    display-text="nearmissDetails.selectedPurposeType.text"
+                                    selected-item="nearmissDetails.selectedPurposeType"
+                                    items="nearmissDetails.nearmissPurposeChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                    </accordion-group>
+                    <accordion-group heading="Conditions">
+                        <div class="form-group">
+                            <label class="incident-label">
+                                What were the road conditions?
+                            </label>
+                            <basic-select
+                                    header-text="What was the purpose of your trip?"
+                                    display-text="conditions.selectedConditions.text"
+                                    selected-item="conditions.selectedConditions"
+                                    items="conditions.nearmissConditionsChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                How were the sight lines?
+                            </label>
+                            <basic-select
+                                    header-text="How were the sight lines?"
+                                    display-text="conditions.selectSightConditions.text"
+                                    selected-item="conditions.selectSightConditions"
+                                    items="conditions.sightConditionsChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                Were there cars parked on the roadside?
+                            </label>
+                            <basic-select
+                                    header-text="Were there cars parked on the roadside?"
+                                    display-text="conditions.selectedCarsParked.text"
+                                    selected-item="conditions.selectedCarsParked"
+                                    items="conditions.carsParkedChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                Where were you riding your bike?
+                            </label>
+                            <group-select
+                                    header-text="Where were you riding your bike?"
+                                    display-text="conditions.selectedRidingOn.text"
+                                    selected-item="conditions.selectedRidingOn"
+                                    groups="conditions.ridingOnChoices"
+                                    >
+                            </group-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                Were you using bike lights?
+                            </label>
+                            <basic-select
+                                    header-text="Were you using bike lights?"
+                                    display-text="conditions.selectedLight.text"
+                                    selected-item="conditions.selectedLight"
+                                    items="conditions.lightChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                What was the terrain like?
+                            </label>
+                            <basic-select
+                                    header-text="What was the terrain like?"
+                                    display-text="conditions.selectedTerrain.text"
+                                    selected-item="conditions.selectedTerrain"
+                                    items="conditions.terrainChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                What direction were you heading?
+                            </label>
+                            <basic-select
+                                    header-text="What direction were you heading?"
+                                    display-text="conditions.selectedDirection.text"
+                                    selected-item="conditions.selectedDirection"
+                                    items="conditions.directionChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                How were you moving?
+                            </label>
+                            <basic-select
+                                    header-text="How were you moving?"
+                                    display-text="conditions.selectedTurning.text"
+                                    selected-item="conditions.selectedTurning"
+                                    items="conditions.turningChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                    </accordion-group>
+                    <accordion-group heading="Description">
+                        <div class="form-group">
+                            <label class="incident-label">
+                                Please give a brief description of the incident.
+                            </label>
+                            <textarea class="item incident-textarea" placeholder="optional" ng-model="description.details"></textarea>
+                        </div>
+                    </accordion-group>
+                    <accordion-group heading="Personal Details">
+                        <div class="form-group">
+                            <label class="incident-label">
+                                What is your birth year?
+                            </label>
+                            <basic-select
+                                    header-text="Select a year"
+                                    display-text="personalDetails.selectedNearmissBirthYear.text"
+                                    selected-item="personalDetails.selectedNearmissBirthYear"
+                                    items="personalDetails.birthYearChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                What is your birth month?
+                            </label>
+                            <basic-select
+                                    header-text="Select a month"
+                                    display-text="personalDetails.selectedNearmissBirthMonth.text"
+                                    selected-item="personalDetails.selectedNearmissBirthMonth"
+                                    items="personalDetails.birthMonthChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                Please select your gender?
+                            </label>
+                            <basic-select
+                                    header-text="Select a gender"
+                                    display-text="personalDetails.selectedNearmissGender.text"
+                                    selected-item="personalDetails.selectedNearmissGender"
+                                    items="personalDetails.genderChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                Do you bike at least once a week?
+                            </label>
+                            <basic-select
+                                    header-text="Select an option"
+                                    display-text="personalDetails.selectedNearmissCyclingFrequency.text"
+                                    selected-item="personalDetails.selectedNearmissCyclingFrequency"
+                                    items="personalDetails.cyclingFrequencyChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                Were you wearing a helmet?
+                            </label>
+                            <basic-select
+                                    header-text="Select an option"
+                                    display-text="personalDetails.selectedHelmet.text"
+                                    selected-item="personalDetails.selectedHelmet"
+                                    items="personalDetails.helmetChoices"
+                                    >
+                            </basic-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label">
+                                Were you intoxicated?
+                            </label>
+                            <basic-select
+                                    header-text="Select an option"
+                                    display-text="personalDetails.selectedIntoxicated.text"
+                                    selected-item="personalDetails.selectedIntoxicated"
+                                    items="personalDetails.intoxicatedChoices"
+                                    >
+                            </basic-select>
+                        </div>
+
+                        <div class="padding">
+                            <input type="checkbox" class="bma-checkbox"  ng-checked="model.savePersonalDetailsChecked" ng-click="togglePersonalDetailsCheckbox()"/>
+                            <span ng-click="togglePersonalDetailsCheckbox()">Remember birth year, birth month, gender and biking frequency for all future reports.</span>
+                        </div>
+                    </accordion-group>
+                </accordion>
+            </div>
+
+            <div ng-show="model.dateAlert || model.timeAlert || model.nearmissTypeAlert || model.nearmissObjectAlert || model.nearmissInjuryAlert" class="alert bma-required" >
+                Please complete all required fields in the Near Miss Details section.
+            </div>
+
+            <div class="padding" ng-click="markCheckbox()" ng-controller='TermsAndConditionsCtrl'>
+                <input type="checkbox" class="bma-checkbox" ng-model="model.nearmissChecked"  ng-click="markCheckbox()" />
+                <span>I have read and understand the
+                    <a ng-click="openModal()">
+                        terms and conditions.
+                    </a>
+                </span>
+            </div>
+            <div class="padding text-right">
+                <button type="reset" class="button button-bikemaps-inverse" ng-click="cancelNearmiss()">
+                    Cancel
+                </button>
+                <button type="submit" class="button button-bikemaps" ng-disabled="!model.nearmissChecked">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </ion-content>
+</ion-view>

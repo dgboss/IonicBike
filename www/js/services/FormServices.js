@@ -4,7 +4,7 @@
 
 angular.module('bikeMapApp.FormServices', [])
 
-    /* Types of hazards to display on incident form */
+    /* Choices for Hazards form */
     .factory('HazardGroupService',  function() {
         return [
             {
@@ -165,8 +165,8 @@ angular.module('bikeMapApp.FormServices', [])
         }
     })
 
-/* Choices for theft form */
-.factory('IncidentReportService', function() {
+/* Choices for Collision form */
+.factory('CollisionReportService', function() {
     return {
         incidentChoices: [
             {
@@ -174,13 +174,6 @@ angular.module('bikeMapApp.FormServices', [])
                 items: [
                     { key: 'Collision with stationary object or vehicle', text: 'Collision with a stationary object or vehicle' },
                     { key: 'Collision with moving object or vehicle', text: 'Collision with a moving object or vehicle'}
-                ]
-            },
-            {
-                text: 'Near miss',
-                items: [
-                    { key: 'Near collision with stationary object or vehicle', text: 'Near miss with a stationary object or vehicle' },
-                    { key: 'Near collision with moving object or vehicle', text: 'Near miss with a moving object or vehicle' }
                 ]
             },
             {
@@ -244,6 +237,14 @@ angular.module('bikeMapApp.FormServices', [])
                 ]
             }
         ],
+        impactChoices: [
+            { key: "None", text: "No impact" },
+            { key: "More careful", text: "I'm now more careful about where/when I ride" },
+            { key: "Bike less", text: "I bike less" },
+            { key: "More careful and bike less", text: "I'm now more careful about where/when I ride AND I bike less" },
+            { key: "Stopped biking", text: "I haven't biked since" },
+            { key: "Too soon", text: "Too soon to say" }
+        ],
         purposeChoices: [
             { text: '---------'},
             { key: "Commute", text: "To/from work or school" },
@@ -275,7 +276,7 @@ angular.module('bikeMapApp.FormServices', [])
             { key: 'N', text: 'No' },
             { key: "I don't know", text: "I don't know" }
         ],
-       ridingOnChoices: [
+        ridingOnChoices: [
             {
                 text: 'Busy street',
                 items: [
@@ -354,4 +355,187 @@ angular.module('bikeMapApp.FormServices', [])
         ]
 
 
+    }})
+
+.factory('NearmissReportService', function() {
+    return {
+        nearmissChoices: [
+            {
+                text: 'Near miss',
+                items: [
+                    { key: 'Near collision with stationary object or vehicle', text: 'Near miss with a stationary object or vehicle' },
+                    { key: 'Near collision with moving object or vehicle', text: 'Near miss with a moving object or vehicle' }
+                ]
+            }
+        ],
+        objectChoices: [
+            {
+                text: 'Vehicle',
+                items: [
+                    { key: 'Vehicle, head on', text: 'Head on' },
+                    { key: 'Vehicle, side', text: 'Side impact' },
+                    { key: 'Vehicle, angle', text: 'Angle impact' },
+                    { key: 'Vehicle, rear end', text: 'Rear end' },
+                    { key: 'Vehicle, open door', text: 'Open vehicle door' }
+                ]
+            },
+            {
+                text: 'Person/animal',
+                items: [
+                    { key: 'Another cyclist', text: 'Another cyclist' },
+                    { key: 'Pedestrian', text: 'Pedestrian' },
+                    { key: 'Animal', text: 'Animal' }
+                ]
+            },
+            {
+                text: 'Infrastructure',
+                items: [
+                    { key: 'Curb', text: 'Curb' },
+                    { key: 'Train Tracks', text: 'Train Tracks' },
+                    { key: 'Pothole', text: 'Pothole' },
+                    { key: 'Lane divider', text: 'Lane divider' },
+                    { key: 'Sign/Post', text: 'Sign/Post' },
+                    { key: 'Roadway', text: 'Roadway' }
+                ]
+            },
+            {
+                text: 'Other',
+                items: [
+                    { key: 'Other', text: 'Other (please describe' }
+                ]
+            }
+        ],
+        injuredChoices: [
+            {
+                text: 'Yes',
+                items: [
+                    { key: 'Injury, no treatment', text: 'Medical treatment not required' },
+                    { key: 'Injury, saw family doctor', text: 'Saw a family doctor' },
+                    { key: 'Injury, hospital emergency visit', text: 'Visited the hospital emergency dept.' },
+                    { key: 'Injury, hospitalized', text: 'Overnight stay in hospital'}
+                ]
+            },
+            {
+                text: 'No',
+                items: [
+                    { key: 'No injury', text: 'No injury' }
+                ]
+            }
+        ],
+        impactChoices: [
+            { key: "None", text: "No impact" },
+            { key: "More careful", text: "I'm now more careful about where/when I ride" },
+            { key: "Bike less", text: "I bike less" },
+            { key: "More careful and bike less", text: "I'm now more careful about where/when I ride AND I bike less" },
+            { key: "Stopped biking", text: "I haven't biked since" },
+            { key: "Too soon", text: "Too soon to say" }
+        ],
+        purposeChoices: [
+            { text: '---------'},
+            { key: "Commute", text: "To/from work or school" },
+            { key: "Exercise or recreation", text: "Exercise or recreation" },
+            { key: "Social reason", text: "Social reason (e.g., movies, visit friends)" },
+            { key: "Personal business", text: "Personal business" },
+            { key: "During work", text: "During work" }
+        ],
+        conditionChoices: [
+            { text: '---------'},
+            { key: 'Dry', text: 'Dry' },
+            { key: 'Wet', text: 'Wet' },
+            { key: 'Loose sand, gravel, or dirt', text: 'Loose sand, gravel, or dirt' },
+            { key: 'Icy', text: 'Icy' },
+            { key: 'Snowy', text: 'Snowy' },
+            { key: "Don't remember", text: "I don't remember" }
+        ],
+        sightConditionsChoices: [
+            { text: '---------'},
+            { key: 'No obstructions', text: 'No obstructions' },
+            { key: 'View obstructed', text: 'View obstructed' },
+            { key: 'Glare or reflection', text: 'Glare or reflection' },
+            { key: 'Obstruction on road', text: 'Obstruction on road' },
+            { key: "Don't Remember", text: "Don't Remember" }
+        ],
+        carsParkedChoices: [
+            { text: '---------' },
+            { key: 'Y', text: 'Yes' },
+            { key: 'N', text: 'No' },
+            { key: "I don't know", text: "I don't know" }
+        ],
+        ridingOnChoices: [
+            {
+                text: 'Busy street',
+                items: [
+                    { key: '', text: '---------' },
+                    { key: 'Busy street bike lane', text: 'On a painted bike lane' },
+                    { key: 'Busy street, no bike facilities', text: 'On road with no bike facilities' }
+                ]
+            },
+            {
+                text: 'Quiet street',
+                items: [
+                    { key: 'Quiet street bike lane', text: 'On a painted bike lane' },
+                    { key: 'Quiet street, no bike facilities', text: 'On road with no bike facilities' }
+                ]
+            },
+            {
+                text: 'Not on the street',
+                items: [
+                    { key: 'Cycle track', text: 'On a physically separated bike lane (cycle track)' },
+                    { key: 'Mixed use trail', text: 'On a mixed use trail' },
+                    { key: 'Sidewalk', text: 'On the sidewalk' },
+                ]
+            },
+            {
+                text: 'Other',
+                items: [
+                    { key: "Don't remember", text: "I don't remember" }
+                ]
+            }
+        ],
+        lightChoices: [
+            { text: '---------' },
+            { key: "NL", text: "No Lights" },
+            { key: "FB", text: "Front and back lights" },
+            { key: "F", text: "Front lights only" },
+            { key: "B", text: "Back lights only" },
+            { key: "Don't remember", text: "I don't remember" }
+        ],
+        terrainChoices: [
+            { text: '--------' },
+            { key: 'Uphill', text: 'Uphill' },
+            { key: 'Downhill', text: 'Downhill' },
+            { key: 'Flat', text: 'Flat' },
+            { key: "Don't remember", text: "I don't remember" }
+        ],
+        directionChoices: [
+            { text: '--------' },
+            { key: 'N', text: 'N' },
+            { key: 'NE', text: 'NE' },
+            { key: 'E', text: 'E' },
+            { key: 'SE', text: 'SE' },
+            { key: 'S', text: 'S' },
+            { key: 'SW', text: 'SW' },
+            { key: 'W', text: 'W' },
+            { key: 'NW', text: 'NW' },
+            { key: "I don't know", text: "I don't know" }
+        ],
+        turningChoices: [
+            { text: '--------' },
+            { key: 'Heading straight', text: 'Heading straight' },
+            { key: 'Turning left', text: 'Turning left' },
+            { key: 'Turning right', text: 'Turning right' },
+            { key: "I don't remember", text: "I don't remember" }
+        ],
+        helmetChoices: [
+            { text: '---------' },
+            { key: 'Y', text: 'Yes' },
+            { key: 'N', text: 'No' },
+            { key: "I don't know", text: "I don't know" }
+        ],
+        intoxicatedChoices: [
+            { text: '---------' },
+            { key: 'Y', text: 'Yes' },
+            { key: 'N', text: 'No' },
+            { key: "I don't know", text: "I don't know" }
+        ]
     }});

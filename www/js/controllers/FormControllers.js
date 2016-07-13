@@ -5,47 +5,51 @@
 /*
  Controller for incident portion of incident form
  */
-bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicModal, $ionicPopup, Constants, IncidentReportService, CyclingFrequencyService, BirthYearService, BirthMonthService, GenderService, YesNoService, Coord_Service, Collision_Service, Nearmiss_Service) {
+bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicModal, $ionicPopup, Constants, CollisionReportService, CyclingFrequencyService, BirthYearService, BirthMonthService, GenderService, YesNoService, Coord_Service, Collision_Service, Nearmiss_Service) {
 
     $scope.incidentDetails = {
         selectedDate: null,
         selectedTime: null,
         maxDate: new Date(),
-        incidentTypeChoices: IncidentReportService.incidentChoices,
+        incidentTypeChoices: CollisionReportService.incidentChoices,
         selectedIncidentType: {
             key: Constants.FORM_DEFAULT, text: Constants.FORM_DEFAULT
         },
-        incidentObjectChoices: IncidentReportService.objectChoices,
+        incidentObjectChoices: CollisionReportService.objectChoices,
         selectedObjectType: {
             key: Constants.FORM_DEFAULT, text: Constants.FORM_DEFAULT
         },
-        incidentInjuryChoices: IncidentReportService.injuredChoices,
+        incidentInjuryChoices: CollisionReportService.injuredChoices,
         selectedInjuryType: {
             key: Constants.FORM_DEFAULT, text: Constants.FORM_DEFAULT
         },
-        incidentPurposeChoices: IncidentReportService.purposeChoices,
-        selectedPurposeType: IncidentReportService.purposeChoices[0]
+        incidentImpactChoices: CollisionReportService.impactChoices,
+        selectedImpactType: {
+            key: Constants.FORM_DEFAULT, text: Constants.FORM_DEFAULT
+        },
+        incidentPurposeChoices: CollisionReportService.purposeChoices,
+        selectedPurposeType: CollisionReportService.purposeChoices[0]
         };
 
     $scope.conditions = {
-        incidentConditionsChoices: IncidentReportService.conditionChoices,
-        selectedConditions: IncidentReportService.conditionChoices[0],
-        sightConditionsChoices: IncidentReportService.sightConditionsChoices,
-        selectSightConditions: IncidentReportService.sightConditionsChoices[0],
-        carsParkedChoices: IncidentReportService.carsParkedChoices,
-        selectedCarsParked: IncidentReportService.carsParkedChoices[0],
-        ridingOnChoices: IncidentReportService.ridingOnChoices,
+        incidentConditionsChoices: CollisionReportService.conditionChoices,
+        selectedConditions: CollisionReportService.conditionChoices[0],
+        sightConditionsChoices: CollisionReportService.sightConditionsChoices,
+        selectSightConditions: CollisionReportService.sightConditionsChoices[0],
+        carsParkedChoices: CollisionReportService.carsParkedChoices,
+        selectedCarsParked: CollisionReportService.carsParkedChoices[0],
+        ridingOnChoices: CollisionReportService.ridingOnChoices,
         selectedRidingOn: {
             text: Constants.FORM_DEFAULT
         },
-        lightChoices: IncidentReportService.lightChoices,
-        selectedLight: IncidentReportService.lightChoices[0],
-        terrainChoices: IncidentReportService.terrainChoices,
-        selectedTerrain: IncidentReportService.terrainChoices[0],
-        directionChoices: IncidentReportService.directionChoices,
-        selectedDirection: IncidentReportService.directionChoices[0],
-        turningChoices: IncidentReportService.turningChoices,
-        selectedTurning: IncidentReportService.turningChoices[0]
+        lightChoices: CollisionReportService.lightChoices,
+        selectedLight: CollisionReportService.lightChoices[0],
+        terrainChoices: CollisionReportService.terrainChoices,
+        selectedTerrain: CollisionReportService.terrainChoices[0],
+        directionChoices: CollisionReportService.directionChoices,
+        selectedDirection: CollisionReportService.directionChoices[0],
+        turningChoices: CollisionReportService.turningChoices,
+        selectedTurning: CollisionReportService.turningChoices[0]
     };
 
     $scope.description = {
@@ -62,10 +66,10 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
         selectedIncidentGender: GenderService[0],
         cyclingFrequencyChoices: CyclingFrequencyService,
         selectedIncidentCyclingFrequency: CyclingFrequencyService[0],
-        helmetChoices: IncidentReportService.helmetChoices,
-        selectedHelmet: IncidentReportService.helmetChoices[0],
-        intoxicatedChoices: IncidentReportService.intoxicatedChoices,
-        selectedIntoxicated: IncidentReportService.intoxicatedChoices[0]
+        helmetChoices: CollisionReportService.helmetChoices,
+        selectedHelmet: CollisionReportService.helmetChoices[0],
+        intoxicatedChoices: CollisionReportService.intoxicatedChoices,
+        selectedIntoxicated: CollisionReportService.intoxicatedChoices[0]
     };
 
     $scope.model = {
@@ -74,6 +78,7 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
         incidentTypeAlert: false,
         incidentObjectAlert: false,
         incidentInjuryAlert: false,
+        incidentImpactAlert: false,
         p_type: "",
         savePersonalDetailsChecked: false
     };
@@ -121,12 +126,7 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
         if( $scope.validateForm() ) {
             Coord_Service.dirty = true;
 
-            if($scope.incidentDetails.selectedIncidentType.key === IncidentReportService.incidentChoices[1].items[0].key ||
-                $scope.incidentDetails.selectedIncidentType.key === IncidentReportService.incidentChoices[1].items[1].key) {
-                $scope.model.p_type = 'nearmiss';
-            } else {
-                $scope.model.p_type = 'collision';
-            }
+            $scope.model.p_type = 'collision';
 
             var coeff = 1000*60*5; //rounding coefficient = millis in 5 min
             var roundedTime = new Date(Math.round($scope.incidentDetails.selectedTime/coeff)*coeff); //round users time selection to nearest 5 min
@@ -209,12 +209,17 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
     };
 
     $scope.validateForm = function() {
-        if( $scope.incidentDetails.selectedDateTime === null || $scope.incidentDetails.selectedIncidentType.key === Constants.FORM_DEFAULT ||
-            $scope.incidentDetails.selectedObjectType.key === Constants.FORM_DEFAULT || $scope.incidentDetails.selectedInjuryType.key === Constants.FORM_DEFAULT) {
-            if ($scope.incidentDetails.selectedDateTime === null) {
+        if( $scope.incidentDetails.selectedDate === null || $scope.incidentDetails.selectedTime === null || $scope.incidentDetails.selectedIncidentType.key === Constants.FORM_DEFAULT ||
+            $scope.incidentDetails.selectedObjectType.key === Constants.FORM_DEFAULT || $scope.incidentDetails.selectedInjuryType.key === Constants.FORM_DEFAULT || $scope.incidentDetails.selectedImpactType.key === Constants.FORM_DEFAULT ) {
+            if ($scope.incidentDetails.selectedDate === null) {
                 $scope.model.dateAlert = true;
             } else {
                 $scope.model.dateAlert = false;
+            }
+            if ($scope.incidentDetails.selectedTime === null) {
+                $scope.model.timeAlert = true;
+            } else {
+                $scope.model.timeAlert = false;
             }
             if ($scope.incidentDetails.selectedIncidentType.key === Constants.FORM_DEFAULT) {
                 $scope.model.incidentTypeAlert = true;
@@ -231,10 +236,16 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
             } else {
                 $scope.model.incidentInjuryAlert = false;
             }
+            if ($scope.incidentDetails.selectedImpactType.key === Constants.FORM_DEFAULT) {
+                $scope.model.incidentImpactAlert = true;
+            } else {
+                $scope.model.incidentImpactAlert = false;
+            }
             return false;
         }
         else {
             $scope.model.dateAlert = false;
+            $scope.model.timeAlert = false;
             $scope.model.incidentTypeAlert = false;
             $scope.model.incidentObjectAlert = false;
             $scope.model.incidentInjuryAlert = false;
@@ -244,6 +255,249 @@ bikeMapApp.controller('IncidentCtrl', function($scope, $state, $window, $ionicMo
     };
 
     $scope.cancelIncident = function() {
+        $state.go('app');
+    }
+});
+
+/*
+ Controller for near miss portion of incident form
+ */
+bikeMapApp.controller('NearmissCtrl', function($scope, $state, $window, $ionicModal, $ionicPopup, Constants, NearmissReportService, CyclingFrequencyService, BirthYearService, BirthMonthService, GenderService, YesNoService, Coord_Service, Collision_Service, Nearmiss_Service) {
+
+    $scope.nearmissDetails = {
+        selectedDate: null,
+        selectedTime: null,
+        maxDate: new Date(),
+        nearmissTypeChoices: NearmissReportService.nearmissChoices,
+        selectedNearmissType: {
+            key: Constants.FORM_DEFAULT, text: Constants.FORM_DEFAULT
+        },
+        nearmissObjectChoices: NearmissReportService.objectChoices,
+        selectedObjectType: {
+            key: Constants.FORM_DEFAULT, text: Constants.FORM_DEFAULT
+        },
+        nearmissInjuryChoices: NearmissReportService.injuredChoices,
+        selectedInjuryType: {
+            key: Constants.FORM_DEFAULT, text: Constants.FORM_DEFAULT
+        },
+        nearmissImpactChoices: NearmissReportService.impactChoices,
+        selectedImpactType: NearmissReportService.impactChoices[0],
+        nearmissPurposeChoices: NearmissReportService.purposeChoices,
+        selectedPurposeType: NearmissReportService.purposeChoices[0]
+    };
+
+    $scope.conditions = {
+        nearmissConditionsChoices: NearmissReportService.conditionChoices,
+        selectedConditions: NearmissReportService.conditionChoices[0],
+        sightConditionsChoices: NearmissReportService.sightConditionsChoices,
+        selectSightConditions: NearmissReportService.sightConditionsChoices[0],
+        carsParkedChoices: NearmissReportService.carsParkedChoices,
+        selectedCarsParked: NearmissReportService.carsParkedChoices[0],
+        ridingOnChoices: NearmissReportService.ridingOnChoices,
+        selectedRidingOn: {
+            text: Constants.FORM_DEFAULT
+        },
+        lightChoices: NearmissReportService.lightChoices,
+        selectedLight: NearmissReportService.lightChoices[0],
+        terrainChoices: NearmissReportService.terrainChoices,
+        selectedTerrain: NearmissReportService.terrainChoices[0],
+        directionChoices: NearmissReportService.directionChoices,
+        selectedDirection: NearmissReportService.directionChoices[0],
+        turningChoices: NearmissReportService.turningChoices,
+        selectedTurning: NearmissReportService.turningChoices[0]
+    };
+
+    $scope.description = {
+        details: ""
+    };
+
+    /* Personal details pane */
+    $scope.personalDetails = {
+        birthYearChoices: BirthYearService,
+        selectedNearmissBirthYear: BirthYearService[0],
+        birthMonthChoices: BirthMonthService,
+        selectedNearmissBirthMonth: BirthMonthService[0],
+        genderChoices: GenderService,
+        selectedNearmissGender: GenderService[0],
+        cyclingFrequencyChoices: CyclingFrequencyService,
+        selectedNearmissCyclingFrequency: CyclingFrequencyService[0],
+        helmetChoices: NearmissReportService.helmetChoices,
+        selectedHelmet: NearmissReportService.helmetChoices[0],
+        intoxicatedChoices: NearmissReportService.intoxicatedChoices,
+        selectedIntoxicated: NearmissReportService.intoxicatedChoices[0]
+    };
+
+    $scope.model = {
+        nearmissChecked: false,
+        dateAlert: false,
+        timeAlert: false,
+        nearmissTypeAlert: false,
+        nearmissObjectAlert: false,
+        nearmissInjuryAlert: false,
+        p_type: "",
+        savePersonalDetailsChecked: false
+    };
+
+    $scope.togglePersonalDetailsCheckbox = function() {
+        $scope.model.savePersonalDetailsChecked = !$scope.model.savePersonalDetailsChecked;
+    };
+
+    // Populate Personal Details of form if user has previously saved the data
+    function populatePersonalDetails() {
+        if($window.localStorage["savePersonalDetails"] === "true") {
+            $scope.model.savePersonalDetailsChecked = $window.localStorage["savePersonalDetails"];
+            $scope.personalDetails.selectedIncidentBirthYear = JSON.parse($window.localStorage["birthYear"]);
+            $scope.personalDetails.selectedIncidentBirthMonth = JSON.parse($window.localStorage["birthMonth"]);
+            $scope.personalDetails.selectedIncidentGender = JSON.parse($window.localStorage["gender"]);
+            $scope.personalDetails.selectedIncidentCyclingFrequency = JSON.parse($window.localStorage["frequency"]);
+        }
+    }
+    populatePersonalDetails();
+
+    // Save/remove personal details to/from local storage
+    function savePersonalDetails() {
+
+        if($scope.model.savePersonalDetailsChecked) {
+            $window.localStorage["savePersonalDetails"] = true;
+            $window.localStorage["birthYear"] = JSON.stringify($scope.personalDetails.selectedNearmissBirthYear);
+            $window.localStorage["birthMonth"] = JSON.stringify($scope.personalDetails.selectedNearmissBirthMonth);
+            $window.localStorage["gender"] = JSON.stringify($scope.personalDetails.selectedNearmissGender);
+            $window.localStorage["frequency"] = JSON.stringify($scope.personalDetails.selectedNearmissCyclingFrequency);
+        }
+        else {
+            $window.localStorage["savePersonalDetails"] = false;
+            $window.localStorage["birthYear"] = '';
+            $window.localStorage["birthMonth"] = '';
+            $window.localStorage["gender"] = '';
+            $window.localStorage["frequency"] = '';
+        }
+    }
+
+    $scope.markCheckbox = function() {
+        $scope.model.nearmissChecked = !$scope.model.nearmissChecked;
+    };
+
+    $scope.submitNearmiss = function() {
+        if( $scope.validateForm() ) {
+            Coord_Service.dirty = true;
+
+            $scope.model.p_type = 'nearmiss';
+
+            var coeff = 1000*60*5; //rounding coefficient = millis in 5 min
+            var roundedTime = new Date(Math.round($scope.nearmissDetails.selectedTime/coeff)*coeff); //round users time selection to nearest 5 min
+            // Construct time string from user selected date and time
+            var selectedDateTime = $scope.nearmissDetails.selectedDate.getFullYear() + "-" +
+                ($scope.nearmissDetails.selectedDate.getMonth()+1) + "-" +
+                $scope.nearmissDetails.selectedDate.getDate() + " " +
+                roundedTime.getHours() + ":" +
+                roundedTime.getMinutes();
+
+            var nearmissForm = {
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        Coord_Service.coordinates[0],
+                        Coord_Service.coordinates[1]
+                    ]
+                },
+                "properties": {
+                    // Nearmiss details to POST
+                    "date": selectedDateTime,
+                    "i_type": $scope.nearmissDetails.selectedNearmissType.key,
+                    "incident_with": $scope.nearmissDetails.selectedObjectType.key,
+                    "injury": $scope.nearmissDetails.selectedInjuryType.key,
+                    "trip_purpose": $scope.nearmissDetails.selectedPurposeType.key,
+                    // Conditions to POST
+                    "road_conditions": $scope.conditions.selectedConditions.key,
+                    "sightlines": $scope.conditions.selectSightConditions.key,
+                    "cars_on_roadside": $scope.conditions.selectedCarsParked.key,
+                    "riding_on": $scope.conditions.selectedRidingOn.key,
+                    "bike_lights": $scope.conditions.selectedLight.key,
+                    "terrain": $scope.conditions.selectedTerrain.key,
+                    "direction": $scope.conditions.selectedDirection.key,
+                    "turning": $scope.conditions.selectedTurning.key,
+
+                    //Description to POST
+                    "details": $scope.description.details,
+
+                    // Personal details to POST
+                    "age": $scope.personalDetails.selectedNearmissBirthYear.key,
+                    "birthmonth": $scope.personalDetails.selectedNearmissBirthMonth.key,
+                    "sex": $scope.personalDetails.selectedNearmissGender.key,
+                    "regular_cyclist": $scope.personalDetails.selectedNearmissCyclingFrequency.key,
+                    "helmet": $scope.personalDetails.selectedHelmet.key,
+                    "intoxicated": $scope.personalDetails.selectedIntoxicated.key,
+
+                    "p_type": $scope.model.p_type
+                }
+            };
+
+            savePersonalDetails();
+
+            var post = Nearmiss_Service.save(nearmissForm);
+
+            post.$promise.then(function() {
+                    Coord_Service.dirty = true;
+                    $state.go('app');
+                }, function() {
+                    var alertPopup = $ionicPopup.alert({
+                        title: "Report could not be saved",
+                        template: "We're sorry, your report could not be saved. Please check your Internet connection and try again. If the problem persists, please contact us at admin@bikemaps.org.",
+                        buttons: [
+                            { text: "<span>OK</span>"}
+                        ]
+                    });
+                }
+            );
+        }
+        else {
+            // Should never be reached
+            console.log("Form is invalid");
+        }
+    };
+
+    $scope.validateForm = function() {
+        if( $scope.nearmissDetails.selectedDate === null || $scope.nearmissDetails.selectedTime === null || $scope.nearmissDetails.selectedNearmissType.key === Constants.FORM_DEFAULT ||
+            $scope.nearmissDetails.selectedObjectType.key === Constants.FORM_DEFAULT || $scope.nearmissDetails.selectedInjuryType.key === Constants.FORM_DEFAULT) {
+            if ($scope.nearmissDetails.selectedDate === null) {
+                $scope.model.dateAlert = true;
+            } else {
+                $scope.model.dateAlert = false;
+            }
+            if ($scope.nearmissDetails.selectedTime === null) {
+                $scope.model.timeAlert = true;
+            } else {
+                $scope.model.timeAlert = false;
+            }
+            if ($scope.nearmissDetails.selectedNearmissType.key === Constants.FORM_DEFAULT) {
+                $scope.model.nearmissTypeAlert = true;
+            } else {
+                $scope.model.nearmissTypeAlert = false;
+            }
+            if ($scope.nearmissDetails.selectedObjectType.key === Constants.FORM_DEFAULT) {
+                $scope.model.nearmissObjectAlert = true;
+            } else {
+                $scope.model.nearmissObjectAlert = false;
+            }
+            if ($scope.nearmissDetails.selectedInjuryType.key === Constants.FORM_DEFAULT) {
+                $scope.model.nearmissInjuryAlert = true;
+            } else {
+                $scope.model.nearmissInjuryAlert = false;
+            }
+            return false;
+        }
+        else {
+            $scope.model.dateAlert = false;
+            $scope.model.timeAlert = false;
+            $scope.model.nearmissTypeAlert = false;
+            $scope.model.nearmissObjectAlert = false;
+            $scope.model.nearmissInjuryAlert = false;
+
+            return true;
+        }
+    };
+
+    $scope.cancelNearmiss = function() {
         $state.go('app');
     }
 });

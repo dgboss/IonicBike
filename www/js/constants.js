@@ -7,7 +7,7 @@ angular.module('bikeMapApp.constants',[])
 
         var constants = {
             API: "https://bikemaps.org/",
-            //API: "http://192.168.1.125:8000/",
+            // API: "http://192.168.0.16:8000/",
             FORM_DEFAULT: '---------'
         };
         return constants;

@@ -20,12 +20,18 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
         var extendedBounds;
         var newMapBounds;
 
-
+        // *** Direct access to Mapquest tiles was discontinued on July 11, 2016
+        // *** We now access tiles through their API with an app key
         // Add OSM Base Layer
-       var osmBase = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
-                attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-                subdomains: '1234'
-            }).addTo($scope.map);
+        // var osmBase = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
+        //        attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        //        subdomains: '1234'
+        //    }).addTo($scope.map);
+
+        // Create Mapquest layer via a call to their Leaflet API and add to the map
+        var osmBaseAPI = MQ.mapLayer();
+
+        osmBaseAPI.addTo($scope.map);
 
        // Add Strava data
        var stravaHM = L.tileLayer('http://globalheat.strava.com/tiles/cycling/color5/{z}/{x}/{y}.png', {
@@ -656,7 +662,7 @@ bikeMapApp.controller('MapCtrl', ['$rootScope', '$scope', '$window', '$state', '
                             $state.go('incident');
                             return true;
                         case 1:
-                            $state.go('incident');
+                            $state.go('nearmiss');
                             return true;
                         case 2:
                             $state.go('hazard');

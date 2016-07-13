@@ -58,6 +58,12 @@ var bikeMapApp = angular.module('bikeMapApp', ['ionic', 'ngResource', 'ngCookies
                 controller: "IncidentCtrl"
             })
 
+            .state('nearmiss', {
+                url: "/nearmiss",
+                templateUrl: "templates/nearmiss.html",
+                controller: "NearmissCtrl"
+            })
+
             .state('hazard', {
                 url: "/hazard",
                 templateUrl: "templates/hazard.html",

@@ -1,7 +1,7 @@
 <ion-view>
     <ion-nav-title>
         <img src="img/BikeMapsORG_Logo_notxt_sm.png" class="bma-header-logo">
-        <span>Incident Report</span>
+        <span>Collision Report</span>
     </ion-nav-title>
     <!--Hide the menu button-->
     <ion-nav-buttons side="right" >
@@ -11,7 +11,7 @@
         <form role="form" ng-submit="submitIncident($scope.incidentForm)" name="incidentForm" id="incidentForm" novalidate>
             <div class="padding">
                 <accordion close-others=false>
-                    <accordion-group heading="Incident Details" is-open=true ng-class="{true: 'form-title-invalid', false: 'form-valid'}[model.dateAlert || model.incidentTypeAlert || model.incidentObjectAlert || model.incidentInjuryAlert]">
+                    <accordion-group heading="Collision Details" is-open=true ng-class="{true: 'form-title-invalid', false: 'form-valid'}[model.dateAlert || model.incidentTypeAlert || model.incidentObjectAlert || model.incidentInjuryAlert]">
                         <div data-tap-disabled="true" class="form-group">
                             <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.dateAlert]">
                                 When was the incident?*
@@ -66,6 +66,18 @@
                                     groups="incidentDetails.incidentInjuryChoices"
                                     >
                             </group-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="incident-label" ng-class="{true: 'form-invalid', false: 'form-valid'}[model.incidentImpactAlert]">
+                                How did this impact your bicycling?
+                            </label>
+                            <basic-select
+                                    header-text="How did this impact your bicycling?"
+                                    display-text="incidentDetails.selectedImpactType.text"
+                                    selected-item="incidentDetails.selectedImpactType"
+                                    items="incidentDetails.incidentImpactChoices"
+                                    >
+                            </basic-select>
                         </div>
                         <div class="form-group">
                             <label class="incident-label">
@@ -268,8 +280,8 @@
                 </accordion>
             </div>
 
-            <div ng-show="model.dateAlert || model.incidentTypeAlert || model.incidentObjectAlert || model.incidentInjuryAlert" class="alert bma-required" >
-                Please complete all required fields in the Incident Details section.
+            <div ng-show="model.dateAlert || model.timeAlert || model.incidentTypeAlert || model.incidentObjectAlert || model.incidentInjuryAlert" class="alert bma-required" >
+                Please complete all required fields in the Collision Details section.
             </div>
 
             <div class="padding" ng-click="markCheckbox()" ng-controller='TermsAndConditionsCtrl'>
