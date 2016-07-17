@@ -16,14 +16,10 @@
   },
   "cordovaPlugins": [
     "org.apache.cordova.geolocation",
-    {
-      "locator": "engine/cordova-crosswalk-engine-c0.7.1",
-      "id": "cordova-plugin-crosswalk-webview"
-    },
-    "org.apache.cordova.splashscreen"
+    "org.apache.cordova.splashscreen",
+    "ionic-plugin-keyboard"
   ],
   "cordovaPlatforms": [
-    "ios",
-    "android"
+    "ios"
   ]
 }
